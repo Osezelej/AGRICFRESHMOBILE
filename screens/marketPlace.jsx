@@ -1,7 +1,10 @@
 import { TouchableWithoutFeedback, Keyboard, View, StyleSheet,Text, ScrollView, FlatList, TouchableOpacity, Image } from "react-native";
-import { useState, useEffect } from 'react';
-import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
+import { useState, useEffect,useCallback } from 'react';
 import { dataApi } from "../data/data";
+import MarketItems from "../components/marketItems";
+import OptionHeader from "../components/optionHeader";
+import FootIcons from "../components/footIcons";
+
 const styles = StyleSheet.create({
     body:{
         flex:1,
@@ -193,14 +196,48 @@ const styles = StyleSheet.create({
     contentImageStyle:{
         width:'100%',
         height:200,
-        aspectRatio:3/2
+        aspectRatio:3/2,
+        objectFit:'Fill'
+        },
+    modalcontainer:{
+        flex:1,
+        backgroundColor:'#29292988',
+
+    },
+    modalbody:{
+        position:'absolute',
+        bottom:0,
+        backgroundColor:'white',
+        width:'100%',
+        paddingVertical:20,
+        borderRadius:10,
+        paddingHorizontal:15
+
+    },
+    modaltitle:{
+        fontSize:22,
+        fontWeight:'bold'
+        
+    }, 
+    modalheader:{
+        flexDirection:'row',
+        justifyContent:'space-between',
+        alignItems:"center"
+    },
+    line:{
+        height:2.2,
+        width:'90%',
+        backgroundColor:'#d0d0d088',
+        marginVertical:10,
+        borderRadius:4,
+        alignSelf:'center'
     }
     
 })
 
 
 
-export function MarketPlace({navigation, images, contentImages}){
+export function MarketPlace({navigation, images, contentImages, Modal, state, setState}){
    
 const [options, setoptions] = useState([{
     id:1,
@@ -242,8 +279,11 @@ const [options, setoptions] = useState([{
 const [names, setNames] = useState('MarketPlace')
 const [active, setActive] = useState('#ffdb28')
 const [image, setImage] = useState(images)
+const [multiSliderValue, setMultiSliderValue] = useState([3, 10000]);
+let multiSliderValuesChange = values => setMultiSliderValue(values);
+
 let d = true;
-function handleChange(item) {
+let handleChange = useCallback((item)=>{
     let item_id = item.item.id;
     options.map((value)=>{
        if(value.id == item_id){
@@ -261,10 +301,8 @@ function handleChange(item) {
         d = true;
         setNames('MarketPlace')
     }
-
+})
     
- 
-}
 useEffect(()=>{if (d) {
     d = false;
     setNames('MarketPlace ');
@@ -272,11 +310,7 @@ useEffect(()=>{if (d) {
     d = true;
     setNames('MarketPlace')
 }}, [names])
-
-function handlePress (val){
-    
-    // setActiveIcon((p)=>(p?setActiveIcon(false):setActiveIcon(false)))
-    
+let handlePress = useCallback((val)=>{ // setActiveIcon((p)=>(p?setActiveIcon(false):setActiveIcon(false)))
     image.forEach(element => {
         if (element.image == val.image){
             element.isactive = true;
@@ -285,11 +319,9 @@ function handlePress (val){
             element.isactive = false;
             setNames('MarketPlace');
         }
-        setImage(image)
         
     });
-
-}
+})
 
     return<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
@@ -298,23 +330,7 @@ function handlePress (val){
                         <Text style = {styles.header}>{names}</Text>
                     </View>
                     <View style={styles.optionHeader}>
-                        <FlatList 
-                            data={options}
-                            horizontal={true}
-                            renderItem ={(item)=>(<TouchableOpacity style={styles.background} onPressIn={()=>{handleChange(item)}}>
-                                                        
-                                                        <View style = {{ backgroundColor: item.item.isActive ? active:'white',
-                                                                         paddingVertical:3,
-                                                                         paddingHorizontal:15,
-                                                                         borderRadius:30,
-                                                                         elevation:10
-                                                                        }}>
-                                                        <Text style={styles.option}>{item.item.option}</Text>
-                                                        </View>
-                                                    </TouchableOpacity> )}   
-                            keyExtractor={items => items.id}
-                            showVerticalScrollIndicator={false}
-                        />
+                        <OptionHeader styles={styles} handleChange={handleChange} options={options} active={active}/>
                     </View>
                 </View>
                 <View style = {styles.body}>
@@ -322,62 +338,17 @@ function handlePress (val){
                         data={dataApi}
                         keyExtractor={items=>items.id}
                         refreshing={true}
-                        renderItem ={({item})=>(
-                   <View style={styles.contentContainer}>
-                        <Pressable name='contentHeaderPress'>
-                            <View style={styles.contentHeader}>
-                                <View style={styles.farmIconContainer}></View>
-                                <View style={styles.contentTitleRating}>
-                                    <View >
-                                        <Text style ={styles.farmTitle}>{item.farmName} | </Text>
-                                        <Text>.Sponsored</Text>
-                                    </View>
-                                    <View style={styles.contentRatingContainer}>
-                                        <Text style={styles.contentRating}>{item.rating}.0</Text>
-                                    </View>
-                                </View>
-                            </View>                                                                
-                        </Pressable>
-                        <Pressable name='contentImagePress'>
-                            <View style={styles.contentImageContainer}>
-                                <Image source={{uri:item.Image}} style={styles.contentImageStyle}/>
-                            </View>
-                        </Pressable>
-                        <View style={styles.contentNamePrice}>
-                            <Text style={styles.contentName}>{item.Name}</Text>
-                            <Text style={styles.contentPrice}>{item.Price}.00</Text>
-                        </View>
-                        <View style={styles.likeCommentBuy}>
-                            <View style={styles.contentimagescontainer}>
-                                <View style={styles.contentImagecontainer}>
-                                    <Image source={contentImages[0]} style={styles.contentImage}/>
-                                    <Text style={styles.imageText}>Like</Text>
-                                </View>
-                                <View style={styles.contentImagecontainer}>
-                                    <Image source={contentImages[2]} style={styles.contentImage}/>
-                                    <Text style={styles.imageText}>comment</Text>
-                                </View>
-                            </View>
-                            <View style={styles.buyContainer}>
-                                <Text style={styles.buyText}> Buy </Text>
-                            </View>
-                        </View>
-                   </View>
-                   )}
+                        renderItem ={({item})=>(<MarketItems styles={styles} item = {item}  contentImages = {contentImages}/>)}
                     />
                 </View>
-                <View style = {styles.footIcons}>
-                    {image.map((value, id)=>(id == 2 ? <Pressable key={id} style={(value.isactive )?styles.cartImageStyleActive:null} onPressIn = {()=>(handlePress(value))}>
-                                                            <Image source={value.image}  style={styles.cartImageStyle} />
-                                                        </Pressable> :
-                                                        <Pressable key={id} style={value.isactive?styles.cartImageStyleActive:null} onPressIn = {()=>(handlePress(value))}>
-                                                            <Image source={value.image}  style={styles.imageStyle} />
-                                                        </Pressable>
-
-                    ))}
-                </View>
-
+                <Modal 
+                    styles={styles}
+                    state={state}
+                    setState={setState}
+                />
+                                <FootIcons styles={styles} image={image} handlePress={handlePress}/>
             </View> 
+
 
         </TouchableWithoutFeedback>
     

@@ -1,4 +1,5 @@
-import {View, Text, StyleSheet, TouchableHighlight, Image} from 'react-native';
+import {View, Text, StyleSheet, TouchableHighlight, Image, Pressable} from 'react-native';
+import { memo } from 'react';
 const styles = StyleSheet.create({
 searchContainer:{
     flexDirection:'row',
@@ -64,13 +65,13 @@ title:{
 
 })
 
-export function SearchHeader({image}){
+function SearchHeader({image, setState}){
     return(
         <View style={styles.container}>
             <Text style={styles.title}>MarketPlace</Text>
             <View style={styles.searchContainer}>
                 <View style={styles.titleSearch}>
-                    <TouchableHighlight >
+                    <TouchableHighlight  >
                         <View style={styles.Search}>
                             <Image source={image[0]} style={styles.imageStyle}/>
                             <Text style={styles.searchText}>search items...</Text>
@@ -78,12 +79,14 @@ export function SearchHeader({image}){
                         
                     </TouchableHighlight>
                 </View>
-                <View style={styles.imageContainer}>
-                    <Image source={image[1]} style={styles.imageStyle}/>
-                </View>
+                    <Pressable style={styles.imageContainer} onPressIn={()=>{setState()}}>
+                        <Image source={image[1]} style={styles.imageStyle}/>
+                    </Pressable>
 
+               
             </View>
 
         </View>
         );
 }
+export default memo(SearchHeader);

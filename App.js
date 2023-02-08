@@ -8,7 +8,9 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { ForgotPassword } from './screens/Fpass';
 import { ResetPassword } from './screens/rpas';
 import { MarketPlace } from './screens/marketPlace';
-import { SearchHeader } from './components/search';
+import  SearchHeader  from './components/search';
+import { useState, useCallback } from 'react';
+import ModalFilter from './components/ModalFilter';
 
 
 const Stack = createNativeStackNavigator();
@@ -24,12 +26,14 @@ let profileImage = require('./assets/images/user.png');
 let logoutImage = require('./assets/images/logout.png');
 let commentImage = require('./assets/images/comment.png');
 
-const Images = [searchImage, FilterImage]
+const Images = [searchImage, FilterImage];
+
 export default function App() {
   // setStatusBarStyle('dark')
   // setStatusBarBackgroundColor('white')
-  
 
+const [state, setState] = useState(false);
+let handleState = useCallback(()=>(state?setState(false):setState(true)))
   return (<View style ={styles.container}>
          <StatusBar/>
         {/* <Animated_page
@@ -72,9 +76,23 @@ export default function App() {
 
             <Stack.Screen
               name = "MarketPlace"
-              options={{title:"MarketPlace", animation:"slide_from_right", headerTitle: (props)=>(<SearchHeader {...props} image={Images}/>), headerShadowVisible:false}}
+              options={{title:"MarketPlace", animation:"slide_from_right", headerTitle: (props)=>(<SearchHeader {...props} 
+                image={Images} 
+                setState = {handleState}/>), headerShadowVisible:false}}
             >
-              {(props)=>(<MarketPlace {...props}  images={[{image:homeImage, isactive:true}, {image:profileImage, isactive:false}, {image:cartImage, isactive:false}, {image:newsImage, isactive:false}, {image:logoutImage, isactive:false} ]} contentImages={[star1Image, starImage, commentImage]}/>)}
+              {(props)=>(<MarketPlace {...props}
+                images={[
+                {image:homeImage, isactive:true},
+                {image:profileImage, isactive:false},
+                {image:cartImage, isactive:false},
+                {image:newsImage, isactive:false}, 
+                {image:logoutImage, isactive:false}
+                ]}
+                contentImages={[star1Image, starImage, commentImage]}
+                Modal={ModalFilter}
+                state = {state}
+                setState = {handleState}
+                />)}
             </Stack.Screen>
 
           </Stack.Navigator>
