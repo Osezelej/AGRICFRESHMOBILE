@@ -97,9 +97,6 @@ const styles = StyleSheet.create({
         paddingVertical:5,
         flexDirection:'row',
         alignItems:'center',
-        
-
-
     },
     farmIconContainer:{
         width:50,
@@ -120,7 +117,6 @@ const styles = StyleSheet.create({
 
     },
     contentTitleRating:{
-        
         flexDirection:'row',
         alignItems:'flex-start',
         justifyContent:'space-between',
@@ -236,8 +232,7 @@ const styles = StyleSheet.create({
 })
 
 
-
-export function MarketPlace({navigation, images, contentImages, Modal, state, setState}){
+export default function MarketPlace({navigation, images, contentImages, Modal, state, setState}){
    
 const [options, setoptions] = useState([{
     id:1,
@@ -338,19 +333,23 @@ let handlePress = useCallback((val)=>{ // setActiveIcon((p)=>(p?setActiveIcon(fa
                         data={dataApi}
                         keyExtractor={items=>items.id}
                         refreshing={true}
-                        renderItem ={({item})=>(<MarketItems styles={styles} item = {item}  contentImages = {contentImages}/>)}
+                        renderItem ={({item})=>(<MarketItems styles={styles} item = {item}  contentImages = {contentImages} navigation = {navigation}/>)}
                     />
                 </View>
                 <Modal 
                     styles={styles}
                     state={state}
                     setState={setState}
+                    starImage = {contentImages[1]}
+
                 />
-                                <FootIcons styles={styles} image={image} handlePress={handlePress}/>
+                               
             </View> 
 
 
         </TouchableWithoutFeedback>
     
 }
+
+
 

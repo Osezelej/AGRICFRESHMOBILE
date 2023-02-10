@@ -12,4 +12,5 @@ function FootIcons({styles, image, handlePress}) {
     ))}
 </View>
 }
+
 export default memo(FootIcons);

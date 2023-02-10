@@ -3,25 +3,29 @@ import { memo } from 'react';
 const styles = StyleSheet.create({
 searchContainer:{
     flexDirection:'row',
-    justifyContent:'space-between',
+    justifyContent:'space-around',
     width:'100%',
     margin:0,
+    alignItems:'center'
    
 },
 titleSearch:{
     backgroundColor:'white',
-    flex:6.5,
+    flex:3,
     paddingVertical:3,
     borderWidth:1.5,
-    paddingHorizontal:3,
+    paddingHorizontal:7,
     borderRadius:30,
-    borderColor:'green'
+    borderColor:'green',
+    height:30,
+    width:'100%'
+    
 
 },
 
 imageStyle:{
-    width:20,
-    height:20
+    width:25,
+    height:25
 },
 
 searchText:{
@@ -42,15 +46,11 @@ imageContainer:{
     flex:1,
     alignItems:'flex-end',
     justifyContent:'center',
-    marginLeft:5
 },
 container:{
-    width:'93%',
-    position:"relative",
-    right:25,
-    marginVertical:5
-
-
+paddingHorizontal:10,
+marginHorizontal:10,
+width:'100%'
 },
 title:{
     textAlign:'center',
@@ -62,14 +62,22 @@ title:{
     zIndex:2,display:'none'
     
 }, 
+image:{
+    width: 110,
+    height:90
+}
 
 })
 
-function SearchHeader({image, setState}){
+function SearchHeader({image, setState, logoImage}){
     return(
         <View style={styles.container}>
-            <Text style={styles.title}>MarketPlace</Text>
+            
+
             <View style={styles.searchContainer}>
+                <View style={styles.imageContainer}>
+                    <Image source={logoImage} style={styles.image}/>
+                </View>
                 <View style={styles.titleSearch}>
                     <TouchableHighlight  >
                         <View style={styles.Search}>

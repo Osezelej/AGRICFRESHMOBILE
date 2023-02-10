@@ -2,7 +2,7 @@ import {memo, } from 'react';
 import { View, Text, Pressable, Image } from 'react-native';
 
 
-function MarketItems({styles, item, contentImages} ) {
+function MarketItems({styles, item, contentImages, navigation} ) {
     
     
     return(<View style={styles.contentContainer}>
@@ -20,7 +20,7 @@ function MarketItems({styles, item, contentImages} ) {
                 </View>
             </View>                                                                
         </Pressable>
-        <Pressable name='contentImagePress'>
+        <Pressable name='contentImagePress' onPress={()=>navigation.navigate('Description', {image:item.Image, price:item.Price, farmName:item.farmName, rating:item.rating})}>
             <View style={styles.contentImageContainer}>
                 <Image source={{uri:item.Image}} style={styles.contentImageStyle}/>
             </View>
@@ -47,4 +47,5 @@ function MarketItems({styles, item, contentImages} ) {
    </View>)
     
 }
+
 export default memo(MarketItems);
