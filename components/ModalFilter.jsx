@@ -19,7 +19,7 @@ const style = StyleSheet.create({
 
     },
     final:{
-        paddingHorizontal:30,
+        paddingHorizontal:60,
         paddingVertical:10,
         borderWidth:1,
         borderRadius:20,
@@ -27,7 +27,7 @@ const style = StyleSheet.create({
 
     },
     finalActive:{
-        paddingHorizontal:30,
+        paddingHorizontal:60,
         paddingVertical:10,
         borderWidth:1,
         borderRadius:20,

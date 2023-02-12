@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     }
 })
 
-export default function FootIconsNavigaiton({state, handleState, logoImage}) { 
+export default function FootIconsNavigaiton({state, handleState, logoImage , navigation, userProfileDetails}) { 
     return <NavigationContainer independent={true}>
         <Tab.Navigator 
         screenOptions={{tabBarActiveTintColor:'green', tabBarStyle:{paddingVertical:7, height:55, display:'flex', paddingHorizontal:4}}}
@@ -50,15 +50,21 @@ export default function FootIconsNavigaiton({state, handleState, logoImage}) {
                 Modal={ModalFilter}
                 state = {state}
                 setState = {handleState}
+                navigation = {navigation}
                 />)}
             </Tab.Screen>
 
             <Tab.Screen
                 name="Profile"
-                component={Profile}
+                
                 options={{ headerShadowVisible:false,
-                 tabBarIcon:({focused, color, size})=>(<Image source={profileImage} style={styles.image}/>)}}
-            />
+                 tabBarIcon:({focused, color, size})=>(<Image source={profileImage} style={styles.image}/>),
+                 title:'User Profile',
+                 }}
+                
+            >
+                {(props)=>(<Profile userIcon={profileImage} userProfileDetails={userProfileDetails} navigation={navigation}/>)}
+            </Tab.Screen>
             <Tab.Screen 
                 name="Cart"
                 component={Cart}
@@ -75,7 +81,10 @@ export default function FootIconsNavigaiton({state, handleState, logoImage}) {
                 name="Logout"
                 component={Login}
                 options={{ headerShadowVisible:false,
-                 tabBarIcon:({focused, color, size})=>(<Image source={logoutImage} style={styles.image}/>)}}
+                 tabBarIcon:({focused, color, size})=>(<Image source={logoutImage} style={styles.image}/>),
+                 tabBarStyle:{display:'none'
+                 }
+                 }}
             />
         </Tab.Navigator>
     </NavigationContainer>

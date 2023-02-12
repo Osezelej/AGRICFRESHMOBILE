@@ -13,6 +13,8 @@ import { useState, useCallback } from 'react';
 import ModalFilter from './components/ModalFilter';
 import Description from './screens/Description';
 import FootIconsNavigaiton from './screens/TabSceen';
+import UserProfile from './screens/userProfile';
+
 const Stack = createNativeStackNavigator();
 
 let logoImages = require('./assets/images/Agricfresh.png');
@@ -26,8 +28,20 @@ let homeImage = require('./assets/images/home.png');
 let profileImage = require('./assets/images/user.png');
 let logoutImage = require('./assets/images/logout.png');
 let commentImage = require('./assets/images/comment.png');
+let orderImage = require('./assets/images/clipboard.png');
+let favouriteImage = require('./assets/images/favorites.png');
+let paymentImage = require('./assets/images/cashless-payment.png')
+let addressImage = require('./assets/images/placeholder.png')
 
 const Images = [searchImage, FilterImage];
+const userProfileDetails = [
+  {id:1, label:"Order history", image:orderImage, isActive:true},
+  {id:2, label:"User Profile", image:profileImage, isActive:false},
+  {id:3, label:"Favourites", image:favouriteImage, isActive:false},
+  {id:4, label:"Cart", image:cartImage, isActive:false},
+  {id:5, label:"Payment", image:paymentImage, isActive:false},
+  {id:6, label:"Address", image:addressImage, isActive:false},
+];
 
 export default function App() {
   // setStatusBarStyle('dark')
@@ -78,7 +92,7 @@ let handleState = useCallback(()=>(state?setState(false):setState(true)))
             <Stack.Screen
               name='MarketPlace'
                 options={{animation:"slide_from_right", headerShown:false}}>
-                {(props)=>(<FootIconsNavigaiton {...props}  logoImage= {logoImages} state={state} handleState={handleState}/>)}
+                {(props)=>(<FootIconsNavigaiton {...props}  logoImage= {logoImages} state={state} handleState={handleState} userProfileDetails={userProfileDetails}/>)}
               </Stack.Screen>
             <Stack.Screen
               name = "Description"
@@ -86,6 +100,12 @@ let handleState = useCallback(()=>(state?setState(false):setState(true)))
                 image={Images} 
                 setState = {handleState}/>), headerShadowVisible:false}}
                 component = {Description}
+                
+            />
+            <Stack.Screen
+              name='User Profile'
+              component={UserProfile}
+              options={{title:'Edit Profile', animation:"slide_from_bottom", headerShadowVisible:false}}
             />
           </Stack.Navigator>
         </NavigationContainer>
