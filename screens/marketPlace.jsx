@@ -153,8 +153,8 @@ const styles = StyleSheet.create({
         fontWeight:'900',
     },
     contentImage:{
-        width:28,
-        height:28,
+        width:23, 
+        height:23,
     },
     contentimagescontainer:{
         display:'flex',

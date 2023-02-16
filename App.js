@@ -14,6 +14,9 @@ import ModalFilter from './components/ModalFilter';
 import Description from './screens/Description';
 import FootIconsNavigaiton from './screens/TabSceen';
 import UserProfile from './screens/userProfile';
+import Favourites from './screens/favourite';
+import SearchHeader2 from './components/Search2';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -33,14 +36,15 @@ let favouriteImage = require('./assets/images/favorites.png');
 let paymentImage = require('./assets/images/cashless-payment.png')
 let addressImage = require('./assets/images/placeholder.png')
 
+
 const Images = [searchImage, FilterImage];
-const userProfileDetails = [
-  {id:1, label:"Order history", image:orderImage, isActive:true},
+const userProfileDetails = [{id:1, label:"Order history", image:orderImage, isActive:true},
   {id:2, label:"User Profile", image:profileImage, isActive:false},
   {id:3, label:"Favourites", image:favouriteImage, isActive:false},
   {id:4, label:"Cart", image:cartImage, isActive:false},
   {id:5, label:"Payment", image:paymentImage, isActive:false},
   {id:6, label:"Address", image:addressImage, isActive:false},
+  {id:7, label:"Logout", image:logoutImage, isActive:false},
 ];
 
 export default function App() {
@@ -58,16 +62,16 @@ let handleState = useCallback(()=>(state?setState(false):setState(true)))
         
         <NavigationContainer>
           <Stack.Navigator>
-            <Stack.Screen
+            <Stack.Screen  
               name = "Sign up"
               component={SignUp}
               options={{headerTitleAlign:'center', title:'', headerTintColor:'none', animation:"slide_from_right", headerShadowVisible:false}}
               
-            />
+            />  
             <Stack.Screen
-              name = "Login"
-              component={Login}
-              options={{
+              name = "Login"  
+              component={Login} 
+              options={{   
                 headerTitleAlign:'center',
                 title:'',
                 headerTintColor:'none',
@@ -96,7 +100,7 @@ let handleState = useCallback(()=>(state?setState(false):setState(true)))
               </Stack.Screen>
             <Stack.Screen
               name = "Description"
-              options={{title:"MarketPlace", animation:"slide_from_right", headerTitle: (props)=>(<SearchHeader {...props} 
+              options={{title:"MarketPlace", animation:"slide_from_right", headerTitle: (props)=>(<SearchHeader2 {...props} 
                 image={Images} 
                 setState = {handleState}/>), headerShadowVisible:false}}
                 component = {Description}
@@ -107,7 +111,14 @@ let handleState = useCallback(()=>(state?setState(false):setState(true)))
               component={UserProfile}
               options={{title:'Edit Profile', animation:"slide_from_bottom", headerShadowVisible:false}}
             />
-          </Stack.Navigator>
+             <Stack.Screen
+              name='Favourites'
+              component={Favourites}
+              options={{title:'Favourites', animation:"simple_push", headerShadowVisible:false, headerTitle:(props)=>(<SearchHeader2 {...props} 
+                image={Images} 
+                setState = {handleState}/>),}}
+            />
+          </Stack.Navigator> 
         </NavigationContainer>
   </View>
             
@@ -122,3 +133,4 @@ const styles = StyleSheet.create({
   }
  
 });
+

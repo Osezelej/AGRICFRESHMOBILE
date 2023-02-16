@@ -1,4 +1,3 @@
-
 export  const dataApi = [
     {
 	id:1,

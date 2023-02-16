@@ -1,9 +1,33 @@
-import {memo, } from 'react';
+import {memo, useState, useCallback} from 'react';
 import { View, Text, Pressable, Image } from 'react-native';
+let FavouritesData = [];
+function removeFavContent (id){
+    console.log(id)
 
+    FavouritesData = FavouritesData.filter((value)=>(value.id != id))
 
+}
 function MarketItems({styles, item, contentImages, navigation} ) {
     
+    const [favImage, setFavImage] = useState({image:contentImages[0], valid:false});
+    
+    const handlePressFav = useCallback(()=>{
+    
+       setFavImage((prev)=>{
+            if (prev.valid){
+               FavouritesData = FavouritesData.filter((value)=>{
+                    
+                    return value.id != item.id})
+                return{image:contentImages[0], valid:false}
+            }else{
+                FavouritesData.push(item)
+            return { valid:true, image:contentImages[1]}
+            }
+            
+       },[favImage])
+
+    });
+
     
     return(<View style={styles.contentContainer}>
         <Pressable name='contentHeaderPress'>
@@ -31,10 +55,10 @@ function MarketItems({styles, item, contentImages, navigation} ) {
         </View>
         <View style={styles.likeCommentBuy}>
             <View style={styles.contentimagescontainer}>
-                <View style={styles.contentImagecontainer}>
-                    <Image source={contentImages[0]} style={styles.contentImage}/>
+                <Pressable style={styles.contentImagecontainer} onPress={handlePressFav}>
+                    <Image source={favImage.image} style={styles.contentImage}/>
                     <Text style={styles.imageText}>Like</Text>
-                </View>
+                </Pressable>
                 <View style={styles.contentImagecontainer}>
                     <Image source={contentImages[2]} style={styles.contentImage}/>
                     <Text style={styles.imageText}>comment</Text>
@@ -49,3 +73,5 @@ function MarketItems({styles, item, contentImages, navigation} ) {
 }
 
 export default memo(MarketItems);
+
+export {FavouritesData, removeFavContent}

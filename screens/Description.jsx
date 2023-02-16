@@ -17,11 +17,11 @@ const styles = StyleSheet.create({
         fontWeight:'800',
     },
     TextContainer:{
-        height:60,
         paddingHorizontal:20,
         elevation:5,
         backgroundColor:'white',
         justifyContent:"center",
+       paddingBottom:20
         
     },
     body:{
@@ -61,7 +61,6 @@ const styles = StyleSheet.create({
         fontSize:17,
         fontWeight:'900',
         marginRight:20,
-
     },
     buyPriceContainer:{
         alignItems:'flex-end',
