@@ -1,4 +1,4 @@
-import {memo, useState, useCallback} from 'react';
+import {memo, useState, useCallback, } from 'react';
 import { View, Text, Pressable, Image } from 'react-native';
 let FavouritesData = [];
 function removeFavContent (id){
@@ -7,7 +7,7 @@ function removeFavContent (id){
     FavouritesData = FavouritesData.filter((value)=>(value.id != id))
 
 }
-function MarketItems({styles, item, contentImages, navigation} ) {
+function MarketItems({styles, item, contentImages, navigation, handlePress, manageCart} ) {
     
     const [favImage, setFavImage] = useState({image:contentImages[0], valid:false});
     
@@ -64,9 +64,9 @@ function MarketItems({styles, item, contentImages, navigation} ) {
                     <Text style={styles.imageText}>comment</Text>
                 </View>
             </View>
-            <View style={styles.buyContainer}>
+            <Pressable style={styles.buyContainer} onPress={()=>{handlePress(item.Name); manageCart()}}>
                 <Text style={styles.buyText}> Buy </Text>
-            </View>
+            </Pressable>
         </View>
    </View>)
     

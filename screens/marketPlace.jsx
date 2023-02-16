@@ -1,9 +1,8 @@
-import { TouchableWithoutFeedback, Keyboard, View, StyleSheet,Text, ScrollView, FlatList, TouchableOpacity, Image } from "react-native";
-import { useState, useEffect,useCallback } from 'react';
+import { TouchableWithoutFeedback, Keyboard, View, StyleSheet,Text, ScrollView, FlatList, TouchableOpacity, Image, Animated } from "react-native";
+import { useState, useEffect,useCallback, useRef } from 'react';
 import { dataApi } from "../data/data";
 import MarketItems from "../components/marketItems";
 import OptionHeader from "../components/optionHeader";
-import FootIcons from "../components/footIcons";
 
 const styles = StyleSheet.create({
     body:{
@@ -227,13 +226,25 @@ const styles = StyleSheet.create({
         marginVertical:10,
         borderRadius:4,
         alignSelf:'center'
+    },
+    alertbody:{
+        backgroundColor:'#ffab4b',
+        position:'absolute',
+        flex:1,
+        width:'100%',
+        padding:5,
+        alignItems:'center'
+    },
+    alertText:{
+        color:'white',
+        fontSize:16,
     }
     
 })
 
 
-export default function MarketPlace({navigation, images, contentImages, Modal, state, setState}){
-   
+export default function MarketPlace({navigation, images, contentImages, Modal, state, setState, manageCart}){
+let currentData = useRef(new Animated.Value(0)).current
 const [options, setoptions] = useState([{
     id:1,
     option:'All',
@@ -274,9 +285,7 @@ const [options, setoptions] = useState([{
 const [names, setNames] = useState('MarketPlace')
 const [active, setActive] = useState('#ffdb28')
 const [image, setImage] = useState(images)
-const [multiSliderValue, setMultiSliderValue] = useState([3, 10000]);
-let multiSliderValuesChange = values => setMultiSliderValue(values);
-
+const [itemName, setItemName] = useState('')
 let d = true;
 let handleChange = useCallback((item)=>{
     let item_id = item.item.id;
@@ -305,19 +314,27 @@ useEffect(()=>{if (d) {
     d = true;
     setNames('MarketPlace')
 }}, [names])
-let handlePress = useCallback((val)=>{ // setActiveIcon((p)=>(p?setActiveIcon(false):setActiveIcon(false)))
-    image.forEach(element => {
-        if (element.image == val.image){
-            element.isactive = true;
-            setNames('MarketPlace ');
-        }else{
-            element.isactive = false;
-            setNames('MarketPlace');
-        }
-        
-    });
-})
 
+let buyClicked = useCallback((item_name)=>{
+    setItemName(item_name)
+    Animated.sequence([
+    Animated.timing(currentData, {
+        toValue:1,   
+        duration: 5,
+       useNativeDriver: true,
+    }),
+    Animated.timing(currentData, {
+        toValue:1,   
+        duration: 1000,
+       useNativeDriver: true,
+    }),
+    Animated.timing(currentData, {
+        toValue:0,   
+        duration: 500,
+       useNativeDriver: true,
+    }),
+]).start()
+})
     return<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
                 <View style={styles.headerContainer}>
@@ -333,8 +350,19 @@ let handlePress = useCallback((val)=>{ // setActiveIcon((p)=>(p?setActiveIcon(fa
                         data={dataApi}
                         keyExtractor={items=>items.id}
                         refreshing={true}
-                        renderItem ={({item})=>(<MarketItems styles={styles} item = {item}  contentImages = {contentImages} navigation = {navigation}/>)}
+                        renderItem ={({item})=>(<MarketItems 
+                        styles={styles} 
+                        item = {item}  
+                        contentImages = {contentImages} 
+                        navigation = {navigation} 
+                        handlePress={buyClicked}
+                        manageCart={manageCart}
+                        />)}
                     />
+                    
+                    <Animated.View style={[styles.alertbody, {opacity:currentData}]}>
+                        <Text style={styles.alertText}>{itemName} have been added to cart!!</Text>
+                    </Animated.View>
                 </View>
                 <Modal 
                     styles={styles}
@@ -343,7 +371,6 @@ let handlePress = useCallback((val)=>{ // setActiveIcon((p)=>(p?setActiveIcon(fa
                     starImage = {contentImages[1]}
 
                 />
-                               
             </View> 
 
 

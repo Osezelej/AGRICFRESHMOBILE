@@ -35,11 +35,11 @@ function Favourites ({navigation}){
                         <Text style = {styles.header}>{title}</Text>
                     </View>
             </View>
-            {FavouritesData?<FlatList
+            <FlatList
                 data={FavouritesData}
                 renderItem = {({item})=>(<FavMarketItems item={item} changeTitle= {handlePress}/>)}
                 keyExtractor = {(item) => item.id}
-            />:<Text>No Favourites</Text>}
+            />
             
         </View>
     </TouchableWithoutFeedback>

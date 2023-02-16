@@ -1,5 +1,6 @@
 import { Images, commentImage, star1Image, starImage, homeImage, logoutImage, profileImage, createBottomTabNavigator, NavigationContainer, cartImage, newsImage, ModalFilter, SearchHeader } from "../App";
 import { Image, StyleSheet } from "react-native";
+import { useState } from "react";
 import Profile from "./Profile";
 import NewsFeed from "../screens/newsFeed";
 import Cart from "../screens/Cart";
@@ -10,17 +11,21 @@ import MarketPlace from "./marketPlace";
 const Tab = createBottomTabNavigator(); 
 const styles = StyleSheet.create({
     image:{
-        width:25,
-        height:25
+        width:27,
+        height:27
     },
     cartImage:{
-        width:33,
-        height:33
+        width:35,
+        height:35
     }
 })
 
 export default function FootIconsNavigaiton({state, handleState, logoImage , navigation, userProfileDetails}) { 
-    return <NavigationContainer independent={true}>
+    const [cartBadge, setCartBadge] = useState(0);
+function manageCart (){
+    setCartBadge(cartBadge + 1);
+}
+    return <NavigationContainer independent={true} >
         <Tab.Navigator 
         screenOptions={{tabBarActiveTintColor:'green', tabBarStyle:{paddingVertical:7, height:55, display:'flex', paddingHorizontal:4}}}
 
@@ -51,6 +56,7 @@ export default function FootIconsNavigaiton({state, handleState, logoImage , nav
                 state = {state}
                 setState = {handleState}
                 navigation = {navigation}
+                manageCart ={manageCart}
                 />)}
             </Tab.Screen>
 
@@ -69,7 +75,10 @@ export default function FootIconsNavigaiton({state, handleState, logoImage , nav
                 name="Cart"
                 component={Cart}
                 options={{ headerShadowVisible:false,
-                 tabBarIcon:({focused, color, size})=>(<Image source={cartImage} style={styles.cartImage}/>)}}
+                 tabBarIcon:({focused, color, size})=>(<Image source={cartImage} style={styles.cartImage}/>),
+                 tabBarBadge:cartBadge,
+                 tabBarBadgeStyle:{backgroundColor:'#ffdb28', fontSize:13, fontWeight:'bold'}
+                 }}
             />
             <Tab.Screen
                 name="NewsFeed"

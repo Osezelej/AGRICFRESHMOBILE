@@ -56,7 +56,6 @@ const styles = StyleSheet.create({
         width:'100%',
         height:200,
         aspectRatio:3/2,
-        objectFit:'Fill'
         },
         contentNamePrice:{
             flexDirection:'row',
@@ -95,8 +94,9 @@ const styles = StyleSheet.create({
 function FavMarketitem ({item, changeTitle}){
     let handlePress = useCallback((id)=>{removeFavContent(id); changeTitle();})
 
-    return <View style={styles.body}>
-     <Pressable name='contentHeaderPress' onLongPress={()=>handlePress(item.id)}>
+    return <Pressable onLongPress={()=>handlePress(item.id)}>
+            <View style={styles.body}>
+     <Pressable>
             <View style={styles.contentHeader} >
                 <View style={styles.farmIconContainer}></View>
                 <View style={styles.contentTitleRating}>
@@ -123,6 +123,8 @@ function FavMarketitem ({item, changeTitle}){
             <Text style={styles.text}>See More from {item.farmName}</Text>
         </View>
     </View>
+    </Pressable>
+    
 }
 
 export default memo(FavMarketitem)
