@@ -1,100 +1,55 @@
-import {View, Text, StyleSheet, TouchableHighlight, Image, Pressable} from 'react-native';
+import {View, Text, StyleSheet, TouchableHighlight, Image, Pressable, TouchableOpacity} from 'react-native';
 import { memo } from 'react';
+import { MaterialIcons } from '@expo/vector-icons';
 const styles = StyleSheet.create({
-searchContainer:{
+
+logoImage:{
+    width:100,
+    height:100
+},
+headerContainer:{
     flexDirection:'row',
-    justifyContent:'space-around',
+    justifyContent:'space-between',
     width:'100%',
-    margin:0,
-    alignItems:'center'
-   
+    alignItems:'center',
 },
-titleSearch:{
-    backgroundColor:'white',
-    flex:3,
-    paddingVertical:3,
-    borderWidth:1.5,
-    paddingHorizontal:7,
-    borderRadius:30,
-    borderColor:'green',
-    height:30,
-    width:'100%'
-    
-
+headerSettingImage:{
+    width:23,
+    height:23,
+    marginLeft:15
 },
-
-imageStyle:{
-    width:20,
-    height:20
-},
-
-searchText:{
-    fontSize:16,
-    color:'#aaaaaa',
-    marginLeft:20,
-},
-
-Search:{
-    display:'flex',
+headerSettingImageContainer:{
     flexDirection:'row',
-    flex:1,
-    elevation:4,
-    
-}, 
-imageContainer:{
-    backgroundColor:'white',
-    flex:1,
-    alignItems:'flex-end',
-    justifyContent:'center',
+    alignItems:'center'
 },
-container:{
-paddingHorizontal:10,
-marginHorizontal:10,
-width:'100%'
+searchSetting:{
+    backgroundColor:'#c9c9c9',
+    paddingHorizontal:6,
+    padding:3,
+    borderRadius:30
 },
-title:{
-    textAlign:'center',
-    marginBottom:10,
-    fontSize:20,
-    fontWeight:'800',
-    position:'absolute',
-    top:0,
-    zIndex:2,display:'none'
-    
-}, 
-image:{
-    width: 110,
-    height:90
+iconStyle:{
+    fontWeight:'bold'
 }
-
 })
 
 function SearchHeader({image, setState, logoImage}){
     return(
-        <View style={styles.container}>
-            
-
-            <View style={styles.searchContainer}>
-                <View style={styles.imageContainer}>
-                    <Image source={logoImage} style={styles.image}/>
-                </View>
-                <View style={styles.titleSearch}>
-                    <TouchableHighlight  >
-                        <View style={styles.Search}>
-                            <Image source={image[0]} style={styles.imageStyle}/>
-                            <Text style={styles.searchText}>search items...</Text>
-                        </View>
-                        
-                    </TouchableHighlight>
-                </View>
-                    <Pressable style={styles.imageContainer} onPressIn={()=>{setState()}}>
-                        <Image source={image[1]} style={styles.imageStyle}/>
-                    </Pressable>
-
-               
+        <View style={styles.headerContainer}>
+            <View>
+                <Image source={logoImage} style={styles.logoImage}/>
             </View>
-
+            <View style={styles.headerSettingImageContainer}>
+                <Pressable style={styles.searchSetting}>
+                    <MaterialIcons name="search" size={25} color="black" style={styles.iconStyle}/>
+                </Pressable>
+                <Pressable>
+                    <Image source={image[1]} style={styles.headerSettingImage}/>
+                </Pressable>
+            </View>
         </View>
         );
 }
 export default memo(SearchHeader);
+
+

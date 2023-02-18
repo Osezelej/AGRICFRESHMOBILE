@@ -379,4 +379,3 @@ let buyClicked = useCallback((item_name)=>{
 }
 
 
-
