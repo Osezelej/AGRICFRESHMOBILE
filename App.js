@@ -16,6 +16,10 @@ import FootIconsNavigaiton from './screens/TabSceen';
 import UserProfile from './screens/userProfile';
 import Favourites from './screens/favourite';
 import SearchHeader2 from './components/Search2';
+import Transaction from './screens/Transaction';
+import Wallet from './screens/Wallet';
+import Card from './screens/Card';
+import NewCard from './screens/NewCard';
 
 
 const Stack = createNativeStackNavigator();
@@ -33,20 +37,44 @@ let logoutImage = require('./assets/images/logout.png');
 let commentImage = require('./assets/images/comment.png');
 let orderImage = require('./assets/images/clipboard.png');
 let favouriteImage = require('./assets/images/favorites.png');
-let paymentImage = require('./assets/images/cashless-payment.png')
-let addressImage = require('./assets/images/placeholder.png')
+let paymentImage = require('./assets/images/cashless-payment.png');
+let addressImage = require('./assets/images/placeholder.png');
+let TImage = require('./assets/images/refund.png');
+let VisibleImage = require('./assets/images/visibility.png');
+let notVisibleImage = require('./assets/images/notVisible.png');
+let creditCard = require('./assets/images/creditcardpayment.png');
+let appleCard = require('./assets/images/apple-pay.png')
+let googleCard = require('./assets/images/google-pay.png')
 
+const visibilityImages = [VisibleImage, notVisibleImage];
 
 const Images = [searchImage, FilterImage];
 const userProfileDetails = [{id:1, label:"Order history", image:orderImage, isActive:true},
   {id:2, label:"User Profile", image:profileImage, isActive:false},
   {id:3, label:"Favourites", image:favouriteImage, isActive:false},
   {id:4, label:"Cart", image:cartImage, isActive:false},
-  {id:5, label:"Payment", image:paymentImage, isActive:false},
+  {id:5, label:"Transactions", image:paymentImage, isActive:false},
   {id:6, label:"Address", image:addressImage, isActive:false},
   {id:7, label:"Logout", image:logoutImage, isActive:false},
 ];
-
+const PaymentOptions = [
+  {
+    cardname:'Credit Card',
+    cardOption:creditCard, 
+    navigation:'Card'
+  }, 
+  {
+    cardname:'Google Pay', 
+    cardOption:googleCard,
+    navigation:false,
+  },
+  {
+    cardname:'Apple Pay',
+    cardOption:appleCard,
+    navigation:false,
+  }
+ ]
+                            
 export default function App() {
   // setStatusBarStyle('dark')
   // setStatusBarBackgroundColor('white')
@@ -62,13 +90,7 @@ let handleState = useCallback(()=>(state?setState(false):setState(true)))
         
         <NavigationContainer>
           <Stack.Navigator>
-            <Stack.Screen  
-              name = "Sign up"
-              component={SignUp}
-              options={{headerTitleAlign:'center', title:'', headerTintColor:'none', animation:"slide_from_right", headerShadowVisible:false}}
-              
-            />  
-            <Stack.Screen
+          <Stack.Screen
               name = "Login"  
               component={Login} 
               options={{   
@@ -80,7 +102,12 @@ let handleState = useCallback(()=>(state?setState(false):setState(true)))
                }}
               
             />
-
+            <Stack.Screen  
+              name = "Sign up"
+              component={SignUp}
+              options={{headerTitleAlign:'center', title:'', headerTintColor:'none', animation:"slide_from_right", headerShadowVisible:false}}
+              
+            />  
             <Stack.Screen
               name = "Forgot password"
               component={ForgotPassword}
@@ -118,8 +145,57 @@ let handleState = useCallback(()=>(state?setState(false):setState(true)))
                 image={Images} 
                 setState = {handleState}/>),}}
             />
+            
+            <Stack.Screen
+              name='Transactions'
+              
+              options={{
+                headerShadowVisible:false,
+                headerTitleAlign:'center',
+                animation:'slide_from_right'
+              }}
+            >
+              {(props)=><Transaction {...props} TImage={TImage} visibilityImages={visibilityImages}/>}
+            </Stack.Screen>
+            <Stack.Screen
+              name='Wallet'
+              options={{
+                headerShadowVisible:false,
+                headerTitleAlign:'center',
+                animation:'slide_from_right'
+              }}
+            >
+              {(props)=><Wallet {...props} 
+                          visibilityImages={visibilityImages}
+                          cardOption = {PaymentOptions}
+              />}
+            </Stack.Screen>
+
+            <Stack.Screen
+              name='Card'
+              options={{
+                headerShadowVisible:false,
+                headerTitleAlign:'center',
+                animation:'fade_from_bottom'
+              }}
+            >
+              {(props)=><Card {...props} 
+              />}
+            </Stack.Screen>
+
+            <Stack.Screen
+              name='Add new Card'
+              options={{
+                headerShadowVisible:false,
+                headerTitleAlign:'center',
+                animation:'fade_from_bottom'
+              }} 
+            >
+              {(props)=><NewCard {...props} 
+              />}
+            </Stack.Screen>
           </Stack.Navigator> 
-        </NavigationContainer>
+        </NavigationContainer> 
   </View>
             
   );
@@ -132,6 +208,6 @@ const styles = StyleSheet.create({
     flex:1,
   }
  
-});
+});       
 
      

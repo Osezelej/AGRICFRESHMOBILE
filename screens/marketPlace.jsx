@@ -1,8 +1,10 @@
-import { TouchableWithoutFeedback, Keyboard, View, StyleSheet,Text, ScrollView, FlatList, TouchableOpacity, Image, Animated } from "react-native";
-import { useState, useEffect,useCallback, useRef } from 'react';
+import { TouchableWithoutFeedback, Keyboard, View, StyleSheet,Text, ScrollView, FlatList, TouchableOpacity, Image, Animated,  } from "react-native";
+import { useState, useEffect,useCallback, useRef, memo,  } from 'react';
 import { dataApi } from "../data/data";
-import MarketItems from "../components/marketItems";
+import MarketItems, {  FavouritesData } from "../components/marketItems";
 import OptionHeader from "../components/optionHeader";
+
+
 
 const styles = StyleSheet.create({
     body:{
@@ -172,7 +174,7 @@ const styles = StyleSheet.create({
     },
     buyContainer:{
         backgroundColor:'#ffdb28',
-        padding:10,
+        padding:7,
         paddingHorizontal:19,
         borderRadius:10,
         elevation:5,
@@ -243,7 +245,8 @@ const styles = StyleSheet.create({
 })
 
 
-export default function MarketPlace({navigation, images, contentImages, Modal, state, setState, manageCart}){
+                
+export default function MarketPlace({navigation, images, contentImages, manageCart, handleCartName, cartData}){
 let currentData = useRef(new Animated.Value(0)).current
 const [options, setoptions] = useState([{
     id:1,
@@ -289,31 +292,42 @@ const [itemName, setItemName] = useState('')
 let d = true;
 let handleChange = useCallback((item)=>{
     let item_id = item.item.id;
-    options.map((value)=>{
-       if(value.id == item_id){
-        value.isActive = true;
+    setoptions((prev)=>{
+        console.log(prev)
+        for (let n of prev){
+            if (item_id == n.id){
+                n.isActive = true;
+                return[...prev]
+            }
+        }
+    })
+    // map((value)=>{
+    //    if(value.id == item_id){
+    //     value.isActive = true;
         
-       }else{
-        value.isActive = false
-       }
-    });
-    setoptions(options)
+    //     setNames('MarketPlace ');
+        
+    //    }else{
+    //     value.isActive = false
+        
+    //     setNames('MarketPlace')
+    //    }
+    //    setoptions(options)
+    // });
     if (d) {
         d = false;
-        setNames('MarketPlace ');
     }else{
         d = true;
-        setNames('MarketPlace')
     }
-})
+}, )
     
-useEffect(()=>{if (d) {
-    d = false;
-    setNames('MarketPlace ');
-}else{
-    d = true;
-    setNames('MarketPlace')
-}}, [names])
+// useEffect(()=>{if (d) {
+//     d = false;
+//     setNames('MarketPlace ');
+// }else{
+//     d = true;
+//     setNames('MarketPlace')
+// }})
 
 let buyClicked = useCallback((item_name)=>{
     setItemName(item_name)
@@ -335,6 +349,9 @@ let buyClicked = useCallback((item_name)=>{
     }),
 ]).start()
 })
+
+
+
     return<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
                 <View style={styles.headerContainer}>
@@ -356,7 +373,8 @@ let buyClicked = useCallback((item_name)=>{
                         contentImages = {contentImages} 
                         navigation = {navigation} 
                         handlePress={buyClicked}
-                        manageCart={manageCart}
+                        cartData={cartData}
+                        handleCartName={handleCartName}
                         />)}
                     />
                     
@@ -364,18 +382,9 @@ let buyClicked = useCallback((item_name)=>{
                         <Text style={styles.alertText}>{itemName} have been added to cart!!</Text>
                     </Animated.View>
                 </View>
-                <Modal 
-                    styles={styles}
-                    state={state}
-                    setState={setState}
-                    starImage = {contentImages[1]}
-
-                />
             </View> 
 
 
         </TouchableWithoutFeedback>
     
 }
-
-

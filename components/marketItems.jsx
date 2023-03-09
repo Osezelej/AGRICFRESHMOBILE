@@ -3,11 +3,9 @@ import { View, Text, Pressable, Image } from 'react-native';
 let FavouritesData = [];
 function removeFavContent (id){
     console.log(id)
-
     FavouritesData = FavouritesData.filter((value)=>(value.id != id))
-
 }
-function MarketItems({styles, item, contentImages, navigation, handlePress, manageCart} ) {
+function MarketItems({styles, item, contentImages, navigation, handlePress, handleCartName, cartData} ) {
     
     const [favImage, setFavImage] = useState({image:contentImages[0], valid:false});
     
@@ -56,7 +54,7 @@ function MarketItems({styles, item, contentImages, navigation, handlePress, mana
         <View style={styles.likeCommentBuy}>
             <View style={styles.contentimagescontainer}>
                 <Pressable style={styles.contentImagecontainer} onPress={handlePressFav}>
-                    <Image source={favImage.image} style={styles.contentImage}/>
+                        <Image source={favImage.image} style={styles.contentImage}/>
                     <Text style={styles.imageText}>Like</Text>
                 </Pressable>
                 <View style={styles.contentImagecontainer}>
@@ -64,8 +62,15 @@ function MarketItems({styles, item, contentImages, navigation, handlePress, mana
                     <Text style={styles.imageText}>comment</Text>
                 </View>
             </View>
-            <Pressable style={styles.buyContainer} onPress={()=>{handlePress(item.Name); manageCart()}}>
+            <Pressable style={styles.buyContainer} onPress={()=>{
+                handlePress(item.Name);
+                handleCartName();
+                cartData(item);
+               }
+                }
+                >
                 <Text style={styles.buyText}> Buy </Text>
+
             </Pressable>
         </View>
    </View>)
@@ -74,4 +79,4 @@ function MarketItems({styles, item, contentImages, navigation, handlePress, mana
 
 export default memo(MarketItems);
 
-export {FavouritesData, removeFavContent}
+export {FavouritesData, removeFavContent};

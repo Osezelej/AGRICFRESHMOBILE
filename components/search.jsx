@@ -5,7 +5,10 @@ const styles = StyleSheet.create({
 
 logoImage:{
     width:100,
-    height:100
+    height:100,
+    position:'absolute',
+    top:-50,
+    left:-22
 },
 headerContainer:{
     flexDirection:'row',

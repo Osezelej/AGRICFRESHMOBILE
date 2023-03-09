@@ -10,4 +10,4 @@ function OptionHeader({options, handleChange, styles, active}){
             showVerticalScrollIndicator={false}
 />
 }
-export default memo(OptionHeader);
+export default OptionHeader;
