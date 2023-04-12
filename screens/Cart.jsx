@@ -9,7 +9,7 @@ let ttlData =[...dataApi]
 const styles = StyleSheet.create({
     header:{
         color:'black',
-        fontSize:27,
+        fontSize:29,
         fontWeight:'800',
     },
     headerContainer:{
@@ -115,10 +115,8 @@ function Cart({navigation, name, manageCartMinus, cartData, removeItem}){
                                 <Pressable style={styles.fWalletButton} onPress={()=>{navigation.navigate('Wallet')}}>
                                     <Text>Fund Wallet</Text>
                                 </Pressable>
-
                             </View>
                     </View>
-                    
             </View>
  
             <View style={styles.cartBody}>
@@ -132,7 +130,7 @@ function Cart({navigation, name, manageCartMinus, cartData, removeItem}){
 
                     />
                 </View>
-                <TouchableOpacity activeOpacity={0.8}>
+                <TouchableOpacity activeOpacity={0.8} onPress={()=>{navigation.navigate('Order')}}>
                     <View style={styles.orderButton}>
                         <Text style={styles.orderText}>ORDER</Text>
                     </View>

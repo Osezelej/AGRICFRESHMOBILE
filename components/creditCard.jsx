@@ -1,16 +1,20 @@
 import { StyleSheet, View, Text, Image} from "react-native";
 import { memo } from "react";
 import { FontAwesome } from '@expo/vector-icons';
+
+
 const styles = StyleSheet.create({
     cardBody:{
         width:340,
         alignSelf:'center',
         paddingHorizontal:10,
         paddingVertical:10,
-        backgroundColor:'#ffdb28',
+        
         elevation:10,
         marginBottom:10,
         borderRadius:5,
+        marginHorizontal:9,
+        marginRight:20,
     },
     banknameLogoContainer:{
         flexDirection:'row',
@@ -19,7 +23,8 @@ const styles = StyleSheet.create({
         alignItems:'center',
     },
     cardName:{
-        fontWeight:'500'
+        fontWeight:'500',
+        color:'white'
     },
     exContainer:{
         flexDirection:'row',
@@ -28,35 +33,41 @@ const styles = StyleSheet.create({
     },
     cardNumber:{
         fontSize:26,
-        fontWeight:'800'
+        fontWeight:'800',
+        color:'white'
     }, 
     acctName:{
-        fontWeight:'bold'
+        fontWeight:'bold',
+        color:'white'
     },
     expiringDate:{
         fontWeight:'800',
-        fontSize:15
+        fontSize:15,
+        color:'white'
+    },
+    expiringDateText:{
+        color:'white'
     }
 })
 
-function CreditCard(){
-
+function CreditCard({cardNumber, ownerName, expiringDate, cardType}){
+    const color = ['#414141', '#3c2b41', '#2b2d41', '#2b3c41', '#2b4135']
     
-    return <View style={styles.cardBody}>
+    return <View style={[styles.cardBody, {backgroundColor: color[Math.floor(Math.random() * color.length)]} ]}>
         <View style={styles.banknameLogoContainer}>
-            <Text style={styles.cardName}>MASTER CARD</Text>
-            <FontAwesome name="cc-mastercard" size={23} color="black"/>
+            <Text style={styles.cardName}>{cardType}</Text>
+            {cardType == 'MASTER CARD' && <FontAwesome name="cc-mastercard" size={23} color="white"/>}
+            {cardType == 'VISA CARD' && <FontAwesome name="cc-visa" size={23} color="white"/>}
         </View>
         <View style={styles.cardNumberContainer}>
-            <Text style={styles.cardNumber}>5070 8400 3080 7854</Text>
+            <Text style={styles.cardNumber}>{cardNumber}</Text>
         </View>
         <View style={styles.acctNameCardContainer}>
-            <Text style={styles.acctName}>Anubahimendo Osezele Joseph</Text>
-            <Text style={styles.bankName}>FIRST BANK PLC</Text>
+            <Text style={styles.acctName}>{ownerName}</Text>
         </View>
         <View style={styles.exContainer}>
             <Text style={styles.expiringDateText}>Expiring Date:</Text>
-            <Text style={styles.expiringDate}>10/28</Text>
+            <Text style={styles.expiringDate}>{expiringDate}</Text>
         </View>
 
     </View>

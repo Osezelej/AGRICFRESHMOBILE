@@ -1,4 +1,4 @@
-import { ScrollView, View,Text, StyleSheet, Pressable, TextInput, TouchableOpacity } from "react-native";
+import { ScrollView, View,Text, StyleSheet, Pressable, TextInput, TouchableOpacity, FlatList } from "react-native";
 import { memo, useCallback, useState } from "react";
 import CreditCard from "../components/creditCard";
 import { MaterialIcons } from '@expo/vector-icons';
@@ -52,7 +52,8 @@ const styles = StyleSheet.create({
     }
 });
 
-function Card({navigation}){
+function Card({navigation, cards}){
+    console.log(cards)
     const [focusColor, setFocusColor] = useState('#898989');
    
     let handleFocus = useCallback(()=>{
@@ -67,7 +68,20 @@ function Card({navigation}){
 
     return<ScrollView style={styles.container}>
     <View style={styles.CreditCardContainer}>
-        <CreditCard/>
+            <FlatList 
+                horizontal={true}
+                data={cards}
+                pinchGestureEnabled={true}
+                keyExtractor={items=>items.id}
+                renderItem={({item})=><Pressable>
+                                        <CreditCard
+                                            cardNumber={item.cardNumber}
+                                            ownerName={item.ownerName} 
+                                            cardType={item.cardType}
+                                            expiringDate={item.expiringDate}
+                 />
+                 </Pressable>} 
+            />
             <Pressable onPress={()=>navigation.navigate('Add new Card')}>
                 <View style={styles.addCardContainer}>
                     <MaterialIcons name="add" size={22} color="#e4c423" />
@@ -76,7 +90,7 @@ function Card({navigation}){
             </Pressable>
             <View style={styles.inputContainer}>
                 <TextInput 
-                    style={[styles.input, {borderColor:focusColor}]}
+                    style={[styles.input, {borderColor:focusColor, height:60}]}
                     placeholder='Amount' 
                     onFocus={handleFocus} 
                     onBlur={handleFocus}

@@ -20,7 +20,9 @@ import Transaction from './screens/Transaction';
 import Wallet from './screens/Wallet';
 import Card from './screens/Card';
 import NewCard from './screens/NewCard';
-
+import Address from './screens/Address';
+import Order from './screens/order';
+import AddressGuide from './screens/AddressGuide';
 
 const Stack = createNativeStackNavigator();
 
@@ -43,8 +45,10 @@ let TImage = require('./assets/images/refund.png');
 let VisibleImage = require('./assets/images/visibility.png');
 let notVisibleImage = require('./assets/images/notVisible.png');
 let creditCard = require('./assets/images/creditcardpayment.png');
-let appleCard = require('./assets/images/apple-pay.png')
-let googleCard = require('./assets/images/google-pay.png')
+let appleCard = require('./assets/images/apple-pay.png');
+let googleCard = require('./assets/images/google-pay.png');
+let masterCard = require ('./assets/images/Mastercard_2019_logo.svg.png');
+let visaCard = require('./assets/images/Visa.png');
 
 const visibilityImages = [VisibleImage, notVisibleImage];
 
@@ -81,6 +85,8 @@ export default function App() {
 
 const [state, setState] = useState(false);
 let handleState = useCallback(()=>(state?setState(false):setState(true)))
+const [cards, setCards] = useState([]);
+
   return (<View style ={styles.container}>
          <StatusBar/>
         {/* <Animated_page
@@ -179,7 +185,7 @@ let handleState = useCallback(()=>(state?setState(false):setState(true)))
                 animation:'fade_from_bottom'
               }}
             >
-              {(props)=><Card {...props} 
+              {(props)=><Card {...props} cards={cards}
               />}
             </Stack.Screen>
 
@@ -192,12 +198,72 @@ let handleState = useCallback(()=>(state?setState(false):setState(true)))
               }} 
             >
               {(props)=><NewCard {...props} 
+                masterCardImage = {masterCard}
+                visaCardImage = {visaCard}
+                setCards={setCards}
               />}
+
             </Stack.Screen>
+            <Stack.Screen
+              name='Address'
+              options={{
+                headerShadowVisible:false,
+                headerTitleAlign:'center',
+                animation:'fade_from_bottom',
+                title:'Manage Addresses'
+              }} 
+            >
+              {(props)=>(
+
+                <AddressGuide
+                  
+                />
+              )
+
+              }
+
+            </Stack.Screen>
+            <Stack.Screen
+              name='AddressGuide'
+              options={{
+                headerShadowVisible:false,
+                headerTitleAlign:'center',
+                animation:'fade_from_bottom',
+                title:'Enter new Address'
+              }} 
+            >
+              {(props)=>(
+
+                <Address
+                  
+                />
+              )
+
+              }
+
+            </Stack.Screen>
+            <Stack.Screen
+              name='Order'
+              options={{
+                headerShadowVisible:false,
+                headerTitleAlign:'center',
+                animation:'fade_from_bottom',
+                title:''
+              }} 
+            >
+              {(props)=>(
+
+                <Order />
+              )
+
+              }
+
+            </Stack.Screen>
+
           </Stack.Navigator> 
         </NavigationContainer> 
   </View>
-            
+        
   );
 }
 

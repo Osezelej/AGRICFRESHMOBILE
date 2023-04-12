@@ -268,7 +268,7 @@ const [refresh, setRefresh] = useState("Categories")
 
         
     </View>
-   
+
 </Modal>
 
 }
