@@ -2,7 +2,7 @@ import {memo, useCallback, useState}from 'react';
 import { StyleSheet, TextInput, View,Text, TouchableOpacity, Alert, ScrollView  } from 'react-native';
 import NigeriaDetails from 'naija-state-local-government';
 import { SelectList } from 'react-native-dropdown-select-list';
-function Address() {
+function Address({setAddrData, navigation}) {
   // console.log(NigeriaDetails.all())
   const [data,  setData] = useState({})
   const [lgas, setlga] = useState('')
@@ -34,7 +34,13 @@ function Address() {
 let handlePress = useCallback (()=>{
   if (data.state && data.Country && data.LGA &&  data.phone && data.loc && data.title && data.address){
     console.log(data)
-    Alert.alert('Confirm', ` Title:${data.title.toUpperCase()}\n Country:${data.Country}\n state:${data.state} \n LGA:${data.LGA} \n Bustop:${data.loc} \n PhoneNumber:${data.phone}\n Street:${data.Address}`)
+    Alert.alert('CONFIRM YOUR ADDRESS', ` Title:${data.title.toUpperCase()}\n Country:${data.Country}\n state:${data.state} \n LGA:${data.LGA} \n Bustop:${data.loc} \n PhoneNumber:${data.phone}\n Street:${data.address}`,[{text:'Ok', onPress:()=>{
+      setAddrData((prev)=>{
+        return[...prev, {id:prev.length + 1, address:`${data.address}, ${data.loc}, ${data.LGA}, ${data.state}, ${data.Country}.`, phone:data.phone, title:data.title}]
+       })
+    }}, {text:'cancel'}])
+
+
   }else{
     Alert.alert('Error', 'FILL ALL THE INPUT BOXES')
   }
@@ -124,7 +130,7 @@ let handlePress = useCallback (()=>{
       />
       
         <TextInput
-        placeholder='Enter your street Address'
+        placeholder='Enter your street Name'
         style={[styles.selectBox, styles.input, {borderRadius:10,
          borderWidth:2,
           paddingVertical:9,

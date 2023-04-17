@@ -86,7 +86,14 @@ export default function App() {
 const [state, setState] = useState(false);
 let handleState = useCallback(()=>(state?setState(false):setState(true)))
 const [cards, setCards] = useState([]);
-
+const [addrData, setaddrData] = useState([
+  {
+      id:1,
+      title:'Test',
+      phone:'08145462539',
+      address:'ademola farm rd, Atan bustop, ota, Ogun, Nigeria.'
+  }
+])
   return (<View style ={styles.container}>
          <StatusBar/>
         {/* <Animated_page
@@ -210,13 +217,15 @@ const [cards, setCards] = useState([]);
                 headerShadowVisible:false,
                 headerTitleAlign:'center',
                 animation:'fade_from_bottom',
-                title:'Manage Addresses'
+                title:'Select Addresses',
+               
               }} 
             >
               {(props)=>(
 
                 <AddressGuide
-                  
+                  {...props}
+                  addreses={addrData}
                 />
               )
 
@@ -235,7 +244,8 @@ const [cards, setCards] = useState([]);
               {(props)=>(
 
                 <Address
-                  
+                  {...props}
+                  setAddrData={setaddrData}
                 />
               )
 
