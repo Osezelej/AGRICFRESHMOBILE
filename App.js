@@ -263,7 +263,7 @@ const [addrData, setaddrData] = useState([
             >
               {(props)=>(
 
-                <Order />
+                <Order {...props} />
               )
 
               }

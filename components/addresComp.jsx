@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableHighlight, TouchableOpacity } from "react-native";
 import { SimpleLineIcons, Ionicons } from '@expo/vector-icons';
 
@@ -28,8 +28,10 @@ const styles = StyleSheet.create({
 
 function AddressComp({addrDetail}){
     const [isSelected, setSelected] = useState(false)
+
     let handlePress = useCallback(()=>{
-        isSelected?setSelected(false):setSelected(true)
+        isSelected ? setSelected(false) : setSelected(true);
+        
     })
 
     return <View style={[styles.addressbody, {justifyContent:'space-evenly'}]}>

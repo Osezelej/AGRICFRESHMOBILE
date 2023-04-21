@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
     },
     operator:{
         marginLeft:12,
+        padding:4
 
     },
     value:{
@@ -68,11 +69,14 @@ const styles = StyleSheet.create({
         fontWeight:'900',
     }
 })
-function CartItem({data, removeItem}) {
+function CartItem({data, removeItem, handleCartItem}) {
+
     const [num, setNum] = useState(1);
     const [price, setPrice] = useState(data.Price);
+    handleCartItem(data.id, price, num)
     function addFunction() {
         setNum(num + 1);
+
     }
     function subFunction(){
         if (num == 1){
@@ -82,7 +86,8 @@ function CartItem({data, removeItem}) {
         }
     }
 
-useEffect(()=>(setPrice(`N${parseInt(data.Price.slice(1))*num}`)), [num])
+useEffect(()=>(setPrice(`N${parseInt(data.Price.slice(1))*num}`)), [num]);
+
     return<Pressable style={styles.cartBody}>
             <View style={styles.cancelImage}>
                 <Pressable style={styles.iconContainer} onPress={()=>removeItem(data.id, data.Name)}>

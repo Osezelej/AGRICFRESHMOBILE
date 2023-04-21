@@ -13,6 +13,7 @@ addAddr:{
     paddingTop:10,
     paddingHorizontal:20
 },
+
 addAddrButton:{
     paddingVertical:15,
     backgroundColor:'#ffdb28',
@@ -22,14 +23,17 @@ addAddrButton:{
     flexDirection:'row',
     justifyContent:'center'
 },
+
 addAddrButtonText:{
     fontSize:19,
     fontWeight:'bold',
     
 },
+
 title:{
     paddingHorizontal:20
 },
+
 titleText:{
     fontSize:16,
     fontWeight:'600'
@@ -43,17 +47,25 @@ function AddresseGuide({navigation, addreses}){
                 <Text style={styles.titleText}>SAVED ADDRESSES</Text>
             </View>
         <FlatList
-            renderItem={({item})=>(<AddresComp addrDetail={item}/>)}
+            renderItem={({item})=>(<AddresComp addrDetail={item} />)}
             data={addreses}
             keyExtractor={item=>item.id}
             ListEmptyComponent={()=><View style={{flex:1}}><Text>Enter Address</Text></View>}
             style={{flex:1}}
         />
-        <View style={styles.addAddr}>
-            <TouchableOpacity style={styles.addAddrButton} onPress={()=>{navigation.navigate('AddressGuide')}}>
-                <Text style={styles.addAddrButtonText}>ADD NEW ADDRESS</Text>
-            </TouchableOpacity>
+        <View >
+            <View style={styles.addAddr}>
+                <TouchableOpacity style={styles.addAddrButton} onPress={()=>{navigation.navigate('AddressGuide')}}>
+                    <Text style={styles.addAddrButtonText}>ADD NEW ADDRESS</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={styles.addAddr}>
+                <TouchableOpacity style={styles.addAddrButton} onPress={()=>{navigation.navigate('Order')}}>
+                    <Text style={styles.addAddrButtonText}>CONTINUE</Text>
+                </TouchableOpacity>
+            </View>
         </View>
+        
         
     </View>
 }

@@ -1,5 +1,5 @@
 import { TouchableWithoutFeedback, Keyboard, View, StyleSheet, Text, Pressable, FlatList, Button, Touchable, TouchableOpacity } from "react-native"
-import { memo, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import {AntDesign} from '@expo/vector-icons';
 import CartItem from "../components/cartItem";
 import MarketCard from '../components/tTLCard';
@@ -27,7 +27,8 @@ const styles = StyleSheet.create({
         paddingHorizontal:14,
         flexDirection:'row',
         justifyContent:'space-between',
-        paddingVertical:10
+        paddingVertical:10,
+        alignItems:'center'
     },
     profileImageContainer:{
         backgroundColor:'#e3e3e3',
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
     },
     fWalletButton:{
         backgroundColor:'#ffdb28',
-        padding:3,
+        padding:6,
         elevation:10,
         borderRadius:10
     },
@@ -81,7 +82,7 @@ const styles = StyleSheet.create({
         flex:1,
     },
     suggestion:{
-        flex:1,
+        flex:1,   
         paddingHorizontal:10,
         paddingBottom:10
     },
@@ -95,7 +96,61 @@ const styles = StyleSheet.create({
 
 
 function Cart({navigation, name, manageCartMinus, cartData, removeItem}){
+     const OrderItemdata = [...cartData]
      
+     for (let item of OrderItemdata){
+        item.num = 1;
+        console.log(item)
+     }
+     
+     console.log('break---------------------------------')
+     let dummyOrderData = [];
+     const modifyOrderData = useCallback((data)=>{
+                
+            if (dummyOrderData.length == 0){
+                dummyOrderData.push(data)
+            }else{
+                let num =  0;
+                let ispresent = false
+                for (let item of dummyOrderData){
+                     if (item.id == data.id){
+                        dummyOrderData[num] = data
+                        ispresent = true
+                        break
+                     }
+                    num ++
+                }
+                if (ispresent == false){
+                    dummyOrderData.push(data)
+                }
+
+            }
+            console.log(dummyOrderData)
+
+
+
+
+
+
+
+
+
+
+    //             dummyOrderData.forEach((item, index)=>{
+    //                 if (item.id == data.id){
+    //                     // dummyOrderData[dummyOrderData.indexOf(data)] = data
+    //                     console.log(' this ' + data + ' is Present')
+    //                 }else{
+    //                     dummyOrderData.push(data)
+    //                 }
+    //             })
+
+    //         console.log(dummyOrderData)
+     })
+
+     let  handleCartItems = useCallback((id, price, num)=>{
+        modifyOrderData({id:id, num:num, price:price})
+     })  
 
     return<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
@@ -124,13 +179,16 @@ function Cart({navigation, name, manageCartMinus, cartData, removeItem}){
                     <FlatList 
                         data={cartData}
                         renderItem={({item})=><View>
-                        <CartItem data={item} removeItem={removeItem}/>
-                        </View>}
+                        <CartItem data={item}
+                         removeItem={removeItem}
+                         handleCartItem={handleCartItems}
+                         />
+                        </View>} 
                         keyExtractor={item =>item.id}
 
                     />
                 </View>
-                <TouchableOpacity activeOpacity={0.8} onPress={()=>{navigation.navigate('Order')}}>
+                <TouchableOpacity activeOpacity={0.8} onPress={()=>{navigation.navigate('Order', {readyToBuydata:cartData, itemnumber:dummyOrderData})}}>
                     <View style={styles.orderButton}>
                         <Text style={styles.orderText}>ORDER</Text>
                     </View>
