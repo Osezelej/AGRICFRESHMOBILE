@@ -37,7 +37,7 @@ export function Login({navigation}){
                 </View>
 
                     <View style={styles.createAcctContainer}>
-                        <TouchableHighlight style={styles.createContainer} >
+                        <TouchableHighlight style={styles.createContainer} onPress={()=>(navigation.navigate('Sign up'))}>
                             <Text >Create account</Text>
                         </TouchableHighlight>
 

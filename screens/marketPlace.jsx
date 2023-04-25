@@ -3,6 +3,7 @@ import { useState, useEffect,useCallback, useRef, memo,  } from 'react';
 import { dataApi } from "../data/data";
 import MarketItems, {  FavouritesData } from "../components/marketItems";
 import OptionHeader from "../components/optionHeader";
+import { SimpleLineIcons, Ionicons } from '@expo/vector-icons';
 
 
 
@@ -91,7 +92,8 @@ const styles = StyleSheet.create({
     }, 
     contentContainer:{
         backgroundColor:'white',
-        marginVertical:5,
+        marginVertical:3,
+        paddingVertical:10,
     },
     contentHeader:{
         paddingHorizontal:20,
@@ -230,16 +232,20 @@ const styles = StyleSheet.create({
         alignSelf:'center'
     },
     alertbody:{
-        backgroundColor:'#ffab4b',
+        backgroundColor:'#4f9d5c',
         position:'absolute',
         flex:1,
         width:'100%',
         padding:5,
-        alignItems:'center'
+        alignItems:'center',
+        flexDirection:'row',
+        justifyContent:'center'
     },
     alertText:{
         color:'white',
-        fontSize:16,
+        fontSize:18,
+        fontWeight:'700',
+        marginLeft:10,
     }
     
 })
@@ -379,6 +385,7 @@ let buyClicked = useCallback((item_name)=>{
                     />
                     
                     <Animated.View style={[styles.alertbody, {opacity:currentData}]}>
+                        <Ionicons name="checkmark-sharp" size={24} color="white" />
                         <Text style={styles.alertText}>{itemName} have been added to cart!!</Text>
                     </Animated.View>
                 </View>

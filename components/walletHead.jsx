@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
         marginHorizontal:20,
         marginVertical:20,
         paddingHorizontal:20,
-        paddingVertical:20,
+        paddingVertical:15,
         borderRadius:10,
         flexDirection:'row',
         alignItems:'center',
@@ -16,8 +16,9 @@ const styles = StyleSheet.create({
         elevation:10,
     },
     acctname:{
-        fontWeight:'300',
-        color:'#353535'
+        fontWeight:'600',
+        color:'#353535',
+        paddingBottom:10
     },
     acctbal:{
         fontSize:35,
@@ -67,6 +68,7 @@ function WalletHead({visibilityImages}){
     return<View style={styles.headertag}>
         <View>
             <Text style={styles.acctname}>Account Name: Art Template</Text>
+            <Text style={styles.acct}>Account Balance:</Text>
                 <View style={styles.acctbalContainer}>
                     <Text style={styles.acctbal}>{number}</Text>
                     <Text style={[styles.currency, {display:visible}]}>NGN</Text>

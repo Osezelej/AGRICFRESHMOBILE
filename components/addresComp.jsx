@@ -26,11 +26,14 @@ const styles = StyleSheet.create({
 })
 
 
-function AddressComp({addrDetail}){
+function AddressComp({addrDetail, setVisibleCont}){
     const [isSelected, setSelected] = useState(false)
 
     let handlePress = useCallback(()=>{
         isSelected ? setSelected(false) : setSelected(true);
+        if (! isSelected){
+            setVisibleCont(true)
+        }else{setVisibleCont(false)}
         
     })
 

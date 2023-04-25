@@ -1,5 +1,6 @@
-import { Images, commentImage, star1Image, starImage, homeImage, logoutImage, profileImage, createBottomTabNavigator, NavigationContainer, cartImage, newsImage, ModalFilter, SearchHeader } from "../App";
-import { Image, StyleSheet,Alert  } from "react-native";
+import { Images, commentImage, star1Image, starImage, homeImage, logoutImage, profileImage, createBottomTabNavigator, NavigationContainer, cartImage, newsImage, ModalFilter, SearchHeader, visibilityImages, PaymentOptions } from "../App";
+import { Image, StyleSheet,Alert, View,   } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import Profile from "./Profile";
 import NewsFeed from "../screens/newsFeed";
@@ -7,6 +8,8 @@ import Cart from "../screens/Cart";
 import { Login } from "../screens/logIn";
 import MarketPlace from "./marketPlace";
 import { useCallback, useMemo } from "react";
+import Wallet from "./Wallet";
+import { Ionicons } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator(); 
 const styles = StyleSheet.create({
@@ -76,7 +79,10 @@ export default function FootIconsNavigaiton({state, handleState, logoImage , nav
         console.log(cartData)
     })
 
-    return <NavigationContainer independent={true} >
+    return<View style={{flex:1}}>
+                 <StatusBar/>
+                 <NavigationContainer independent={true} >
+       
         <Tab.Navigator 
         screenOptions={{tabBarActiveTintColor:'green', tabBarStyle:{paddingVertical:7, height:55, display:'flex', paddingHorizontal:4}}}
 
@@ -113,17 +119,6 @@ export default function FootIconsNavigaiton({state, handleState, logoImage , nav
                 />)}
             </Tab.Screen>
 
-            <Tab.Screen
-                name="Profile"
-                
-                options={{ headerShadowVisible:false,
-                 tabBarIcon:({focused, color, size})=>(<Image source={profileImage} style={styles.image}/>),
-                 title:'User Profile',
-                 }}
-                
-            >
-                {(props)=>(<Profile userIcon={profileImage} userProfileDetails={userProfileDetails} navigation={navigation}/>)}
-            </Tab.Screen>
             <Tab.Screen 
                 name="Cart"
                 
@@ -144,20 +139,42 @@ export default function FootIconsNavigaiton({state, handleState, logoImage , nav
                 />}
             </Tab.Screen>
             <Tab.Screen
+              name='Wallet'
+              options={{
+                headerShadowVisible:false,
+                headerTitleAlign:'center',
+                animation:'slide_from_right',
+                tabBarIcon:({focused, color, size})=>(<Ionicons name="ios-wallet-outline" size={30} color="black" />),
+                
+              }}
+            >
+              {(props)=><Wallet {...props} 
+                          visibilityImages={visibilityImages}
+                          cardOption = {PaymentOptions}
+                          navigation={navigation}
+              />}
+            </Tab.Screen>
+
+            <Tab.Screen
                 name="NewsFeed"
                 component={NewsFeed}
                 options={{ headerShadowVisible:false,
                  tabBarIcon:({focused, color, size})=>(<Image source={newsImage} style={styles.image}/>)}}
             />
-            <Tab.Screen 
-                name="Logout"
-                component={Login}
+            
+            <Tab.Screen
+                name="Profile"
+                
                 options={{ headerShadowVisible:false,
-                 tabBarIcon:({focused, color, size})=>(<Image source={logoutImage} style={styles.image}/>),
-                 tabBarStyle:{display:'none'
-                 }
+                 tabBarIcon:({focused, color, size})=>(<Image source={profileImage} style={styles.image}/>),
+                 title:'User Profile',
                  }}
-            />
+                
+            >
+                {(props)=>(<Profile userIcon={profileImage} userProfileDetails={userProfileDetails} navigation={navigation}/>)}
+            </Tab.Screen>
+           
         </Tab.Navigator>
     </NavigationContainer>
+    </View> 
 }

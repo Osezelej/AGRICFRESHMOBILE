@@ -188,7 +188,7 @@ function Cart({navigation, name, manageCartMinus, cartData, removeItem}){
 
                     />
                 </View>
-                <TouchableOpacity activeOpacity={0.8} onPress={()=>{navigation.navigate('Order', {readyToBuydata:cartData, itemnumber:dummyOrderData})}}>
+                <TouchableOpacity activeOpacity={0.8} onPress={()=>{navigation.navigate('Address', {readyToBuydata:cartData, itemnumber:dummyOrderData})}}>
                     <View style={styles.orderButton}>
                         <Text style={styles.orderText}>ORDER</Text>
                     </View>

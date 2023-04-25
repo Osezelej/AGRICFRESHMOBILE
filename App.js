@@ -277,7 +277,7 @@ const [addrData, setaddrData] = useState([
   );
 }
 
-export {Images, cartImage, star1Image, starImage, commentImage, newsImage, profileImage, homeImage, logoutImage, createBottomTabNavigator, NavigationContainer, ModalFilter, SearchHeader};
+export {Images, cartImage, star1Image, starImage, commentImage, newsImage, profileImage, homeImage, logoutImage, createBottomTabNavigator, NavigationContainer, ModalFilter, SearchHeader, visibilityImages, PaymentOptions};
 
 const styles = StyleSheet.create({
   container: {

@@ -41,13 +41,23 @@ titleText:{
 
 })
 
-function AddresseGuide({navigation, addreses}){
+function AddresseGuide({navigation, addreses, route}){
+
+    if(route.params != undefined){
+        var data = route.params.readyToBuydata;
+
+        var itemOrdered = route.params.itemnumber;
+
+    }
+    
+    let [visibleCont, setVisibleCont] = useState(false)
+
     return <View style={styles.body}>
             <View style={styles.title}>
                 <Text style={styles.titleText}>SAVED ADDRESSES</Text>
             </View>
         <FlatList
-            renderItem={({item})=>(<AddresComp addrDetail={item} />)}
+            renderItem={({item})=>(<AddresComp addrDetail={item} setVisibleCont={setVisibleCont} />)}
             data={addreses}
             keyExtractor={item=>item.id}
             ListEmptyComponent={()=><View style={{flex:1}}><Text>Enter Address</Text></View>}
@@ -59,11 +69,12 @@ function AddresseGuide({navigation, addreses}){
                     <Text style={styles.addAddrButtonText}>ADD NEW ADDRESS</Text>
                 </TouchableOpacity>
             </View>
-            <View style={styles.addAddr}>
-                <TouchableOpacity style={styles.addAddrButton} onPress={()=>{navigation.navigate('Order')}}>
+            {visibleCont &&  <View style={styles.addAddr}>
+                <TouchableOpacity style={styles.addAddrButton} onPress={()=>{navigation.navigate('Order', {readyToBuydata:data, itemnumber:itemOrdered})}}>
                     <Text style={styles.addAddrButtonText}>CONTINUE</Text>
                 </TouchableOpacity>
-            </View>
+            </View>}
+           
         </View>
         
         
