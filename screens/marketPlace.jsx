@@ -1,4 +1,4 @@
-import { TouchableWithoutFeedback, Keyboard, View, StyleSheet,Text, ScrollView, FlatList, TouchableOpacity, Image, Animated,  } from "react-native";
+import { TouchableWithoutFeedback, Keyboard, View, StyleSheet,Text, ScrollView, FlatList, TouchableOpacity, Image, Animated, useColorScheme,  } from "react-native";
 import { useState, useEffect,useCallback, useRef, memo,  } from 'react';
 import { dataApi } from "../data/data";
 import MarketItems, {  FavouritesData } from "../components/marketItems";
@@ -289,51 +289,69 @@ const [options, setoptions] = useState([{
     id:7,
     option:'Fish',
     isActive:false,
+}, 
+{
+    id:8,
+    option:'vegetable',
+    isActive:false
+},
+{
+    id:9,
+    option:'Fruit',
+    isActive:false
 }
-])
-const [names, setNames] = useState('MarketPlace')
-const [active, setActive] = useState('#ffdb28')
-const [image, setImage] = useState(images)
-const [itemName, setItemName] = useState('')
-let d = true;
+]);
+
+const [names, setNames] = useState('MarketPlace');
+const [active, setActive] = useState('#ffdb28');
+const [image, setImage] = useState(images);
+const [itemName, setItemName] = useState('');
+const [optionSelected, setOptionSelected] = useState('')
+const [marketData, setMarketData] = useState(dataApi)
+const [d, setD] = useState(false)
+
+
 let handleChange = useCallback((item)=>{
+    setD(true)
     let item_id = item.item.id;
     setoptions((prev)=>{
-        console.log(prev)
+        console.log(prev);
         for (let n of prev){
-            if (item_id == n.id){
+            if (item_id != n.id){
+                n.isActive = false;
+            }else{
                 n.isActive = true;
-                return[...prev]
+                setOptionSelected(n.option)
+                
             }
         }
+        return[...prev]
     })
-    // map((value)=>{
-    //    if(value.id == item_id){
-    //     value.isActive = true;
-        
-    //     setNames('MarketPlace ');
-        
-    //    }else{
-    //     value.isActive = false
-        
-    //     setNames('MarketPlace')
-    //    }
-    //    setoptions(options)
-    // });
-    if (d) {
-        d = false;
-    }else{
-        d = true;
-    }
 }, )
-    
-// useEffect(()=>{if (d) {
-//     d = false;
-//     setNames('MarketPlace ');
-// }else{
-//     d = true;
-//     setNames('MarketPlace')
-// }})
+
+useEffect(()=>{
+    console.log(d)
+    if (d){
+        if(optionSelected.toLowerCase() == 'all'){
+            setMarketData(dataApi)
+        }else{
+            setMarketData((prev)=>{
+                let newMarketData = []
+                for (let i of dataApi){
+                    for (let n of i.foodType){
+                        if (n.toLowerCase() == optionSelected.toLowerCase()){
+                            newMarketData.push(i);
+                        }
+                    }
+        
+                }
+                return newMarketData
+            })
+        }
+       
+    }
+   
+}, [options])
 
 let buyClicked = useCallback((item_name)=>{
     setItemName(item_name)
@@ -365,14 +383,24 @@ let buyClicked = useCallback((item_name)=>{
                         <Text style = {styles.header}>{names}</Text>
                     </View>
                     <View style={styles.optionHeader}>
-                        <OptionHeader styles={styles} handleChange={handleChange} options={options} active={active}/>
+                        <OptionHeader styles={styles} handleChange={handleChange} options={options} active={active} d = {d}/>
                     </View>
                 </View>
-                <View style = {styles.body}>
+                <View style = {[styles.body, {flex:1}]}>
                     <FlatList
-                        data={dataApi}
+                        data={marketData}
                         keyExtractor={items=>items.id}
                         refreshing={true}
+                        ListEmptyComponent = {<View style={{flex:1,
+                         backgroundColor:'white',
+                          flexDirection: 'row',
+                          justifyContent:'center',
+                          alignItems:'center', 
+                         }}>
+                            <Text>
+                                No product from {optionSelected}
+                            </Text>
+                        </View>}
                         renderItem ={({item})=>(<MarketItems 
                         styles={styles} 
                         item = {item}  
@@ -382,6 +410,7 @@ let buyClicked = useCallback((item_name)=>{
                         cartData={cartData}
                         handleCartName={handleCartName}
                         />)}
+                        style={{flex:1}}
                     />
                     
                     <Animated.View style={[styles.alertbody, {opacity:currentData}]}>

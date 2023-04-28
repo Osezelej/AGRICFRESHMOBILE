@@ -57,10 +57,12 @@ function MarketItems({styles, item, contentImages, navigation, handlePress, hand
                         <Image source={favImage.image} style={styles.contentImage}/>
                     <Text style={styles.imageText}>Like</Text>
                 </Pressable>
-                <View style={styles.contentImagecontainer}>
+                <Pressable style={styles.contentImagecontainer} onPress={()=>{
+                    navigation.navigate('Comment')
+                }}>
                     <Image source={contentImages[2]} style={styles.contentImage}/>
-                    <Text style={styles.imageText}>comment</Text>
-                </View>
+                    <Text style={styles.imageText}>Negotiate</Text>
+                </Pressable>
             </View>
             <Pressable style={styles.buyContainer} onPress={()=>{
                 handlePress(item.Name);

@@ -36,14 +36,14 @@ iconStyle:{
 }
 })
 
-function SearchHeader({image, setState, logoImage}){
+function SearchHeader({image, setState, logoImage, navigation}){
     return(
         <View style={styles.headerContainer}>
             <View>
                 <Image source={logoImage} style={styles.logoImage}/>
             </View>
             <View style={styles.headerSettingImageContainer}>
-                <Pressable style={styles.searchSetting}>
+                <Pressable style={styles.searchSetting} onPress={()=>{navigation.navigate('Search')}}>
                     <MaterialIcons name="search" size={25} color="black" style={styles.iconStyle}/>
                 </Pressable>
                 <Pressable>

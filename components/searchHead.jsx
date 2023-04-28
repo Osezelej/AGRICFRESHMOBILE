@@ -1,0 +1,32 @@
+import { memo, useState } from "react";
+import { View, TextInput, StyleSheet } from "react-native";
+
+const styles = StyleSheet.create({
+    textInput:{
+        paddingHorizontal:10,
+        paddingVertical:5.7,
+        fontSize:16, 
+        borderColor:'#d0d0d0',
+    },
+    header:{
+        display:'flex',
+        flex:1,
+        marginRight:80
+    }
+})
+
+function SearchHead({searchWord, setSearchWord}){
+    return <View style={styles.header}>
+        <TextInput 
+                    value = {searchWord}
+                    placeholder='What Product do you want...'
+                    style={styles.textInput}
+                    collapsable = {true}
+                    selectionColor = '#d0d0d0'
+                    onChangeText = {(text)=>{setSearchWord(text)}}
+                />
+    </View>
+}
+
+
+export default memo(SearchHead);

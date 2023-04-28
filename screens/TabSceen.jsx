@@ -94,6 +94,7 @@ export default function FootIconsNavigaiton({state, handleState, logoImage , nav
                 image={Images} 
                 setState = {handleState}
                 logoImage = {logoImage}
+                navigation = {navigation}
                 />),
                  headerShadowVisible:false,
                  tabBarIcon:({focused, color, size})=>(<Image source={homeImage}  style={styles.image}/>)

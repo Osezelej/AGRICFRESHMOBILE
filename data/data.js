@@ -7,7 +7,8 @@ export  const dataApi = [
 	'description': '',
 	'rating': 3,
 	'NB': [],
-	farmName:'Agric Fresh'
+	farmName:'Agric Fresh',
+	foodType:['poultry', 'Beef']
 },
 {
 	id:2,
@@ -17,7 +18,9 @@ export  const dataApi = [
 	'description': '',
 	'rating': 4,
 	'NB': [],
-	farmName:"Ardinal Farm"
+	farmName:"Ardinal Farm",
+	foodType:['eggs', 'poultry']
+
 },
 {	id:3,
 	'Name': 'Titus Fish', 
@@ -26,7 +29,9 @@ export  const dataApi = [
 	'description': '',
 	'rating': 5,
 	'NB': [],
-	farmName:"Victobol Farm"
+	farmName:"Victobol Farm",
+	foodType:['fish']
+
 },
 {
 	id:4,
@@ -36,7 +41,8 @@ export  const dataApi = [
 	'description': '',
 	'rating': 3,
 	'NB': [],
-	farmName: 'Ademola Farm'
+	farmName: 'Ademola Farm',
+	foodType:['Vegetable']
 },
 {
 	id:5,
@@ -46,7 +52,8 @@ export  const dataApi = [
 	'description': '',
 	'rating': 0,
 	'NB': [],
-	farmName:'Derju Farm'
+	farmName:'Derju Farm',
+	foodType:['vegetable']
 	
 },
 {
@@ -57,7 +64,8 @@ export  const dataApi = [
 	'description': '',
 	'rating': 1,
 	'NB': [],
-	farmName:'Ademola Farm'
+	farmName:'Ademola Farm',
+	foodType:['vegetable']
 },
 {
 	id:7,
@@ -67,7 +75,8 @@ export  const dataApi = [
 	'description': '',
 	'rating': 3,
 	'NB': [],
-	farmName:'uniquejosam Farm'
+	farmName:'uniquejosam Farm',
+	foodType:['fruit']
 },
 {
 	id:8,
@@ -77,7 +86,8 @@ export  const dataApi = [
 	'description': '',
 	'rating': 5,
 	'NB': [],
-	farmName:'Agric Farm'
+	farmName:'Agric Farm',
+	foodType:['fruit']
 },
 {
 	id:9,
@@ -87,7 +97,8 @@ export  const dataApi = [
 	'description': '',
 	'rating': 5,
 	'NB': [],
-	farmName:"Ardinal Farm"
+	farmName:"Ardinal Farm",
+	foodType:['fruit']
 },
 {
 	id:10,
@@ -97,7 +108,8 @@ export  const dataApi = [
 	'description': '',
 	'rating': 5,
 	'NB': [],
-	farmName:'uniquejosam Farm'
+	farmName:'uniquejosam Farm',
+	foodType:['fruit']
 
 },
 {
@@ -108,7 +120,8 @@ export  const dataApi = [
 	'description': '',
 	'rating': 1,
 	'NB': [],
-	farmName:'Derju Farm'
+	farmName:'Derju Farm',
+	foodType:['vegetable']
 },
 {
 	id:12,
@@ -118,7 +131,8 @@ export  const dataApi = [
 	'description': '',
 	'rating': 1,
 	'NB': [],
-	farmName: 'Ademola Farm'
+	farmName: 'Ademola Farm',
+	foodType:['vegetable']
 },
 {
 	id:13,
@@ -128,7 +142,8 @@ export  const dataApi = [
 	'description': '',
 	'rating': 4,
 	'NB': [],
-	farmName:"Victobol Farm"
+	farmName:"Victobol Farm",
+	foodType:['fish']
 },
 {
 	id:14,
@@ -138,7 +153,8 @@ export  const dataApi = [
 	'description': '',
 	'rating': 2,
 	'NB': [],
-	farmName:"Victobol Farm"
+	farmName:"Victobol Farm",
+	foodType:['fish']
 },
 {
 	id:15,
@@ -148,7 +164,8 @@ export  const dataApi = [
 	'description': '',
 	'rating': 4,
 	'NB': [],
-	farmName:"Victobol Farm"
+	farmName:"Victobol Farm",
+	foodType:['vegetable']
 },
 {
 	id:16,
@@ -158,7 +175,8 @@ export  const dataApi = [
 	'description': '',
 	'rating': 2,
 	'NB': [],
-	farmName:"Victobol Farm"
+	farmName:"Victobol Farm",
+	foodType:['vegetable']
 },
 {
 	id:17,
@@ -168,7 +186,8 @@ export  const dataApi = [
 	'description': '',
 	'rating': 3,
 	'NB': [],
-	farmName:'Derju Farm'
+	farmName:'Derju Farm',
+	foodType:['fish']
 },
 {
 	id:18,
@@ -178,7 +197,8 @@ export  const dataApi = [
 	'description': '',
 	'rating': 5,
 	'NB': [],
-	farmName:'Derju Farm'
+	farmName:'Derju Farm',
+	foodType:['vegetable']
 },
 {
 	id:19,
@@ -188,7 +208,8 @@ export  const dataApi = [
 	'description': '',
 	'rating': 5,
 	'NB': [],
-	farmName:'Agric Fresh'
+	farmName:'Agric Fresh',
+	foodType:['vegetable']
 },
 {
 	id:20,
@@ -198,7 +219,8 @@ export  const dataApi = [
 	'description': '',
 	'rating': 2,
 	'NB': [],
-	farmName:'Agric Fresh'
+	farmName:'Agric Fresh',
+	foodType:['vegetable']
 },
 {
 	id:21,
@@ -208,7 +230,8 @@ export  const dataApi = [
 	'description': '',
 	'rating': 4,
 	'NB': [],
-	farmName:'uniquejosam Farm'
+	farmName:'uniquejosam Farm',
+	foodType:['vegetable']
 },
 {
 	id:22,
@@ -218,7 +241,8 @@ export  const dataApi = [
 	'description': '',
 	'rating': 0,
 	'NB': [],
-	farmName:'uniquejosam Farm'
+	farmName:'uniquejosam Farm',
+	foodType:['vegetable']
 },
 {
 	id:23,
@@ -228,6 +252,7 @@ export  const dataApi = [
 	'description': '',
 	'rating': 6,
 	'NB': [],
-	farmName:'uniquejosam Farm'
+	farmName:'uniquejosam Farm',
+	foodType:['vegetable']
 },
 ]

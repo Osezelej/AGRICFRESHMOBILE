@@ -23,6 +23,9 @@ import NewCard from './screens/NewCard';
 import Address from './screens/Address';
 import Order from './screens/order';
 import AddressGuide from './screens/AddressGuide';
+import Comment from './screens/comment';
+import Search from './screens/search';
+import SearchHead from './components/searchHead';
 
 const Stack = createNativeStackNavigator();
 
@@ -94,6 +97,11 @@ const [addrData, setaddrData] = useState([
       address:'ademola farm rd, Atan bustop, ota, Ogun, Nigeria.'
   }
 ])
+
+
+const [searchWord, setSearchWord] = useState('');
+
+
   return (<View style ={styles.container}>
          <StatusBar/>
         {/* <Animated_page
@@ -238,7 +246,7 @@ const [addrData, setaddrData] = useState([
                 headerShadowVisible:false,
                 headerTitleAlign:'center',
                 animation:'fade_from_bottom',
-                title:'Enter new Address'
+                title:'ENTER NEW ADDRESS'
               }} 
             >
               {(props)=>(
@@ -269,6 +277,42 @@ const [addrData, setaddrData] = useState([
               }
 
             </Stack.Screen>
+            <Stack.Screen
+              name='Comment'
+              options={{
+                headerShadowVisible:false,
+                headerTitleAlign:'center',
+                animation:'fade_from_bottom',
+                title:'Negotiate',
+              }} 
+            >
+              {(props)=>(
+
+                <Comment {...props} />
+              )
+
+              }
+
+            </Stack.Screen>
+            <Stack.Screen
+              name='Search'
+              options={{
+                headerShadowVisible:false,
+                animation:'fade',
+                headerTitle:(props)=><SearchHead {...props} searchWord = {searchWord} setSearchWord = {setSearchWord}/>,
+                headerTitleAlign:'left',
+                
+              }}
+            >
+              {(props)=>(
+
+                <Search {...props} />
+              )
+
+              }
+
+            </Stack.Screen>
+     
 
           </Stack.Navigator> 
         </NavigationContainer> 

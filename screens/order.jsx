@@ -102,7 +102,6 @@ function Order ({navigation, route}){
             }
         }
     }
-    console.log(total)
     return <View style = {styles.body}>
                 <View style={styles.TextContainer}>
                     <Text style = {styles.header}>Order</Text>
