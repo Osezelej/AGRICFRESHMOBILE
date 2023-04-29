@@ -9,7 +9,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { ForgotPassword } from './screens/Fpass';
 import { ResetPassword } from './screens/rpas';
 import  SearchHeader  from './components/search';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import ModalFilter from './components/ModalFilter';
 import Description from './screens/Description';
 import FootIconsNavigaiton from './screens/TabSceen';
@@ -86,6 +86,8 @@ export default function App() {
   // setStatusBarStyle('dark')
   // setStatusBarBackgroundColor('white')
 
+  const searchItem = useRef()
+
 const [state, setState] = useState(false);
 let handleState = useCallback(()=>(state?setState(false):setState(true)))
 const [cards, setCards] = useState([]);
@@ -141,11 +143,23 @@ const [searchWord, setSearchWord] = useState('');
               options={{title:"Reset Password", animation:"slide_from_right"}}
             />
 
+
             <Stack.Screen
               name='MarketPlace'
                 options={{animation:"slide_from_right", headerShown:false}}>
-                {(props)=>(<FootIconsNavigaiton {...props}  logoImage= {logoImages} state={state} handleState={handleState} userProfileDetails={userProfileDetails}/>)}
+
+                {(props)=>(<FootIconsNavigaiton {...props}
+                searchItem={searchItem}
+                logoImage= {logoImages} 
+                state={state} 
+                handleState={handleState} 
+                userProfileDetails={userProfileDetails}
+                
+                />)}
+
               </Stack.Screen>
+
+
             <Stack.Screen
               name = "Description"
               options={{title:"MarketPlace", animation:"slide_from_right", headerTitle: (props)=>(<SearchHeader2 {...props} 
@@ -178,6 +192,7 @@ const [searchWord, setSearchWord] = useState('');
             >
               {(props)=><Transaction {...props} TImage={TImage} visibilityImages={visibilityImages}/>}
             </Stack.Screen>
+
             <Stack.Screen
               name='Wallet'
               options={{
@@ -299,7 +314,7 @@ const [searchWord, setSearchWord] = useState('');
               options={{
                 headerShadowVisible:false,
                 animation:'fade',
-                headerTitle:(props)=><SearchHead {...props} searchWord = {searchWord} setSearchWord = {setSearchWord}/>,
+                headerTitle:(props)=><SearchHead {...props} searchWord = {searchWord} setSearchWord = {setSearchWord} searchItem = {searchItem}/>,
                 headerTitleAlign:'left',
                 
               }}
@@ -328,6 +343,4 @@ const styles = StyleSheet.create({
     flex:1,
   }
  
-});       
-
-     
+});

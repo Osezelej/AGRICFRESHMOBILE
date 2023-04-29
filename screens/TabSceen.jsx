@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     }
 })
 
-export default function FootIconsNavigaiton({state, handleState, logoImage , navigation, userProfileDetails}) { 
+export default function FootIconsNavigaiton({state, handleState, logoImage , navigation, userProfileDetails, searchItem}) { 
     let [cartData, setCartData] = useState([]);
     const [cartBadge, setCartBadge] = useState(0) 
     const [name, setName] = useState('Cart');
@@ -95,6 +95,7 @@ export default function FootIconsNavigaiton({state, handleState, logoImage , nav
                 setState = {handleState}
                 logoImage = {logoImage}
                 navigation = {navigation}
+                searchItem = {searchItem}
                 />),
                  headerShadowVisible:false,
                  tabBarIcon:({focused, color, size})=>(<Image source={homeImage}  style={styles.image}/>)

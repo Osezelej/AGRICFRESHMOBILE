@@ -1,6 +1,7 @@
 import {View, Text, Image, StyleSheet, ScrollView} from 'react-native';
 
-export var Animated_page =({image})=>{
+export var Animated_page =({image, navigation})=>{
+  setTimeout(()=>{navigation.navigate('Login')}, 2000)
     return<ScrollView>
         <View style={styles.body}>
                 <View style={styles.imageContainer}>

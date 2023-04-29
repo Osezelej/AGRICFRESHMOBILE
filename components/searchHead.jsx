@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useState, useRef, useEffect } from "react";
 import { View, TextInput, StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
@@ -15,7 +15,13 @@ const styles = StyleSheet.create({
     }
 })
 
-function SearchHead({searchWord, setSearchWord}){
+function SearchHead({searchWord, setSearchWord,}){
+    const searchItem = useRef();
+    useEffect(()=>{
+        setTimeout(()=>{
+            searchItem.current.focus();
+        }, 300)
+    },[])
     return <View style={styles.header}>
         <TextInput 
                     value = {searchWord}
@@ -24,6 +30,7 @@ function SearchHead({searchWord, setSearchWord}){
                     collapsable = {true}
                     selectionColor = '#d0d0d0'
                     onChangeText = {(text)=>{setSearchWord(text)}}
+                    ref = {searchItem}
                 />
     </View>
 }
