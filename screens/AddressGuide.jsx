@@ -65,7 +65,7 @@ function AddresseGuide({navigation, addreses, route}){
         />
         <View >
             <View style={styles.addAddr}>
-                <TouchableOpacity style={styles.addAddrButton} onPress={()=>{navigation.navigate('AddressGuide')}}>
+                <TouchableOpacity style={styles.addAddrButton} onPress={()=>{navigation.navigate('AddressGuide', {readyToBuydata:data, itemnumber:itemOrdered})}}>
                     <Text style={styles.addAddrButtonText}>ADD NEW ADDRESS</Text>
                 </TouchableOpacity>
             </View>

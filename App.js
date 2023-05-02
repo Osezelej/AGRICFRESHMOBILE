@@ -26,6 +26,8 @@ import AddressGuide from './screens/AddressGuide';
 import Comment from './screens/comment';
 import Search from './screens/search';
 import SearchHead from './components/searchHead';
+import Filter from './screens/filter';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -162,9 +164,7 @@ const [searchWord, setSearchWord] = useState('');
 
             <Stack.Screen
               name = "Description"
-              options={{title:"MarketPlace", animation:"slide_from_right", headerTitle: (props)=>(<SearchHeader2 {...props} 
-                image={Images} 
-                setState = {handleState}/>), headerShadowVisible:false}}
+              options={{title:"", animation:"slide_from_right", headerShadowVisible:false}}
                 component = {Description}
                 
             />
@@ -322,6 +322,23 @@ const [searchWord, setSearchWord] = useState('');
               {(props)=>(
 
                 <Search {...props} />
+              )
+
+              }
+
+            </Stack.Screen>
+            <Stack.Screen
+              name='Filter'
+              options={{
+                headerShadowVisible:false,
+                animation:'fade',
+                headerTitleAlign:'center',
+                
+              }}
+            >
+              {(props)=>(
+
+                <Filter {...props} />
               )
 
               }

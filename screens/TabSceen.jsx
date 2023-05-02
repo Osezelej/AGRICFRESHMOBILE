@@ -128,7 +128,12 @@ export default function FootIconsNavigaiton({state, handleState, logoImage , nav
                  tabBarIcon:({focused, color, size})=>(<Image source={cartImage} style={styles.cartImage}/>),
                  tabBarBadge:cartBadge,
                  tabBarBadgeStyle:{backgroundColor:'#ffdb28', fontSize:13, fontWeight:'bold'},
-                 headerTitle: (props)=>(<SearchHeader {...props} image={Images} setState = {handleState} logoImage = {logoImage} />),
+                 headerTitle: (props)=>(<SearchHeader {...props} 
+                 image={Images} 
+                 setState = {handleState} 
+                 logoImage = {logoImage} 
+                 navigation={navigation}
+                 />),
                  
                  }}
             >

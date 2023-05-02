@@ -2,7 +2,13 @@ import {memo, useCallback, useState}from 'react';
 import { StyleSheet, TextInput, View,Text, TouchableOpacity, Alert, ScrollView  } from 'react-native';
 import NigeriaDetails from 'naija-state-local-government';
 import { SelectList } from 'react-native-dropdown-select-list';
-function Address({setAddrData, navigation}) {
+function Address({setAddrData, navigation, route}) {
+  if(route.params != undefined){
+    var Data = route.params.readyToBuydata;
+
+    var itemOrdered = route.params.itemnumber;
+
+}
   // console.log(NigeriaDetails.all())
   const [data,  setData] = useState({})
   const [lgas, setlga] = useState('')
@@ -39,7 +45,7 @@ let handlePress = useCallback (()=>{
       setAddrData((prev)=>{
         return[...prev, {id:prev.length + 1, address:`${data.address}, ${data.loc}, ${data.LGA}, ${data.state}, ${data.Country}.`, phone:data.phone, title:data.title}]
        })
-       navigation.navigate('Address')
+       navigation.navigate('Order',{readyToBuydata:Data, itemnumber:itemOrdered})
     }}, {text:'cancel'}])
 
 

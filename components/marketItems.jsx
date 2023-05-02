@@ -1,5 +1,7 @@
 import {memo, useState, useCallback, } from 'react';
 import { View, Text, Pressable, Image } from 'react-native';
+import { Avatar } from '@react-native-material/core';
+
 let FavouritesData = [];
 function removeFavContent (id){
     console.log(id)
@@ -30,7 +32,9 @@ function MarketItems({styles, item, contentImages, navigation, handlePress, hand
     return(<View style={styles.contentContainer}>
         <Pressable name='contentHeaderPress'>
             <View style={styles.contentHeader}>
-                <View style={styles.farmIconContainer}></View>
+            
+                 
+                        <Avatar label={item.farmName} autoColor style={{marginRight:10}}/>
                 <View style={styles.contentTitleRating}>
                     <View >
                         <Text style ={styles.farmTitle}>{item.farmName} | </Text>

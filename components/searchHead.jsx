@@ -20,7 +20,7 @@ function SearchHead({searchWord, setSearchWord,}){
     useEffect(()=>{
         setTimeout(()=>{
             searchItem.current.focus();
-        }, 300)
+        }, 200)
     },[])
     return <View style={styles.header}>
         <TextInput 

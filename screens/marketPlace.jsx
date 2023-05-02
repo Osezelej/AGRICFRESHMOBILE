@@ -313,7 +313,7 @@ const [d, setD] = useState(false)
 
 let handleChange = useCallback((item)=>{
     setD(true)
-    let item_id = item.item.id;
+    let item_id = item.id;
     setoptions((prev)=>{
         console.log(prev);
         for (let n of prev){
@@ -354,6 +354,7 @@ useEffect(()=>{
 }, [options])
 
 let buyClicked = useCallback((item_name)=>{
+
     setItemName(item_name)
     Animated.sequence([
     Animated.timing(currentData, {

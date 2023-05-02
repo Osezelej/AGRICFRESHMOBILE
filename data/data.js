@@ -256,3 +256,17 @@ export  const dataApi = [
 	foodType:['vegetable']
 },
 ]
+
+export const searchData = [
+	{
+		id:1,
+		'Name': 'full chicken', 
+	},
+	{
+		id:2,
+		'Name': 'Chicken Eggs',
+	},
+	{
+		
+	}
+]

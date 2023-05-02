@@ -1,5 +1,6 @@
 import { memo } from "react";
 import { View, ScrollView, Image, StyleSheet, Text, Pressable } from "react-native";
+import { Avatar } from "@react-native-material/core";
 const styles = StyleSheet.create({
     image:{
         width:'98%',
@@ -142,7 +143,7 @@ function Description ({route}){
         </View>
         <Pressable name='contentHeaderPress'>
             <View style={styles.contentHeader}>
-                <View style={styles.farmIconContainer}></View>
+            <Avatar  label={farmName} autoColor style={{marginRight:10}}/>
                 <View style={styles.contentTitleRating}>
                     <View >
                         <Text style ={styles.farmTitle}>{farmName} | </Text>
@@ -165,12 +166,7 @@ function Description ({route}){
                 </View>
                 <View style={styles.buyPriceContainer}>
                     <Text style={styles.contentPrice}>{price}.00</Text>
-                    <Pressable>
-                        <View style={styles.buyContainer}>
-                        
-                            <Text style={styles.buyText}> Buy </Text>
-                        </View>
-                    </Pressable>
+                    
                 </View>
                 
             </View>
@@ -178,9 +174,9 @@ function Description ({route}){
                 <Text style={styles.description}>This is a little Description about my product please buy it and enjoy your life thanks i really appreciate thank you very much.This is a little Description about my product please buy it and enjoy your life thanks i really appreciate thank you very much.This is a little Description about</Text>
             </View>
         </ScrollView>
-        <Pressable style={styles.bottomTextContainer}>
+        {/* <Pressable style={styles.bottomTextContainer}>
                 <Text style={styles.bottomText}>See more from {farmName}?</Text>
-             </Pressable>
+             </Pressable> */}
     </View>
 }
 
