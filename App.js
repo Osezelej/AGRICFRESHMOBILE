@@ -338,7 +338,10 @@ const [searchWord, setSearchWord] = useState('');
             >
               {(props)=>(
 
-                <Filter {...props} />
+                <Filter {...props} 
+                    starImage = {starImage}
+
+                />
               )
 
               }

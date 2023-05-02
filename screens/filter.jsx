@@ -1,19 +1,61 @@
-import {View, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native';
 import { memo, useCallback, useState } from 'react';
 import OptionButton from '../components/optionButton';
+import { TextInput } from '@react-native-material/core';
 const styles = StyleSheet.create({
     container:{
         flex:1,
         backgroundColor:'white',
     },
     subtitleText:{
-        fontSize:18
+        fontSize:19.2,
+        fontWeight:'bold',
+        marginBottom:10
     },
     body:{
-        paddingHorizontal:10
-    }
+        paddingHorizontal:15,
+        flex:1
+    },
+    filterContainer:{
+   marginBottom:10
+    },
+    searchInput:{
+        flexDirection:'row',
+        width:'100%',
+        justifyContent:'space-between'
+    },
+    TextInput:{
+        width:'45%',
+    },
+    ApplyFilterContainer:{
+        paddingHorizontal:15,
+        paddingVertical:10, 
+        flexDirection:'row',
+        justifyContent:'space-between'
+    },
+    ApplyFilter:{
+        borderWidth:1,
+        borderColor:'#ffdb28',
+        paddingHorizontal:25,
+        paddingVertical:15,
+        borderRadius:10
+
+    },
+    applyFilterText:{
+        fontSize:19,
+        fontWeight:'500'
+    },
+    ApplyFilterActive:{
+        borderWidth:1,
+        borderColor:'#ffdb28',
+        paddingHorizontal:25,
+        paddingVertical:15,
+        borderRadius:10,
+        backgroundColor:'#ffdb28'
+
+    },
 })
-function Filter (){
+function Filter ({starImage}){
     const [options, setoptions] = useState([{
         id:1,
         option:'All',
@@ -62,8 +104,63 @@ function Filter (){
     }
     ]);
     const [optionSelected, setOptionSelected] = useState('')
+    const [optionSortSelected, setOptionSortSelected] = useState('')
+    const [optionRatingSelected, setOptionRatingSelected] = useState('')
     const [d, setD] = ('')
-
+    const [optionSort, setOptionSort] = useState([
+        {
+        id:1,
+        option:'All',
+        isActive:true
+    },
+    {
+        id:2,
+        option:'Most Recent',
+        isActive:false
+    },
+    {
+        id:3,
+        option:'Price High',
+        isActive:false
+    },
+    {
+        id:4,
+        option:'Price Low',
+        isActive:false
+    }
+])
+    const [rating, setRating] = useState([
+        {
+            id:1,
+            option:'All',
+            isActive:true,
+        },
+        {
+            id:2,
+            option:'1',
+            isActive:false,
+        },
+        {
+            id:3,
+            option:'2',
+            isActive:false,
+        },
+        {
+            id:4,
+            option:'3',
+            isActive:false,
+        },
+         {
+            id:5,
+            option:'4',
+            isActive:false,
+        },
+        {
+            id:6,
+            option:'5',
+            isActive:false,
+        }
+    ]) 
     let handleChange = useCallback((item)=>{
         let item_id = item.id;
         setoptions((prev)=>{
@@ -74,34 +171,131 @@ function Filter (){
                 }else{
                     n.isActive = true;
                     setOptionSelected(n.option)
-                    
                 }
             }
             return[...prev]
         })
     }, )
 
+    let handleChange2 = useCallback((item)=>{
+        let item_id = item.id;
+        setOptionSort((prev)=>{
+            console.log(prev);
+            for (let n of prev){
+                if (item_id != n.id){
+                    n.isActive = false;
+                }else{
+                    n.isActive = true;
+                    setOptionSortSelected(n.option)
+                }
+            }
+            return[...prev]
+        })
+    })
+    let handleChange3 = useCallback((item)=>{
+        let item_id = item.id;
+        setRating((prev)=>{
+            console.log(prev);
+            for (let n of prev){
+                if (item_id != n.id){
+                    n.isActive = false;
+                }else{
+                    n.isActive = true;
+                    setOptionRatingSelected(n.option)
+                }
+            }
+            return[...prev]
+        })
+    })
+
+
+
 
     return <View style={styles.container}>
             <View style = {styles.body}>    
-                <View >
+                <View style = {styles.filterContainer}>
                   <Text style={styles.subtitleText}>Categories</Text>
                  <View style = {{flexDirection:'row', flexWrap:'wrap'}}>
-                    {options.map((item)=><OptionButton styles={styles} handleChange={handleChange} active={'#ffdb28'} item={item} d ={d}/>)}
+                    {options.map((item)=><OptionButton key={item.id} styles={styles} 
+                    handleChange={handleChange} 
+                    active={'#ffdb28'} 
+                    item={item} d ={d} 
+                    filterRender = {true}
+
+                    />)}
                  </View> 
                 </View>
-                <View>
+                <View style = {styles.filterContainer}>
                   <Text style={styles.subtitleText}>PriceRange</Text>
+                  <View style = {styles.searchInput}>
+                    <TextInput variant="outlined" 
+                    label="From" 
+                    style = {styles.TextInput}
+                    keyboardType='number-pad'
+                    color='#ffdb28'
+                    />
+
+                    <TextInput variant="outlined" 
+                    label="To" 
+                    style = {styles.TextInput}
+                    keyboardType='number-pad'
+                    color='#ffdb28'
+                    />  
+                  </View>  
+
                 </View>
-                <View>
+                <View style = {styles.filterContainer}>
                   <Text style={styles.subtitleText}>Sort By</Text>
+                  <View style = {{flexDirection:'row', flexWrap:'wrap'}}>
+                    {optionSort.map((item)=><OptionButton key={item.id} styles={styles} 
+                    handleChange={handleChange2} 
+                    active={'#ffdb28'} 
+                    item={item} d ={d} 
+                    filterRender = {true}
+
+                    />)}
+                    </View> 
+
+
                 </View>
-                <View>
+                <View style = {styles.filterContainer}>
                   <Text style={styles.subtitleText}>Rating</Text>
+                <View style = {{flexDirection:'row', flexWrap:'wrap'}}>
+                    {rating.map((item)=>{
+                        return <TouchableOpacity key={item.id}  onPress={()=>{
+                             handleChange3(item);
+                             }} activeOpacity={0.7}>
+                                            
+                            <View style = {{ backgroundColor: item.isActive ? '#ffdb28':'white',
+                                             paddingVertical:7,
+                                             paddingHorizontal:15,
+                                             borderRadius:30,
+                                             borderWidth:0.5,
+                                             borderColor:'#ffdb28',
+                                             marginRight:5,
+                                             marginVertical:5,
+                                             flexDirection:'row',
+                                             alignItems:'center'
+                        }}>  
+                                <Text style={{fontSize:15, marginRight:5}}>{item.option}</Text>
+                                <Image source={starImage} style={{height:15, width:15}}/>
+                                
+                            </View>
+                        </TouchableOpacity> 
+                    })}
+                </View> 
+
                 </View>
             </View>
-            <View>
 
+
+            <View style = {styles.ApplyFilterContainer}>
+                <TouchableOpacity style = {styles.ApplyFilterActive}>
+                    <Text style = {styles.applyFilterText}>Apply Filter</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style = {styles.ApplyFilter}>
+                    <Text style = {styles.applyFilterText}>Reset Filter</Text>
+                </TouchableOpacity>
             </View>
 
     </View>
