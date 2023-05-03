@@ -54,6 +54,8 @@ let appleCard = require('./assets/images/apple-pay.png');
 let googleCard = require('./assets/images/google-pay.png');
 let masterCard = require ('./assets/images/Mastercard_2019_logo.svg.png');
 let visaCard = require('./assets/images/Visa.png');
+let deliveryImage = require('./assets/images/fastDelivery.png');
+let deliveryImage2 = require('./assets/images/foodDelivery.png');
 
 const visibilityImages = [VisibleImage, notVisibleImage];
 
@@ -286,7 +288,10 @@ const [searchWord, setSearchWord] = useState('');
             >
               {(props)=>(
 
-                <Order {...props} />
+                <Order {...props} 
+                  deliveryImage = {deliveryImage}
+                  deliveryImage2 = {deliveryImage2}
+                />
               )
 
               }

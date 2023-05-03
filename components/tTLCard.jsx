@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, View, Text, Image } from "react-native";
 import { memo } from "react";
 import { AntDesign } from '@expo/vector-icons';
+import { Avatar } from "@react-native-material/core";
 
 const styles = StyleSheet.create({
     cardBody:{
@@ -9,6 +10,8 @@ const styles = StyleSheet.create({
         borderRadius:10,
         borderColor:'#ffdb28',
         width:270,
+        marginTop:15,
+        paddingVertical:5,
         
 
     },
@@ -93,7 +96,7 @@ const styles = StyleSheet.create({
 function marketCard({item}){
     return<Pressable style={styles.cardBody}>
         <View style={styles.contentHeader}>
-                <View style={styles.farmIconContainer}></View>
+                <Avatar autoColor label={item.farmName} size={40} style = {{marginRight:10}}/>
                 <View style={styles.contentTitleRating}>
                     <View >
                         <Text style ={styles.farmTitle}>{item.farmName} | </Text>

@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { View, FlatList, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, FlatList, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import OrderItem from "../components/orderitem";
 
 
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     },
     deliverycheckoutContainer:{
         backgroundColor:"white",
-        paddingHorizontal:10,
+        paddingHorizontal:20,
         paddingVertical:10
  
 
@@ -32,7 +32,6 @@ const styles = StyleSheet.create({
     deliveryIcon:{
         width:50,
         height:50,
-        backgroundColor:'#ffdb28'
     },
     deliveryContainer:{
         flexDirection:'row',
@@ -83,7 +82,7 @@ const styles = StyleSheet.create({
     }
 });
 
-function Order ({navigation, route}){
+function Order ({navigation, route, deliveryImage, deliveryImage2}){
     
     if(route.params != undefined){
         var data = route.params.readyToBuydata;
@@ -116,7 +115,9 @@ function Order ({navigation, route}){
                 <View style={styles.deliverycheckoutContainer}>
                     <View style={styles.deliveryTotalContainer}>
                         <View  style={styles.deliveryContainer}> 
-                            <View style={styles.deliveryIcon}></View> 
+                            <View style={styles.deliveryIcon}>
+                                <Image source={deliveryImage2} style = {{width:50, height:50}}/>
+                            </View> 
                             <Text style={styles.delivery}>Delivery Fee</Text>
                             <Text style={styles.deliveryText}>N500</Text>
                         </View>

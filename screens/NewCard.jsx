@@ -1,6 +1,7 @@
-import {View, ScrollView, TextInput, StyleSheet, Pressable, Text, Image, Alert } from 'react-native';
+import {View, ScrollView, StyleSheet, Pressable, Text, Image, Alert } from 'react-native';
 import { memo, useState, useCallback, useEffect } from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
+import { TextInput } from '@react-native-material/core';
 
 let styles = StyleSheet.create({
     input:{
@@ -192,12 +193,14 @@ function NewCard({masterCardImage, visaCardImage, setCards}){
                 <View style={styles.cardnumderInput}>
                     <TextInput 
                     style={[styles.input, {borderColor:focusColor, flex:1}]}
-                    placeholder='Card Number' 
+                    label='Card Number' 
                     onFocus={handleFocus} 
                     onBlur={handleFocus}
                     keyboardType='number-pad'
                     onChangeText={(Text)=>handleTextInput(Text)}
                     value={cardNumber}
+                    variant=''
+                    color='#ffdb28'
                     />
 
                     {card == 'visa card' && <Image source={visaCardImage} style={styles.image}/>}
@@ -208,31 +211,38 @@ function NewCard({masterCardImage, visaCardImage, setCards}){
             
             <TextInput 
                 style={[styles.input, {borderColor:focusColor1}]} 
-                placeholder='Card Holder Name' 
+                label='Card Holder Name' 
                 onFocus={handleFocus1} 
                 onBlur={handleFocus1}
                 onChangeText={(text)=>{setOwnerName(text)}}
+                variant=''
+                color='#ffdb28'
             />
 
             <View style={styles.monthCvv}>
                 <TextInput 
                     style={[styles.smallInput, {borderColor:focusColor2, fontSize:20, fontWeight:'600'}]} 
-                    placeholder='MM/YY' 
+                    label='MM/YY' 
                     onFocus={handleFocus2}
                     onBlur={handleFocus2}
                     keyboardType='number-pad'
                     value={cardMonth}
                     onChangeText={(handleMonthChange)}
+                    variant=''
+                    color='#ffdb28'
+                    
                 />
 
                 <TextInput 
                     style={[styles.smallInput, {borderColor:focusColor3, fontSize:20, fontWeight:'600'}]} 
-                    placeholder='CVV' 
+                    label='CVV' 
                     onFocus={handleFocus3} 
                     onBlur={handleFocus3}
                     keyboardType='number-pad'
                     onChangeText={handleCvv}
                     value ={cvv}
+                    variant=''
+                    color='#ffdb28'
                 />
 
             </View>

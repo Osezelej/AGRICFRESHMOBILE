@@ -1,5 +1,5 @@
-import {View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native';
-import { memo, useCallback, useState } from 'react';
+import {View, StyleSheet, Text, Image, TouchableOpacity, ScrollView} from 'react-native';
+import { memo, useCallback, useEffect, useState } from 'react';
 import OptionButton from '../components/optionButton';
 import { TextInput } from '@react-native-material/core';
 const styles = StyleSheet.create({
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
 
     },
 })
-function Filter ({starImage}){
+function Filter ({starImage, navigation}){
     const [options, setoptions] = useState([{
         id:1,
         option:'All',
@@ -103,9 +103,13 @@ function Filter ({starImage}){
         isActive:false
     }
     ]);
-    const [optionSelected, setOptionSelected] = useState('')
-    const [optionSortSelected, setOptionSortSelected] = useState('')
-    const [optionRatingSelected, setOptionRatingSelected] = useState('')
+    const [optionSelected, setOptionSelected] = useState('all')
+    const [optionSortSelected, setOptionSortSelected] = useState('all')
+    const [optionRatingSelected, setOptionRatingSelected] = useState('all')
+    const [priceRange, setPriceRange] = useState({
+        min:'',
+        max:''
+    })
     const [d, setD] = ('')
     const [optionSort, setOptionSort] = useState([
         {
@@ -176,6 +180,15 @@ function Filter ({starImage}){
             return[...prev]
         })
     }, )
+    var data = {}
+
+    useEffect(()=>{
+        data.optionSelected = optionSelected;
+        data.optionRatingSelected = optionRatingSelected;
+        data.optionSortSelected = optionSortSelected;
+        data.priceRange = priceRange;
+
+    }, [optionSelected, optionSortSelected, optionRatingSelected, priceRange])
 
     let handleChange2 = useCallback((item)=>{
         let item_id = item.id;
@@ -212,7 +225,7 @@ function Filter ({starImage}){
 
 
     return <View style={styles.container}>
-            <View style = {styles.body}>    
+            <ScrollView style = {styles.body}>    
                 <View style = {styles.filterContainer}>
                   <Text style={styles.subtitleText}>Categories</Text>
                  <View style = {{flexDirection:'row', flexWrap:'wrap'}}>
@@ -233,6 +246,10 @@ function Filter ({starImage}){
                     style = {styles.TextInput}
                     keyboardType='number-pad'
                     color='#ffdb28'
+                    onChangeText={(text)=>{
+                        setPriceRange((prev)=>({...prev, min:text
+                        }))
+                    }}
                     />
 
                     <TextInput variant="outlined" 
@@ -240,6 +257,10 @@ function Filter ({starImage}){
                     style = {styles.TextInput}
                     keyboardType='number-pad'
                     color='#ffdb28'
+                    onChangeText={(text)=>{
+                        setPriceRange((prev)=>({...prev, max:text
+                        }))
+                    }}
                     />  
                   </View>  
 
@@ -286,11 +307,11 @@ function Filter ({starImage}){
                 </View> 
 
                 </View>
-            </View>
+            </ScrollView>
 
 
             <View style = {styles.ApplyFilterContainer}>
-                <TouchableOpacity style = {styles.ApplyFilterActive}>
+                <TouchableOpacity style = {styles.ApplyFilterActive} activeOpacity={0.7} onPress={()=>{console.log(data); navigation.navigate('MarketPlace')}}>
                     <Text style = {styles.applyFilterText}>Apply Filter</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style = {styles.ApplyFilter}>

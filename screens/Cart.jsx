@@ -1,4 +1,4 @@
-import { TouchableWithoutFeedback, Keyboard, View, StyleSheet, Text, Pressable, FlatList, Button, Touchable, TouchableOpacity } from "react-native"
+import { TouchableWithoutFeedback, Keyboard, View, StyleSheet, Text, Pressable, FlatList, Button, Touchable, TouchableOpacity, Image } from "react-native"
 import { memo, useCallback, useMemo, useState } from "react";
 import {AntDesign} from '@expo/vector-icons';
 import CartItem from "../components/cartItem";
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
 })
 
 
-function Cart({navigation, name, manageCartMinus, cartData, removeItem}){
+function Cart({navigation, name, manageCartMinus, cartData, removeItem, image}){
      const OrderItemdata = [...cartData]
      
      for (let item of OrderItemdata){
@@ -103,7 +103,6 @@ function Cart({navigation, name, manageCartMinus, cartData, removeItem}){
         console.log(item)
      }
      
-     console.log('break---------------------------------')
      let dummyOrderData = [];
      const modifyOrderData = useCallback((data)=>{
                 
@@ -185,14 +184,21 @@ function Cart({navigation, name, manageCartMinus, cartData, removeItem}){
                          />
                         </View>} 
                         keyExtractor={item =>item.id}
+                        ListEmptyComponent={()=><View style = {{flexDirection:'column', 
+                        justifyContent:'center',
+                        alignItems:'center', flex:1}}>
+                            <Image  source={image} style = {{width:100, height:100, marginBottom:20 }}/>
+                            <Text>No items have been added to cart.</Text>
+                        </View>}
 
                     />
                 </View>
-                <TouchableOpacity activeOpacity={0.8} onPress={()=>{navigation.navigate('Address', {readyToBuydata:cartData, itemnumber:dummyOrderData})}}>
+                {cartData.length > 0 ?<TouchableOpacity activeOpacity={0.8} onPress={()=>{navigation.navigate('Address', {readyToBuydata:cartData, itemnumber:dummyOrderData})}}>
                     <View style={styles.orderButton}>
                         <Text style={styles.orderText}>ORDER</Text>
                     </View>
-                </TouchableOpacity>
+                </TouchableOpacity>:null}
+                
                 <View style={styles.suggestion}>
                     <Text style={styles.suggestionHeader}>Things you may Like</Text>
                     <View>

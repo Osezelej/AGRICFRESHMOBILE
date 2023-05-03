@@ -143,6 +143,7 @@ export default function FootIconsNavigaiton({state, handleState, logoImage , nav
                     cartData = {cartData}
                     removeItem = {removeFromCartAlert}
                     navigation = {navigation}
+                    image = {cartImage}
                 />}
             </Tab.Screen>
             <Tab.Screen
