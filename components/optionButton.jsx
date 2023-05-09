@@ -35,4 +35,4 @@ function OptionButton ({styles, active, item, handleChange, d, filterRender}){
    }
    
 }
-export default memo(OptionButton)
+export default OptionButton;

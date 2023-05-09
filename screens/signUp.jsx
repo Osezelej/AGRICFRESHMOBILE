@@ -1,13 +1,100 @@
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Keyboard, TouchableWithoutFeedback, ScrollView} from 'react-native';
+import {useState, useRef, useEffect} from 'react';
+import VerificfationComp from '../components/verificfationComp';
+
+
 export function SignUp({navigation}){
+
     function handlePress() {
         navigation.navigate('Login')
     }    
+            
+    var [isSmallalpha, setSmallalpha] =useState(false);
+    var [isBigalpha, setBigalpha] = useState(false);
+    var [isBigalpha1, setBigalpha1] = useState(false);
+    var [isNum, setNum] = useState(false);
+    var [isChar, setChar] = useState(false);
+    
+    const [passwordLength, setPasswordlength] = useState(0);
+
+    function handleChangeText(text){
+       let checkCapAlpha = false
+        let capitalAlpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+        let smallAlpha = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'y', 'z'];
+        let number = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0 ];
+        let character = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '{', '}', ':', '"', "'", '<', '>', '?', '/', '~', '`'];
+        
+        if(text.length > 0){
+            setDisplayVeriData(true)
+        }else{
+            setDisplayVeriData(false)
+        }
+
+    }
+
+    
+    const [verficationData, setVerificationData] = useState([
+        {
+            id:1,
+            text:'1 Special character',
+            isActive:false
+        },
+        {
+            id:2,
+            text:'1 Uppercase Alphabet',
+            isActive:false
+        },
+        {
+            id:3,
+            text:'1 Lowercase Alphabet',
+            isActive:false
+        },
+        {
+            id:4,
+            text:'1 Number',
+            isActive:false
+        },
+        {
+            id:5,
+            text:'At least 8 character',
+            isActive:false
+        }
+    ]);
+
+    let [re_cap, setRe_cap] = useState(false);
+    let [re_small, setRe_small] = useState(false);
+    let [re_num, setRe_num] = useState(false);
+    let [re_char, setRe_char] = useState(false);    
+    
+   
+    function handleKeyPress (e){
+
+        let capitalAlpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+        let smallAlpha = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'y', 'z'];
+        let number = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0 ];
+        let character = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '{', '}', ':', '"', "'", '<', '>', '?', '/', '~', '`'];
+
+    
+        
+    }
+    // useEffect(()=>{setName('');setName('Sign Up')},[verficationData])
+
+    const [password, setPassword] = useState('')
+    const [name, setName ] = useState('Sign Up')
+  
+    const [signUpData, setSignUpData] = useState({
+        name:'',
+        email:'',
+        password:'',
+    })
+    const [displayVeriData, setDisplayVeriData] = useState(false)
+
+
     return <ScrollView style={styles.body}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss }>
             <View  >
                 <View style={styles.headingContainer}>
-                    <Text style={styles.heading}>Sign Up</Text>
+                    <Text style={styles.heading}>{name}</Text>
                 </View>
 
                 <View style={styles.formbody}>
@@ -24,9 +111,20 @@ export function SignUp({navigation}){
 
                     <View style={styles.nameContainer}>
                         <Text style={styles.Label}>Password</Text>
-                        <TextInput placeholder='Enter your password' style={styles.Field} selectionColor={'black'} secureTextEntry={true}/>
+                        <TextInput 
+                        placeholder='Enter your password' 
+                        style={styles.Field} 
+                        selectionColor={'black'} 
+                        secureTextEntry={false}
+                        onChangeText={handleChangeText}
+                        onKeyPress={handleKeyPress}
+                        value={password}
+                        />
                     </View>
-
+                    {displayVeriData && <View style = {styles.veribody}>
+                                            {verficationData.map((item)=><VerificfationComp item={item} key ={item.id}/>)}
+                                        </View>
+                    }
                     <View style={styles.nameField}>
                         <Text style={styles.Label}>Confirm Password</Text>
                         <TextInput placeholder='confirm password' style={styles.Field} selectionColor={'black'} secureTextEntry={true}/>
@@ -64,32 +162,31 @@ export const styles = StyleSheet.create({
         marginBottom:25,
     },
     Label:{
-        fontSize:15,
+        fontSize:18,
+        
     },
     Field:{
         borderBottomWidth:2.5,
         borderLeftWidth:1,
         borderRightWidth:1,
         borderStyle:'solid',
-        height:38,
-        padding:5,
         borderBottomColor:'#3131313c',
         borderLeftColor:'#3131313c',
         borderRightColor:'#3131313c',
         borderRadius:10,
         borderTopColor:'#fff',
         fontSize:16,
+        paddingHorizontal:10,
+        paddingVertical:10
         
     },
     submit:{
         display:'flex',
         backgroundColor:'#ffdb28',
-        paddingVertical:10,
+        paddingVertical:15,
         justifyContent:'center',
         alignItems:'center',
-        borderRadius:30,
-        borderColor:'green',
-        borderWidth:2
+        borderRadius:10,
 
     },
     submitContainer:{
@@ -98,8 +195,8 @@ export const styles = StyleSheet.create({
         
     },
     submitText:{
-        fontSize:16,
-        fontWeight:'500'
+        fontSize:20,
+        fontWeight:'600'
     },
     createAcctContainer:{
         marginVertical:20,
@@ -122,6 +219,10 @@ export const styles = StyleSheet.create({
         fontSize:15,
         textAlign:'center',
         
+    },
+    veribody:{
+        flexDirection:'row',
+        flexWrap:'wrap'
     }
 
 })
