@@ -131,10 +131,11 @@ const [searchWord, setSearchWord] = useState('');
             />
             <Stack.Screen  
               name = "Sign up"
-              component={SignUp}
               options={{headerTitleAlign:'center', title:'', headerTintColor:'none', animation:"slide_from_right", headerShadowVisible:false}}
               
-            />  
+            >
+            {(props)=><SignUp {...props} visibleImage ={VisibleImage} notVisibleImage = {notVisibleImage} />}
+            </Stack.Screen>  
             <Stack.Screen
               name = "Forgot password"
               component={ForgotPassword}
