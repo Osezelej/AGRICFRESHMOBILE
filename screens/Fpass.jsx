@@ -1,8 +1,42 @@
-import {View, Text, StyleSheet, TouchableWithoutFeedback,TextInput,TouchableOpacity, Keyboard, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, TouchableWithoutFeedback,TextInput,TouchableOpacity, Keyboard, ScrollView, Alert} from 'react-native';
 import { styles } from './signUp';
+import axios from "axios";
+import { ActivityIndicator } from '@react-native-material/core';
+import { useState } from 'react';
+
+
 export function ForgotPassword ({navigation}){
-    function handlePress(){
-      navigation.navigate('Reset Password');
+    const [email, setEmail] = useState('');
+    const [activeActivity, setActiveActivity] = useState(false);
+
+    async function handlePress(email){
+        setActiveActivity(true)
+
+        await axios.get('https://4v6gzz-3001.csb.app/v1/frgtPswd', {
+            params:{
+                email:email
+            }
+        })
+        .then((res)=>{
+            console.log(res.data)
+
+            // navigation.navigate('Reset Password');
+        })
+        .catch((e)=>{
+            console.log(e)
+            // Alert.alert('Error', `Email: ${email} does not exist`, [{
+            //     text:'OK',
+            //     onPress:()=>{
+            //         setEmail('');
+            //     }
+            // }])
+            
+
+        })
+        .finally(()=>{
+            setTimeout(()=>{setActiveActivity(false)}, 800)
+
+        })
 
     }
     return (<ScrollView style={stylea.body}>
@@ -15,11 +49,21 @@ export function ForgotPassword ({navigation}){
                     <View style={styles.formbody}>
                             <View style={styles.nameContainer}>
                                 <Text style={styles.Label}>Email</Text>
-                                <TextInput placeholder='Enter your email' style={styles.Field} keyboardType={'email-address'} selectionColor={'black'}/>
+                                <TextInput 
+                                placeholder='Enter your email' 
+                                style={styles.Field} 
+                                keyboardType={'email-address'} 
+                                selectionColor={'black'}
+                                value = {email}
+                                onChangeText={setEmail}
+                                />
                             </View>
                             <View style={styles.submitContainer}>
-                            <TouchableOpacity style={styles.submit} onPress={handlePress}> 
-                                <Text style={styles.submitText}>Send</Text>
+                            <TouchableOpacity style={styles.submit} onPress={()=>(handlePress(email))}> 
+                                <View style={{flexDirection:'row'}}>
+                                    <Text style={styles.submitText}>Send</Text>
+                                    {activeActivity && <ActivityIndicator size={'small'} color='black'/>}
+                                </View>
                             </TouchableOpacity>
                         </View>
                     </View>

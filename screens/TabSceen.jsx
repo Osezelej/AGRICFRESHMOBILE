@@ -46,7 +46,7 @@ export default function FootIconsNavigaiton({state, handleState, logoImage , nav
     })
 
     let removeFromCartAlert = (id, name)=>{
-        Alert.alert('Remove item', `Do you want to remove item, ${name}?`, [
+        Alert.alert('\b Remove item', `Do you want to remove item, ${name}?`, [
             {
                 text:'cancel',
                 isPreferred:true,

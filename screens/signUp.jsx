@@ -1,14 +1,15 @@
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Keyboard, TouchableWithoutFeedback, ScrollView, Pressable, Image} from 'react-native';
 import {useState, useRef, useEffect} from 'react';
 import VerificfationComp from '../components/verificfationComp';
+import axios from 'axios';
+import { ActivityIndicator } from '@react-native-material/core';
+
+import { Alert } from 'react-native';
+
 
 
 export function SignUp({navigation, visibleImage, notVisibleImage}){
 
-    function handlePress() {
-        navigation.navigate('Login')
-    }    
-            
     var [isSmallalpha, setSmallalpha] =useState(false);
     var [isBigalpha, setBigalpha] = useState(false);
     var [isNum, setNum] = useState(false);
@@ -20,6 +21,123 @@ export function SignUp({navigation, visibleImage, notVisibleImage}){
     const checkNum = useRef(false);
     const checkChar = useRef(false);
 
+    const [verficationData, setVerificationData] = useState([
+        {
+            id:1,
+            text:'1 Special character',
+            isActive:false
+        },
+        {
+            id:2,
+            text:'1 Uppercase Alphabet',
+            isActive:false
+        },
+        {
+            id:3,
+            text:'1 Lowercase Alphabet',
+            isActive:false
+        },
+        {
+            id:4,
+            text:'1 Number',
+            isActive:false
+        },
+        {
+            id:5,
+            text:'At least 8 character',
+            isActive:false
+        }
+    ]);
+
+  
+    const [showPassword, setShowPassword] = useState(true)
+    const [confirmPassword, setConfirmPassword] = useState('')
+    const [correctPassword, setCorrectPassword] = useState('#3131313c')
+    const [active, setActive] = useState(true)
+
+    const [password, setPassword] = useState('')
+  
+    const [signUpData, setSignUpData] = useState({
+        name:'',
+        email:'',
+        password:'',
+    })
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [displayVeriData, setDisplayVeriData] = useState(false)
+
+    const [animating, setAnimating] = useState(false)
+
+   async function handlePress(name, email, password, setPassword, setConfirmPassword) {
+        if(name && email && password){
+            setAnimating(true)
+            setSignUpData((prev)=>{
+                return{...prev, name:name, email:email, password:password}
+            
+            })
+            Alert.alert('Confirm Email', `email: ${email}`,[
+                {
+                    text:'CANCEL',
+                    onPress:()=>{setPassword('');setConfirmPassword('');setEmail('')},
+                    style:'destructive'
+                },
+                {
+                    text:'OK',
+                    onPress:async()=>{
+                                await axios.post('https://4v6gzz-3001.csb.app/v1/signup', {...signUpData},{
+                                    headers:{
+                                    "Content-Type":'application/json'
+                                }
+                            })
+                                .then((res)=>{
+                                    console.log(res.status)
+                                    if(res.status == 200){
+                                        Alert.alert('Sign in successfull', '', [{
+                                            text:'ok',
+                                            onPress:()=>{
+                                                navigation.navigate('Login')
+                                            }
+                                        }])
+                                        
+                                    } 
+                                    
+                                    
+                                })
+                                .catch((e)=>{
+                                    console.log(e, "there is an error")
+                                    
+                                        Alert.alert('Error', 'email have been used', [
+                                            {
+                                            text:'ok',
+                                            onPress:()=>{
+                                                setEmail('')
+                                                setPassword('')
+                                                setConfirmPassword('')
+                                                setName('')
+                                            }
+                                        }
+                                    ])
+                                    
+                                })
+                                .finally(()=>{
+                                    console.log("done")
+                                    setTimeout(()=>{setAnimating(false)},800)
+                                })
+                    
+            
+                    }
+                }
+
+            ])
+            
+        }
+        
+        // navigation.navigate('Login')
+    }    
+            
+    
+
+
     function handleChangeText(text){
         checkCapAlpha.current = false;
         checkSmallAlpha.current = false;
@@ -29,13 +147,14 @@ export function SignUp({navigation, visibleImage, notVisibleImage}){
         let capitalAlpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
         let smallAlpha = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'y', 'z'];
         let number = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0 ];
-        let character = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '{', '}', ':', '"', "'", '<', '>', '?', '/', '~', '`'];
+        let character = ['+','!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '{', '}', ':', '"', "'", '<', '>', '?', '/', '~', '`', '|','\\','=', '-', '_', '.',',', ';'];
         
         if(text.length > 0){
             setDisplayVeriData(true)
         }else{
             setDisplayVeriData(false)
         }
+
 
         // for length of password
         let minPasswordLength = 8;
@@ -61,7 +180,6 @@ export function SignUp({navigation, visibleImage, notVisibleImage}){
 
         // for capital alphabets
         for (let w of capitalAlpha){
-            
             if (text.includes(w)){
             
                 checkCapAlpha.current = true;
@@ -127,7 +245,6 @@ for (let w of character){
 }
 
 if(!checkChar.current){
-   
     checkChar.current = false;
     setChar(0);
 }
@@ -236,39 +353,7 @@ if(!checkChar.current){
     }, [isChar])
     
 
-    const [verficationData, setVerificationData] = useState([
-        {
-            id:1,
-            text:'1 Special character',
-            isActive:false
-        },
-        {
-            id:2,
-            text:'1 Uppercase Alphabet',
-            isActive:false
-        },
-        {
-            id:3,
-            text:'1 Lowercase Alphabet',
-            isActive:false
-        },
-        {
-            id:4,
-            text:'1 Number',
-            isActive:false
-        },
-        {
-            id:5,
-            text:'At least 8 character',
-            isActive:false
-        }
-    ]);
-
-  
-    const [showPassword, setShowPassword] = useState(true)
-    const [confirmPassword, setConfirmPassword] = useState('')
-    const [correctPassword, setCorrectPassword] = useState('#3131313c')
-    const [active, setActive] = useState(true)
+ 
    
     function changeConfirmPassword (text){
         console.log(text)
@@ -285,16 +370,7 @@ if(!checkChar.current){
     }
     // useEffect(()=>{setName('');setName('Sign Up')},[verficationData])
 
-    const [password, setPassword] = useState('')
-  
-    const [signUpData, setSignUpData] = useState({
-        name:'',
-        email:'',
-        password:'',
-    })
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [displayVeriData, setDisplayVeriData] = useState(false)
+
 
 
     return <ScrollView style={styles.body}>
@@ -366,13 +442,15 @@ if(!checkChar.current){
                         selectionColor={'black'} 
                         secureTextEntry={true}
                         onChangeText={changeConfirmPassword}
+                        value={confirmPassword}
                         />
                     </View>
 
 
                     {(name && email && password && confirmPassword && active && email.includes('@') && email.includes('.')) && <View style={styles.submitContainer}>
-                        <TouchableOpacity style={styles.submit} onPress={handlePress}>
-                            <Text style={styles.submitText}>Sign up</Text>
+                        <TouchableOpacity style={[styles.submit, {flexDirection:'row', justifyContent:'center'}]} onPress={()=>(handlePress(name, email, password, setPassword, setConfirmPassword))}>
+                            <Text style={styles.submitText}>Sign Up</Text>
+                            <ActivityIndicator size={"small"} animating={animating} color='black'/>
                         </TouchableOpacity>
                     </View>}
                 </View>
