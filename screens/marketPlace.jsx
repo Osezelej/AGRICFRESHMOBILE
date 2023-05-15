@@ -253,6 +253,7 @@ const styles = StyleSheet.create({
 
                 
 export default function MarketPlace({navigation, images, contentImages, manageCart, handleCartName, cartData}){
+    navigation.canGoBack(false)
 let currentData = useRef(new Animated.Value(0)).current
 const [options, setoptions] = useState([{
     id:1,

@@ -24,7 +24,13 @@ function UserOption ({image, navigation, navigationLink}){
         backgroundColor:active,
         marginHorizontal:20,
         marginVertical:10     
-    }} onPress={()=>(navigation.navigate(navigationLink))} onPressIn={handlePress} onPressOut={handlePress}>
+    }} onPress={()=>{
+        if (navigationLink == 'Logout'){
+            navigation.navigate('Login')
+        }else{
+            navigation.navigate(navigationLink)
+        }
+    }} onPressIn={handlePress} onPressOut={handlePress}>
             <Image source={image} style={styles.image}/>
     </Pressable>
 }

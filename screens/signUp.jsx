@@ -69,12 +69,10 @@ export function SignUp({navigation, visibleImage, notVisibleImage}){
     const [animating, setAnimating] = useState(false)
 
    async function handlePress(name, email, password, setPassword, setConfirmPassword) {
+        console.log(name, email, password)
         if(name && email && password){
             setAnimating(true)
-            setSignUpData((prev)=>{
-                return{...prev, name:name, email:email, password:password}
             
-            })
             Alert.alert('Confirm Email', `email: ${email}`,[
                 {
                     text:'CANCEL',
@@ -84,11 +82,7 @@ export function SignUp({navigation, visibleImage, notVisibleImage}){
                 {
                     text:'OK',
                     onPress:async()=>{
-                                await axios.post('https://4v6gzz-3001.csb.app/v1/signup', {...signUpData},{
-                                    headers:{
-                                    "Content-Type":'application/json'
-                                }
-                            })
+                                await axios.post('https://4v6gzz-3001.csb.app/v1/signup', {name:name, email:email, password:password})
                                 .then((res)=>{
                                     console.log(res.status)
                                     if(res.status == 200){
@@ -419,7 +413,8 @@ if(!checkChar.current){
                             secureTextEntry={showPassword}
                             onChangeText={handleChangeText}
                             value={password}
-                            />{
+                            />
+                            {
                                displayVeriData && (showPassword ? <Pressable onPress={()=>{setShowPassword(false)}} style = {{padding:5}}>
                                 <Image source={visibleImage} style = {{width:20, height:20}}/>
                             </Pressable>:<Pressable   onPress={()=>{setShowPassword(true)}}>

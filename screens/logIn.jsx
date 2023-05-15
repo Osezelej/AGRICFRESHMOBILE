@@ -6,8 +6,14 @@ import axios from "axios";
 
 
 
-export function Login({navigation}){
-    const [Email, setEmail] = useState('');
+export function Login({navigation, route}){
+    let email = ''
+    navigation.canGoBack(false)
+    if (route.params != undefined){
+        email = route.params.email
+    }
+        
+    const [Email, setEmail] = useState(email);
     const [Password, setPassword] = useState('');
     const [showError, setShowError] = useState(false);
     const [activeActivity, setActiveActivity] = useState(false);
@@ -39,6 +45,8 @@ export function Login({navigation}){
                     Alert.alert('LOGIN SUCCESSFULL','', [{
                         text:'0K',
                         onPress:()=>{
+                            setEmail('')
+                            setPassword('')
                             navigation.navigate('MarketPlace')
                         }
                     }])

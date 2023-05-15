@@ -27,6 +27,7 @@ import Comment from './screens/comment';
 import Search from './screens/search';
 import SearchHead from './components/searchHead';
 import Filter from './screens/filter';
+import FrgtpswdCode from './screens/frgtpswdCode';
 
 
 const Stack = createNativeStackNavigator();
@@ -129,6 +130,19 @@ const [searchWord, setSearchWord] = useState('');
                }}
               
             />
+            <Stack.Screen
+              name = "ForgotPassword"  
+              component={FrgtpswdCode} 
+              options={{   
+                headerTitleAlign:'center',
+                title:'Confirm Your Email',
+                headerTintColor:'none',
+                animation:"slide_from_right",
+                headerShadowVisible:false
+               }}
+
+
+               />
             <Stack.Screen  
               name = "Sign up"
               options={{headerTitleAlign:'center', title:'', headerTintColor:'none', animation:"slide_from_right", headerShadowVisible:false}}
@@ -144,9 +158,13 @@ const [searchWord, setSearchWord] = useState('');
 
             <Stack.Screen
               name = "Reset Password"
-              component={ResetPassword}
-              options={{title:"Reset Password", animation:"slide_from_right"}}
-            />
+              options={{title:"Reset Password", animation:"slide_from_right", headerTitleAlign:'center'}}
+            >
+              {(prop)=><ResetPassword {...prop}
+                visibleImage={VisibleImage}
+                notVisibleImage={notVisibleImage}
+              />}
+            </Stack.Screen>
 
 
             <Stack.Screen

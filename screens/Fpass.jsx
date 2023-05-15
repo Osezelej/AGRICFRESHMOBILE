@@ -8,6 +8,7 @@ import { useState } from 'react';
 export function ForgotPassword ({navigation}){
     const [email, setEmail] = useState('');
     const [activeActivity, setActiveActivity] = useState(false);
+    const [data, setData] = useState(false);
 
     async function handlePress(email){
         setActiveActivity(true)
@@ -19,17 +20,21 @@ export function ForgotPassword ({navigation}){
         })
         .then((res)=>{
             console.log(res.data)
+            let codeData = res.data
+            if(res.status == 200){
+                navigation.navigate('ForgotPassword',{data:codeData});
+            }
 
-            // navigation.navigate('Reset Password');
+            
         })
         .catch((e)=>{
             console.log(e)
-            // Alert.alert('Error', `Email: ${email} does not exist`, [{
-            //     text:'OK',
-            //     onPress:()=>{
-            //         setEmail('');
-            //     }
-            // }])
+            Alert.alert('Error', `Email: ${email} does not exist \n check your network connection`, [{
+                text:'OK',
+                onPress:()=>{
+                    setEmail('');
+                }
+            }])
             
 
         })
