@@ -1,13 +1,24 @@
 import {memo, useState, useCallback, } from 'react';
 import { View, Text, Pressable, Image } from 'react-native';
-import { Avatar } from '@react-native-material/core';
+import { ActivityIndicator, Avatar } from '@react-native-material/core';
 
 let FavouritesData = [];
 function removeFavContent (id){
     console.log(id)
     FavouritesData = FavouritesData.filter((value)=>(value.id != id))
 }
-function MarketItems({styles, item, contentImages, navigation, handlePress, handleCartName, cartData} ) {
+function MarketItems({
+    styles, 
+    item, 
+    contentImages, 
+    navigation, 
+    handlePress, 
+    handleCartName, 
+    cartData,
+    activeActivity,
+    setActiveActivity
+
+} ) {
     
     const [favImage, setFavImage] = useState({image:contentImages[0], valid:false});
     
@@ -55,7 +66,7 @@ function MarketItems({styles, item, contentImages, navigation, handlePress, hand
             <Text style={styles.contentName}>{item.Name}</Text>
             <Text style={styles.contentPrice}>{item.Price}.00</Text>
         </View>
-        <View style={styles.likeCommentBuy}>
+        <Pressable style={[styles.likeCommentBuy, {marginLeft:15}]} >
             <View style={styles.contentimagescontainer}>
                 <Pressable style={styles.contentImagecontainer} onPress={handlePressFav}>
                         <Image source={favImage.image} style={styles.contentImage}/>
@@ -68,17 +79,21 @@ function MarketItems({styles, item, contentImages, navigation, handlePress, hand
                     <Text style={styles.imageText}>Negotiate</Text>
                 </Pressable>
             </View>
-            <Pressable style={styles.buyContainer} onPress={()=>{
+            <Pressable style={[styles.buyContainer, {flexDirection:'row', alignItems:'center'}]} onPress={()=>{
+                setActiveActivity(true);
                 handlePress(item.Name);
                 handleCartName();
                 cartData(item);
+                
                }
                 }
                 >
                 <Text style={styles.buyText}> Buy </Text>
 
+                {activeActivity && <ActivityIndicator size={'small'} color='black'/>}
+
             </Pressable>
-        </View>
+        </Pressable>
    </View>)
     
 }

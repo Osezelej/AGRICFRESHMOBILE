@@ -45,9 +45,9 @@ export function Login({navigation, route}){
                     Alert.alert('LOGIN SUCCESSFULL','', [{
                         text:'0K',
                         onPress:()=>{
-                            setEmail('')
                             setPassword('')
-                            navigation.navigate('MarketPlace')
+                            navigation.navigate('MarketPlace', {email:Email})
+                            
                         }
                     }])
                 }

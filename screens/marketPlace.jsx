@@ -4,6 +4,9 @@ import { dataApi } from "../data/data";
 import MarketItems, {  FavouritesData } from "../components/marketItems";
 import OptionHeader from "../components/optionHeader";
 import { SimpleLineIcons, Ionicons } from '@expo/vector-icons';
+import { ActivityIndicator } from "@react-native-material/core";
+import { useFocusEffect } from "@react-navigation/native";
+import axios from "axios";
 
 
 
@@ -180,13 +183,14 @@ const styles = StyleSheet.create({
         paddingHorizontal:19,
         borderRadius:10,
         elevation:5,
-        marginVertical:5
+        marginVertical:5,
+        paddingVertical:10,
 
     },
     likeCommentBuy:{
         flexDirection:'row',
         justifyContent:'space-between',
-        paddingRight:29,
+        paddingRight:22,
     },
     buyText:{
         fontSize:17,
@@ -252,8 +256,22 @@ const styles = StyleSheet.create({
 
 
                 
-export default function MarketPlace({navigation, images, contentImages, manageCart, handleCartName, cartData}){
+export default function MarketPlace({
+    navigation,
+    images, 
+    contentImages, 
+    manageCart, 
+    handleCartName, 
+    cartData, 
+    email,
+    activeActivity,
+    setActiveActivity
+
+
+}){
     navigation.canGoBack(false)
+   
+    
 let currentData = useRef(new Animated.Value(0)).current
 const [options, setoptions] = useState([{
     id:1,
@@ -308,11 +326,12 @@ const [active, setActive] = useState('#ffdb28');
 const [image, setImage] = useState(images);
 const [itemName, setItemName] = useState('');
 const [optionSelected, setOptionSelected] = useState('')
-const [marketData, setMarketData] = useState(dataApi)
+const [marketData, setMarketData] = useState(null)
 const [d, setD] = useState(false)
 
 
 let handleChange = useCallback((item)=>{
+
     setD(true)
     let item_id = item.id;
     setoptions((prev)=>{
@@ -323,7 +342,6 @@ let handleChange = useCallback((item)=>{
             }else{
                 n.isActive = true;
                 setOptionSelected(n.option)
-                
             }
         }
         return[...prev]
@@ -376,9 +394,23 @@ let buyClicked = useCallback((item_name)=>{
 ]).start()
 })
 
+async function fetchData (email){
+    await axios.get(`https://4v6gzz-3001.csb.app/v1/marketData/${email}`)
+    .then((res)=>{
+        if(res.status ==  200){
+            setMarketData(res.data)
+        }
+    })
+    .catch(e=>console.log(e))
+
+}
+useEffect(useCallback(()=>{
+    fetchData(email);
+}), [])
 
 
-    return<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+
+     return<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
                 <View style={styles.headerContainer}>
                     <View style={styles.TextContainer}>
@@ -388,39 +420,44 @@ let buyClicked = useCallback((item_name)=>{
                         <OptionHeader styles={styles} handleChange={handleChange} options={options} active={active} d = {d}/>
                     </View>
                 </View>
-                <View style = {[styles.body, {flex:1}]}>
-                    <FlatList
-                        data={marketData}
-                        keyExtractor={items=>items.id}
-                        refreshing={true}
-                        ListEmptyComponent = {<View style={{flex:1,
-                         backgroundColor:'white',
-                          flexDirection: 'row',
-                          justifyContent:'center',
-                          alignItems:'center', 
-                         }}>
-                            <Text>
-                                No product from {optionSelected}
-                            </Text>
-                        </View>}
-                        renderItem ={({item})=>(<MarketItems 
-                        styles={styles} 
-                        item = {item}  
-                        contentImages = {contentImages} 
-                        navigation = {navigation} 
-                        handlePress={buyClicked}
-                        cartData={cartData}
-                        handleCartName={handleCartName}
-                        />)}
-                        style={{flex:1}}
-                    />
+                {  marketData ? <View style = {[styles.body, {flex:1}]}>
+                                    <FlatList
+                                        data={marketData}
+                                        keyExtractor={items=>items.id}
+                                        refreshing={true}
+                                        ListEmptyComponent = {<View style={{flex:1,
+                                        backgroundColor:'white',
+                                        flexDirection: 'row',
+                                        justifyContent:'center',
+                                        alignItems:'center', 
+                                        }}>
+                                            <Text>
+                                                No product from {optionSelected}
+                                            </Text>
+                                        </View>}
+                                        renderItem ={({item})=>(<MarketItems 
+                                        styles={styles} 
+                                        item = {item}  
+                                        contentImages = {contentImages} 
+                                        navigation = {navigation} 
+                                        handlePress={buyClicked}
+                                        cartData={cartData}
+                                        handleCartName={handleCartName}
+                                        activeActivity={activeActivity}
+                                        setActiveActivity={setActiveActivity}
+                                        />)}
+                                        style={{flex:1}}
+                                    />
                     
-                    <Animated.View style={[styles.alertbody, {opacity:currentData}]}>
-                        <Ionicons name="checkmark-sharp" size={24} color="white" />
-                        <Text style={styles.alertText}>{itemName} have been added to cart!!</Text>
-                    </Animated.View>
-                </View>
-            </View> 
+                                    <Animated.View style={[styles.alertbody, {opacity:currentData}]}>
+                                        <Ionicons name="checkmark-sharp" size={24} color="white" />
+                                        <Text style={styles.alertText}>{itemName} have been added to cart!!</Text>
+                                    </Animated.View>
+                    </View>: <View style = {[styles.body, {flex:1, backgroundColor:'white', alignItems:"center", justifyContent:'center'}]}>
+                                <ActivityIndicator size={'large'} color="#ffdb28"/> 
+                    </View>
+                    }
+            </View>
 
 
         </TouchableWithoutFeedback>

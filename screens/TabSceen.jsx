@@ -10,6 +10,7 @@ import MarketPlace from "./marketPlace";
 import { useCallback, useMemo } from "react";
 import Wallet from "./Wallet";
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Tab = createBottomTabNavigator(); 
 const styles = StyleSheet.create({
@@ -23,11 +24,12 @@ const styles = StyleSheet.create({
     }
 })
 
-export default function FootIconsNavigaiton({state, handleState, logoImage , navigation, userProfileDetails, searchItem}) { 
-    
+export default function FootIconsNavigaiton({state, handleState, logoImage , navigation, userProfileDetails, searchItem, route}) { 
+    let email = route.params.email
     let [cartData, setCartData] = useState([]);
     const [cartBadge, setCartBadge] = useState(0) 
     const [name, setName] = useState('Cart');
+    const [activeActivity, setActiveActivity] = useState(false)
 
     let manageCart = useCallback(()=>{
         setCartBadge(cartBadge + 1);
@@ -45,6 +47,19 @@ export default function FootIconsNavigaiton({state, handleState, logoImage , nav
     let handleCartName = useCallback(()=>{
         name == 'Cart'?setName('Cart '):setName('Cart')
     })
+
+    async function addCart(){
+        let value = JSON.stringify(cartData)
+        await AsyncStorage.setItem('cartData', value)
+        .then((c)=>{
+            console.log(c)
+        })
+        .finally(()=>{
+            setTimeout(()=>{
+                setActiveActivity(false);
+            }, 800)
+        })
+    }
 
     let removeFromCartAlert = (id, name)=>{
         Alert.alert('\b Remove item', `Do you want to remove item, ${name}?`, [
@@ -77,7 +92,7 @@ export default function FootIconsNavigaiton({state, handleState, logoImage , nav
                 return[...prev]
             }
         })
-        console.log(cartData)
+        addCart()
     })
 
     return<View style={{flex:1}}>
@@ -119,6 +134,9 @@ export default function FootIconsNavigaiton({state, handleState, logoImage , nav
                 manageCart ={manageCart}
                 handleCartName={handleCartName}
                 cartData = {handleCartData}
+                email={email}
+                activeActivity = {activeActivity}
+                setActiveActivity = {setActiveActivity}
                 />)}
             </Tab.Screen>
 
