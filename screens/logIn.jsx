@@ -3,6 +3,7 @@ import {styles} from './signUp';
 import { useEffect, useState } from "react";
 import { ActivityIndicator } from "@react-native-material/core";
 import axios from "axios";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -44,9 +45,11 @@ export function Login({navigation, route}){
                 if(res.data && res.status == 200){
                     Alert.alert('LOGIN SUCCESSFULL','', [{
                         text:'0K',
-                        onPress:()=>{
+                        onPress:async ()=>{
                             setPassword('')
-                            navigation.navigate('MarketPlace', {email:Email})
+                           
+                                navigation.navigate('MarketPlace', {email:Email})
+    
                             
                         }
                     }])

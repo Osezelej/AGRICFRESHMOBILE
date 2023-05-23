@@ -28,7 +28,8 @@ import Search from './screens/search';
 import SearchHead from './components/searchHead';
 import Filter from './screens/filter';
 import FrgtpswdCode from './screens/frgtpswdCode';
-import { MongoClient } from 'mongodb';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 
 const Stack = createNativeStackNavigator();
@@ -109,6 +110,7 @@ const [addrData, setaddrData] = useState([
 
 const [searchWord, setSearchWord] = useState('');
 const [activeIndicator, setActiveIndicator] = useState(false);
+const [email, setEmail] = useState()
 let handleSearchTextChange = useCallback ((text)=>{
   setSearchWord(text);
   if (text.length > 0){
@@ -119,29 +121,33 @@ let handleSearchTextChange = useCallback ((text)=>{
   }
 })
 
+// to search for data in mongodb
 let searchDatabase = useCallback(async()=>{
+  await AsyncStorage.getItem('userEmail', (e,res)=>{
+   
+  }).then(async (res)=>{
+    
+    let userEmail = JSON.parse(res).email 
+    await axios.put(`https://4v6gzz-3001.csb.app/v1/search/${userEmail}/${searchWord}`)
+    .then((res)=>{
+      console.log(res.data)
+    })
 
-  const uri = "mongodb+srv://osezelejoseph:@Bestboy123@cluster0.7uwgrbb.mongodb.net/?retryWrites=true&w=majority";
-  const client = new MongoClient(uri);
-  const database = client.db("Agric_Fresh");
-  const coll = database.collection("foodItems");
-  const agg = [
-    {$search: {index: "agricFresh", autocomplete: {query: searchWord}}},
-    {$limit: 20},
-    {$project: {_id: 0}}
-];
-// run pipeline
-const result = await coll.aggregate(agg);
-// print results
-console.log(result)
+  
+  })
+
 
 })
 
-
+//  to effect the searchDatabase function
 useEffect(()=>{
-searchDatabase()
+  if(searchWord.length > 0){
+    
+      searchDatabase()
+  }
 
 },[searchWord])
+
 
   return (<View style ={styles.container}>
          <StatusBar/>

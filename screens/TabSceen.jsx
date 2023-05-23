@@ -43,7 +43,11 @@ export default function FootIconsNavigaiton({state, handleState, logoImage , nav
     manageCartMinus()
 })
 
+    let getEmail = useCallback(async()=>{
+        await AsyncStorage.setItem('userEmail', JSON.stringify({email:route.params.email}))
+    })
 
+    useEffect(()=>{getEmail()},[])
         
 
         async function getCartData (){
