@@ -9,7 +9,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { ForgotPassword } from './screens/Fpass';
 import { ResetPassword } from './screens/rpas';
 import  SearchHeader  from './components/search';
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import ModalFilter from './components/ModalFilter';
 import Description from './screens/Description';
 import FootIconsNavigaiton from './screens/TabSceen';
@@ -28,6 +28,7 @@ import Search from './screens/search';
 import SearchHead from './components/searchHead';
 import Filter from './screens/filter';
 import FrgtpswdCode from './screens/frgtpswdCode';
+import { MongoClient } from 'mongodb';
 
 
 const Stack = createNativeStackNavigator();
@@ -107,7 +108,40 @@ const [addrData, setaddrData] = useState([
 
 
 const [searchWord, setSearchWord] = useState('');
+const [activeIndicator, setActiveIndicator] = useState(false);
+let handleSearchTextChange = useCallback ((text)=>{
+  setSearchWord(text);
+  if (text.length > 0){
+    setActiveIndicator(true)
+  
+  }else{
+    setActiveIndicator(false)
+  }
+})
 
+let searchDatabase = useCallback(async()=>{
+
+  const uri = "mongodb+srv://osezelejoseph:@Bestboy123@cluster0.7uwgrbb.mongodb.net/?retryWrites=true&w=majority";
+  const client = new MongoClient(uri);
+  const database = client.db("Agric_Fresh");
+  const coll = database.collection("foodItems");
+  const agg = [
+    {$search: {index: "agricFresh", autocomplete: {query: searchWord}}},
+    {$limit: 20},
+    {$project: {_id: 0}}
+];
+// run pipeline
+const result = await coll.aggregate(agg);
+// print results
+console.log(result)
+
+})
+
+
+useEffect(()=>{
+searchDatabase()
+
+},[searchWord])
 
   return (<View style ={styles.container}>
          <StatusBar/>
@@ -338,14 +372,20 @@ const [searchWord, setSearchWord] = useState('');
               options={{
                 headerShadowVisible:false,
                 animation:'fade',
-                headerTitle:(props)=><SearchHead {...props} searchWord = {searchWord} setSearchWord = {setSearchWord} searchItem = {searchItem}/>,
+                headerTitle:(props)=><SearchHead {...props} 
+                                        searchWord = {searchWord} 
+                                        searchItem = {searchItem}
+                                        handleSearchTextChange = {handleSearchTextChange}
+                                        />,
                 headerTitleAlign:'left',
                 
               }}
             >
               {(props)=>(
 
-                <Search {...props} />
+                <Search {...props} 
+                    activeIndicator = {activeIndicator}
+                />
               )
 
               }

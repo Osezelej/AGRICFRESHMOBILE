@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     }
 })
 
-function SearchHead({searchWord, setSearchWord,}){
+function SearchHead({searchWord, handleSearchTextChange}){
     const searchItem = useRef();
     useEffect(()=>{
         setTimeout(()=>{
@@ -29,7 +29,7 @@ function SearchHead({searchWord, setSearchWord,}){
                     style={styles.textInput}
                     collapsable = {true}
                     selectionColor = '#d0d0d0'
-                    onChangeText = {(text)=>{setSearchWord(text)}}
+                    onChangeText = {handleSearchTextChange}
                     ref = {searchItem}
                 />
     </View>

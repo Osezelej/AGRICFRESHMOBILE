@@ -1,7 +1,7 @@
 import { Images, commentImage, star1Image, starImage, homeImage, logoutImage, profileImage, createBottomTabNavigator, NavigationContainer, cartImage, newsImage, ModalFilter, SearchHeader, visibilityImages, PaymentOptions } from "../App";
 import { Image, StyleSheet,Alert, View,   } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Profile from "./Profile";
 import NewsFeed from "../screens/newsFeed";
 import Cart from "../screens/Cart";
@@ -29,7 +29,6 @@ export default function FootIconsNavigaiton({state, handleState, logoImage , nav
     let [cartData, setCartData] = useState([]);
     const [cartBadge, setCartBadge] = useState(0) 
     const [name, setName] = useState('Cart');
-    const [activeActivity, setActiveActivity] = useState(false)
 
     let manageCart = useCallback(()=>{
         setCartBadge(cartBadge + 1);
@@ -44,23 +43,16 @@ export default function FootIconsNavigaiton({state, handleState, logoImage , nav
     manageCartMinus()
 })
 
-    let handleCartName = useCallback(()=>{
-        name == 'Cart'?setName('Cart '):setName('Cart')
-    })
 
-    async function addCart(){
-        let value = JSON.stringify(cartData)
-        await AsyncStorage.setItem('cartData', value)
-        .then((c)=>{
-            console.log(c)
-        })
-        .finally(()=>{
-            setTimeout(()=>{
-                setActiveActivity(false);
-            }, 800)
-        })
-    }
+        
 
+        async function getCartData (){
+            await AsyncStorage.getItem('cartData', (e, result)=>{
+                console.log(result)
+            })
+        }
+       
+    
     let removeFromCartAlert = (id, name)=>{
         Alert.alert('\b Remove item', `Do you want to remove item, ${name}?`, [
             {
@@ -76,7 +68,7 @@ export default function FootIconsNavigaiton({state, handleState, logoImage , nav
         ], {cancelable:true})
     }
    
-    let handleCartData = useCallback((item)=>{
+    async function  handleCartData(item){
         setCartData((prev)=>{
             let i = true;
             for (let n of prev){
@@ -92,8 +84,19 @@ export default function FootIconsNavigaiton({state, handleState, logoImage , nav
                 return[...prev]
             }
         })
-        addCart()
-    })
+    }
+
+  
+   useEffect(()=>{
+    async function addData (){
+        let value = JSON.stringify(cartData)
+        await AsyncStorage.setItem('cartData', value)
+        .then((c)=>{
+            console.log(c)
+        })
+    }
+    addData()
+   },[cartData])
 
     return<View style={{flex:1}}>
                  <StatusBar/>
@@ -132,11 +135,8 @@ export default function FootIconsNavigaiton({state, handleState, logoImage , nav
                 setState = {handleState}
                 navigation = {navigation}
                 manageCart ={manageCart}
-                handleCartName={handleCartName}
                 cartData = {handleCartData}
                 email={email}
-                activeActivity = {activeActivity}
-                setActiveActivity = {setActiveActivity}
                 />)}
             </Tab.Screen>
 
@@ -163,6 +163,7 @@ export default function FootIconsNavigaiton({state, handleState, logoImage , nav
                     removeItem = {removeFromCartAlert}
                     navigation = {navigation}
                     image = {cartImage}
+                    getItem = {getCartData}
                 />}
             </Tab.Screen>
             <Tab.Screen

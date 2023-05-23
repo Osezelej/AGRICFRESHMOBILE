@@ -4,6 +4,7 @@ import {AntDesign} from '@expo/vector-icons';
 import CartItem from "../components/cartItem";
 import MarketCard from '../components/tTLCard';
 import { dataApi } from "../data/data";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 let ttlData =[...dataApi]
 
 const styles = StyleSheet.create({
@@ -95,9 +96,14 @@ const styles = StyleSheet.create({
 })
 
 
-function Cart({navigation, name, manageCartMinus, cartData, removeItem, image}){
+function Cart({navigation, name, manageCartMinus, cartData, removeItem, image, getItem}){
      const OrderItemdata = [...cartData]
-     
+     async function getCartData(){
+        await AsyncStorage.getItem('cartData', (e, res)=>{
+            console.log(res)
+        })
+     }
+     getCartData()
      for (let item of OrderItemdata){
         item.num = 1;
         console.log(item)
@@ -125,26 +131,6 @@ function Cart({navigation, name, manageCartMinus, cartData, removeItem, image}){
 
             }
             console.log(dummyOrderData)
-
-
-
-
-
-
-
-
-
-
-    //             dummyOrderData.forEach((item, index)=>{
-    //                 if (item.id == data.id){
-    //                     // dummyOrderData[dummyOrderData.indexOf(data)] = data
-    //                     console.log(' this ' + data + ' is Present')
-    //                 }else{
-    //                     dummyOrderData.push(data)
-    //                 }
-    //             })
-
-    //         console.log(dummyOrderData)
      })
 
      let  handleCartItems = useCallback((id, price, num)=>{

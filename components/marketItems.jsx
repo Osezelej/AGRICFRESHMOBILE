@@ -15,11 +15,11 @@ function MarketItems({
     handlePress, 
     handleCartName, 
     cartData,
-    activeActivity,
-    setActiveActivity
+    handleActivity
 
 } ) {
     
+    const [activeActivity, setActiveActivity] = useState(false)
     const [favImage, setFavImage] = useState({image:contentImages[0], valid:false});
     
     const handlePressFav = useCallback(()=>{
@@ -39,7 +39,24 @@ function MarketItems({
 
     });
 
-    
+    async function handleEvent(){
+        setActiveActivity(true);
+        setTimeout(()=>{
+            cartData(item)
+        .then(()=>{
+           
+                handlePress(item.Name)
+                .then(()=>{
+                    setTimeout(()=>{
+                        setActiveActivity(false);
+                    }, 1200)
+                })
+         
+        })
+        }, 800)
+        
+    }
+
     return(<View style={styles.contentContainer}>
         <Pressable name='contentHeaderPress'>
             <View style={styles.contentHeader}>
@@ -80,11 +97,9 @@ function MarketItems({
                 </Pressable>
             </View>
             <Pressable style={[styles.buyContainer, {flexDirection:'row', alignItems:'center'}]} onPress={()=>{
-                setActiveActivity(true);
-                handlePress(item.Name);
-                handleCartName();
-                cartData(item);
                 
+                // handleCartName();
+                handleEvent()
                }
                 }
                 >

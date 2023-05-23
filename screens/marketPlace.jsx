@@ -264,8 +264,7 @@ export default function MarketPlace({
     handleCartName, 
     cartData, 
     email,
-    activeActivity,
-    setActiveActivity
+    handleActivity
 
 
 }){
@@ -372,7 +371,7 @@ useEffect(()=>{
    
 }, [options])
 
-let buyClicked = useCallback((item_name)=>{
+let buyClicked = async (item_name)=>{
 
     setItemName(item_name)
     Animated.sequence([
@@ -392,7 +391,7 @@ let buyClicked = useCallback((item_name)=>{
        useNativeDriver: true,
     }),
 ]).start()
-})
+}
 
 async function fetchData (email){
     await axios.get(`https://4v6gzz-3001.csb.app/v1/marketData/${email}`)
@@ -443,8 +442,7 @@ useEffect(useCallback(()=>{
                                         handlePress={buyClicked}
                                         cartData={cartData}
                                         handleCartName={handleCartName}
-                                        activeActivity={activeActivity}
-                                        setActiveActivity={setActiveActivity}
+                                        handleActivity={handleActivity}
                                         />)}
                                         style={{flex:1}}
                                     />
