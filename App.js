@@ -94,7 +94,9 @@ export default function App() {
   // setStatusBarBackgroundColor('white')
 
   const searchItem = useRef()
-
+  
+let [cartData, setCartData] = useState([]);
+const [cartBadge, setCartBadge] = useState(0); 
 const [state, setState] = useState(false);
 let handleState = useCallback(()=>(state?setState(false):setState(true)))
 const [cards, setCards] = useState([]);
@@ -109,6 +111,7 @@ const [addrData, setaddrData] = useState([
 
 
 const [searchWord, setSearchWord] = useState('');
+const [searchData, setSearchData] = useState([])
 const [activeIndicator, setActiveIndicator] = useState(false);
 const [email, setEmail] = useState()
 let handleSearchTextChange = useCallback ((text)=>{
@@ -130,7 +133,7 @@ let searchDatabase = useCallback(async()=>{
     let userEmail = JSON.parse(res).email 
     await axios.put(`https://4v6gzz-3001.csb.app/v1/search/${userEmail}/${searchWord}`)
     .then((res)=>{
-      console.log(res.data)
+      setSearchData(res.data); 
     })
 
   
@@ -143,10 +146,36 @@ let searchDatabase = useCallback(async()=>{
 useEffect(()=>{
   if(searchWord.length > 0){
     
-      searchDatabase()
+      searchDatabase().then(()=>{
+        setTimeout(()=>{
+          setActiveIndicator(false)
+        },300)
+      })
   }
 
 },[searchWord])
+
+// to handle cartData
+async function  handleCartData(item){
+  setCartData((prev)=>{
+      let i = true;
+      for (let n of prev){
+          if (item.id == n.id){
+              i = false;
+              break;
+          }
+      }
+      if (i){
+          manageCart()
+          return [...prev, item]
+      }else{
+          return[...prev]
+      }
+  })
+}
+let manageCart = useCallback(()=>{
+  setCartBadge(cartBadge + 1);
+})
 
 
   return (<View style ={styles.container}>
@@ -217,7 +246,12 @@ useEffect(()=>{
                 state={state} 
                 handleState={handleState} 
                 userProfileDetails={userProfileDetails}
-                
+                cartData = {cartData}
+                setCartData = {setCartData}
+                handleCartData={handleCartData}
+                cartBadge={cartBadge}
+                setCartBadge={setCartBadge}
+                manageCart={manageCart}
                 />)}
 
               </Stack.Screen>
@@ -391,6 +425,10 @@ useEffect(()=>{
 
                 <Search {...props} 
                     activeIndicator = {activeIndicator}
+                    searchData = {searchData}
+                    contentImages={[star1Image, starImage, commentImage]}
+                    cartData={handleCartData}
+                    setSearchData = {setSearchData}
                 />
               )
 

@@ -13,9 +13,7 @@ function MarketItems({
     contentImages, 
     navigation, 
     handlePress, 
-    handleCartName, 
     cartData,
-    handleActivity
 
 } ) {
     

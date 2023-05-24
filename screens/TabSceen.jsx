@@ -24,15 +24,25 @@ const styles = StyleSheet.create({
     }
 })
 
-export default function FootIconsNavigaiton({state, handleState, logoImage , navigation, userProfileDetails, searchItem, route}) { 
+export default function FootIconsNavigaiton({
+    state, 
+    handleState, 
+    logoImage , 
+    navigation, 
+    userProfileDetails, 
+    searchItem, 
+    route,
+    cartData, 
+    setCartData,
+    handleCartData,
+    cartBadge,
+    setCartBadge,
+    manageCart
+}) { 
     let email = route.params.email
-    let [cartData, setCartData] = useState([]);
-    const [cartBadge, setCartBadge] = useState(0) 
     const [name, setName] = useState('Cart');
 
-    let manageCart = useCallback(()=>{
-        setCartBadge(cartBadge + 1);
-    })
+
 
     let manageCartMinus= useCallback(()=>{
         setCartBadge(cartBadge - 1);
@@ -72,23 +82,7 @@ export default function FootIconsNavigaiton({state, handleState, logoImage , nav
         ], {cancelable:true})
     }
    
-    async function  handleCartData(item){
-        setCartData((prev)=>{
-            let i = true;
-            for (let n of prev){
-                if (item.id == n.id){
-                    i = false;
-                    break;
-                }
-            }
-            if (i){
-                manageCart()
-                return [...prev, item]
-            }else{
-                return[...prev]
-            }
-        })
-    }
+
 
   
    useEffect(()=>{
