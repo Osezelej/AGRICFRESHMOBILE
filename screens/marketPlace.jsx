@@ -264,7 +264,9 @@ export default function MarketPlace({
     handleCartName, 
     cartData, 
     email,
-    handleActivity
+    handleActivity,
+    marketData,
+    setMarketData
 
 
 }){
@@ -325,7 +327,7 @@ const [active, setActive] = useState('#ffdb28');
 const [image, setImage] = useState(images);
 const [itemName, setItemName] = useState('');
 const [optionSelected, setOptionSelected] = useState('')
-const [marketData, setMarketData] = useState(null)
+
 const [d, setD] = useState(false)
 
 
@@ -403,8 +405,11 @@ async function fetchData (email){
     .catch(e=>console.log(e))
 
 }
+
 useEffect(useCallback(()=>{
-    fetchData(email);
+    if(marketData.length == 0 ){
+        fetchData(email);
+    }
 }), [])
 
 
@@ -419,7 +424,7 @@ useEffect(useCallback(()=>{
                         <OptionHeader styles={styles} handleChange={handleChange} options={options} active={active} d = {d}/>
                     </View>
                 </View>
-                {  marketData ? <View style = {[styles.body, {flex:1}]}>
+                {  marketData.length > 0 ? <View style = {[styles.body, {flex:1}]}>
                                     <FlatList
                                         data={marketData}
                                         keyExtractor={items=>items.id}

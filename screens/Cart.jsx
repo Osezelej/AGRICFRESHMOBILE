@@ -1,11 +1,12 @@
 import { TouchableWithoutFeedback, Keyboard, View, StyleSheet, Text, Pressable, FlatList, Button, Touchable, TouchableOpacity, Image } from "react-native"
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {AntDesign} from '@expo/vector-icons';
 import CartItem from "../components/cartItem";
 import MarketCard from '../components/tTLCard';
 import { dataApi } from "../data/data";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-let ttlData =[...dataApi]
+import axios from 'axios';
+
 
 const styles = StyleSheet.create({
     header:{
@@ -97,17 +98,20 @@ const styles = StyleSheet.create({
 
 
 function Cart({navigation, name, manageCartMinus, cartData, removeItem, image, getItem}){
+    const [ttlData, setTtlData] = useState([...dataApi])
      const OrderItemdata = [...cartData]
+     const [cartName, setCartName] = useState('Cart')
      async function getCartData(){
         await AsyncStorage.getItem('cartData', (e, res)=>{
             console.log(res)
         })
      }
-     getCartData()
+     
      for (let item of OrderItemdata){
         item.num = 1;
         console.log(item)
      }
+
      
      let dummyOrderData = [];
      const modifyOrderData = useCallback((data)=>{
@@ -136,12 +140,48 @@ function Cart({navigation, name, manageCartMinus, cartData, removeItem, image, g
      let  handleCartItems = useCallback((id, price, num)=>{
         modifyOrderData({id:id, num:num, price:price})
      })  
+    //  to search for ttl data
+     let searchData = useCallback(async ()=>{
+        
+
+        await AsyncStorage.getItem('userEmail', async(err, res)=>{
+            console.log()
+            let keyword = []
+            OrderItemdata.forEach((value)=>{
+                let datas = [value.Name, value.farmName.split(' ')[0], ...value.foodType]
+                keyword.push(...datas)
+            })
+
+        let data = {
+            email:JSON.parse(res).email, 
+            keywords:keyword
+        }
+        await axios.post("https://4v6gzz-3001.csb.app/v1/ttlData", data )
+        .then((res)=>{
+            setTtlData(res.data)
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+
+        })
+     })
+
+
+     useEffect(()=>{
+        searchData()
+     },[cartData]);
+
+     useEffect(()=>{
+        cartName == 'Cart'?setCartName('Cart '):setCartName('Cart')
+     },[setTtlData]);
+
 
     return<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
             <View style={styles.headerContainer}>
                     <View style={styles.TextContainer}>
-                        <Text style = {styles.header}>{name}</Text>
+                        <Text style = {styles.header}>{cartName}</Text>
                     </View>
                     <View style={styles.userAccountHeader}>
                             <View style={styles.userIconName}>
@@ -159,14 +199,15 @@ function Cart({navigation, name, manageCartMinus, cartData, removeItem, image, g
                     </View>
             </View>
  
-            <View style={styles.cartBody}>
+            <View style={ styles.cartBody}>
                 <View style={styles.cartItemBody}>
                     <FlatList 
                         data={cartData}
-                        renderItem={({item})=><View>
+                        renderItem={({item})=> <View>
                         <CartItem data={item}
                          removeItem={removeItem}
                          handleCartItem={handleCartItems}
+                        
                          />
                         </View>} 
                         keyExtractor={item =>item.id}
@@ -193,6 +234,9 @@ function Cart({navigation, name, manageCartMinus, cartData, removeItem, image, g
                             data = {ttlData}
                             renderItem={({item})=><View><MarketCard item={item}/></View>}
                             horizontal={true}
+                            ListEmptyComponent={<View>
+                                <Text style={{fontSize:18, fontWeight:'500'}}>select an Item into cart</Text>
+                            </View>}
                         />
                     </View>
                 </View>

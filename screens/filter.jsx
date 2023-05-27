@@ -2,6 +2,8 @@ import {View, StyleSheet, Text, Image, TouchableOpacity, ScrollView} from 'react
 import { memo, useCallback, useEffect, useState } from 'react';
 import OptionButton from '../components/optionButton';
 import { TextInput } from '@react-native-material/core';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 const styles = StyleSheet.create({
     container:{
         flex:1,
@@ -55,7 +57,15 @@ const styles = StyleSheet.create({
 
     },
 })
-function Filter ({starImage, navigation}){
+function Filter ({starImage, navigation, setMarketData}){
+
+    let [email, setEmail] = useState('')
+    let getEmail = useCallback(async()=>{
+        await AsyncStorage.getItem('userEmail', (err, res)=>{
+            setEmail(JSON.parse(res).email)
+        })
+    })
+
     const [options, setoptions] = useState([{
         id:1,
         option:'All',
@@ -180,15 +190,44 @@ function Filter ({starImage, navigation}){
             return[...prev]
         })
     }, )
-    var data = {}
+    var [filterData, setFilterData] = useState(
+        {
+            categories:optionSelected,
+            rating:optionRatingSelected,
+            sort:optionSortSelected,
+            priceRange:priceRange,
+
+
+        }
+    ) 
+
 
     useEffect(()=>{
-        data.optionSelected = optionSelected;
-        data.optionRatingSelected = optionRatingSelected;
-        data.optionSortSelected = optionSortSelected;
-        data.priceRange = priceRange;
+        setFilterData((prev)=>{
+            return{...prev, categories:optionSelected.toLocaleLowerCase()}
+        })
 
-    }, [optionSelected, optionSortSelected, optionRatingSelected, priceRange])
+    }, [optionSelected])
+
+    useEffect(()=>{
+        setFilterData((prev)=>{
+            return{...prev, rating:optionRatingSelected}
+        })
+
+    }, [optionRatingSelected])
+
+    useEffect(()=>{
+        setFilterData((prev)=>{
+            return{...prev, sort:optionSortSelected}
+        })
+
+    }, [optionSortSelected])
+
+    useEffect(()=>{
+        setFilterData((prev)=>{
+            return{...prev, priceRange:priceRange}
+        })
+    }, [priceRange])
 
     let handleChange2 = useCallback((item)=>{
         let item_id = item.id;
@@ -220,9 +259,15 @@ function Filter ({starImage, navigation}){
             return[...prev]
         })
     })
+    let handlefilterData = async(data)=>{
+        console.log(data)
+       let filteredData =  data.map((value)=>{
 
+            console.log(value.foodType.includes(filterData.categories))
+        })
 
-
+        return filteredData
+    }
 
     return <View style={styles.container}>
             <ScrollView style = {styles.body}>    
@@ -311,14 +356,31 @@ function Filter ({starImage, navigation}){
 
 
             <View style = {styles.ApplyFilterContainer}>
-                <TouchableOpacity style = {styles.ApplyFilterActive} activeOpacity={0.7} onPress={()=>{console.log(data); navigation.navigate('MarketPlace')}}>
+                <TouchableOpacity style = {styles.ApplyFilterActive} activeOpacity={0.7} onPress={()=>{
+                    
+                     getEmail().then(async()=>{
+                        await axios.get(`https://4v6gzz-3001.csb.app/v1/marketData/${email}`)
+                        .then((res)=>{
+                            if (res.status == 200){
+                                handlefilterData(res.data)
+                                .then((value)=>{
+                                    console.log(value)
+                                    // setMarketData(value)
+                                })
+
+                                
+                                
+                            }
+                        })
+
+                     })
+                      }}>
                     <Text style = {styles.applyFilterText}>Apply Filter</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style = {styles.ApplyFilter}>
                     <Text style = {styles.applyFilterText}>Reset Filter</Text>
                 </TouchableOpacity>
             </View>
-
     </View>
 }
 export default memo(Filter)

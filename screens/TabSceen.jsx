@@ -37,7 +37,9 @@ export default function FootIconsNavigaiton({
     handleCartData,
     cartBadge,
     setCartBadge,
-    manageCart
+    manageCart,
+    marketData,
+    setMarketData
 }) { 
     let email = route.params.email
     const [name, setName] = useState('Cart');
@@ -135,6 +137,8 @@ export default function FootIconsNavigaiton({
                 manageCart ={manageCart}
                 cartData = {handleCartData}
                 email={email}
+                marketData = {marketData}
+                setMarketData={setMarketData}
                 />)}
             </Tab.Screen>
 
@@ -150,6 +154,7 @@ export default function FootIconsNavigaiton({
                  setState = {handleState} 
                  logoImage = {logoImage} 
                  navigation={navigation}
+
                  />),
                  
                  }}

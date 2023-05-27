@@ -1,6 +1,6 @@
-import {View, FlatList, Text, StyleSheet, Animated, BackHandler} from 'react-native';
+import {View, FlatList, Text, StyleSheet, Animated, BackHandler, Alert} from 'react-native';
 import {ActivityIndicator} from '@react-native-material/core'
-import {memo, useState, useRef} from 'react';
+import {memo, useState, useRef, useEffect} from 'react';
 import MarketItems from '../components/marketItems';
 import { SimpleLineIcons, Ionicons } from '@expo/vector-icons';
 
@@ -144,7 +144,7 @@ function Search({
     contentImages, 
     navigation,
     cartData,
-    setSearchData
+    setSearchWord
 }){
     
     let currentData = useRef(new Animated.Value(0)).current
@@ -171,14 +171,11 @@ let buyClicked = async (item_name)=>{
     }),
 ]).start()
 }
-BackHandler.addEventListener("hardwareBackPress", ()=>{
-    setSearchData('')
-    return true
-})
+
 
     return<View style={styles.body}>
         {activeIndicator && <ActivityIndicator color='#ffdb28' size={'large'}/>}
-        {activeIndicator && <FlatList
+        <FlatList
             data = {searchData}
             renderItem={({item})=><MarketItems 
                                         styles={styles} 
@@ -195,13 +192,13 @@ BackHandler.addEventListener("hardwareBackPress", ()=>{
                 }}>
                 <Text style={{
                     fontSize:16,
-                    fontWeight:'bold'
+                    fontWeight:'400'
                      }}>
                     No available data that march this search,
                     Type another key word.
                 </Text>
             </View>}
-        />}
+        />
          <Animated.View style={[styles.alertbody, {opacity:currentData}]}>
                                         <Ionicons name="checkmark-sharp" size={24} color="white" />
                                         <Text style={styles.alertText}>{itemName} have been added to cart!!</Text>

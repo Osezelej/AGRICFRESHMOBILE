@@ -94,7 +94,7 @@ export default function App() {
   // setStatusBarBackgroundColor('white')
 
   const searchItem = useRef()
-  
+const [marketData, setMarketData] = useState([])
 let [cartData, setCartData] = useState([]);
 const [cartBadge, setCartBadge] = useState(0); 
 const [state, setState] = useState(false);
@@ -149,7 +149,7 @@ useEffect(()=>{
       searchDatabase().then(()=>{
         setTimeout(()=>{
           setActiveIndicator(false)
-        },300)
+        },300)   
       })
   }
 
@@ -238,7 +238,7 @@ let manageCart = useCallback(()=>{
 
             <Stack.Screen
               name='MarketPlace'
-                options={{animation:"slide_from_right", headerShown:false}}>
+              options={{animation:"slide_from_right", headerShown:false}}>
 
                 {(props)=>(<FootIconsNavigaiton {...props}
                 searchItem={searchItem}
@@ -252,6 +252,8 @@ let manageCart = useCallback(()=>{
                 cartBadge={cartBadge}
                 setCartBadge={setCartBadge}
                 manageCart={manageCart}
+                marketData = {marketData}
+                setMarketData={setMarketData}
                 />)}
 
               </Stack.Screen>
@@ -419,6 +421,7 @@ let manageCart = useCallback(()=>{
                                         />,
                 headerTitleAlign:'left',
                 
+                
               }}
             >
               {(props)=>(
@@ -428,7 +431,8 @@ let manageCart = useCallback(()=>{
                     searchData = {searchData}
                     contentImages={[star1Image, starImage, commentImage]}
                     cartData={handleCartData}
-                    setSearchData = {setSearchData}
+                    setSearchWord={setSearchWord}
+                    
                 />
               )
 
@@ -448,6 +452,7 @@ let manageCart = useCallback(()=>{
 
                 <Filter {...props} 
                     starImage = {starImage}
+                    setMarketData={setMarketData}
 
                 />
               )
