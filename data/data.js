@@ -1,3 +1,4 @@
+
 export  const dataApi = [
     {
 	id:1,
@@ -255,18 +256,4 @@ export  const dataApi = [
 	farmName:'uniquejosam Farm',
 	foodType:['vegetable']
 },
-]
-
-export const searchData = [
-	{
-		id:1,
-		'Name': 'full chicken', 
-	},
-	{
-		id:2,
-		'Name': 'Chicken Eggs',
-	},
-	{
-		
-	}
 ]

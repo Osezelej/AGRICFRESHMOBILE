@@ -108,6 +108,9 @@ const [addrData, setaddrData] = useState([
       address:'ademola farm rd, Atan bustop, ota, Ogun, Nigeria.'
   }
 ])
+const [d, setD] = useState(false)
+const [filteredData, setFilteredData] = useState([]) 
+
 
 
 const [searchWord, setSearchWord] = useState('');
@@ -254,6 +257,10 @@ let manageCart = useCallback(()=>{
                 manageCart={manageCart}
                 marketData = {marketData}
                 setMarketData={setMarketData}
+                d={d}
+                setD={setD}
+                filteredData={filteredData}
+                setFilteredData={setFilteredData}
                 />)}
 
               </Stack.Screen>
@@ -453,7 +460,8 @@ let manageCart = useCallback(()=>{
                 <Filter {...props} 
                     starImage = {starImage}
                     setMarketData={setMarketData}
-
+                    setInitialChange={setD}
+                    setFilteredData={setFilteredData}
                 />
               )
 

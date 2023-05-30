@@ -1,7 +1,7 @@
 import {View, StyleSheet, Text, Image, TouchableOpacity, ScrollView} from 'react-native';
 import { memo, useCallback, useEffect, useState } from 'react';
 import OptionButton from '../components/optionButton';
-import { TextInput } from '@react-native-material/core';
+import { ActivityIndicator, TextInput } from '@react-native-material/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 const styles = StyleSheet.create({
@@ -57,20 +57,17 @@ const styles = StyleSheet.create({
 
     },
 })
-function Filter ({starImage, navigation, setMarketData}){
+function Filter ({starImage, navigation, setMarketData, setInitialChange, setFilteredData}){
 
-    let [email, setEmail] = useState('')
     let getEmail = useCallback(async()=>{
+        let email = '';
         await AsyncStorage.getItem('userEmail', (err, res)=>{
-            setEmail(JSON.parse(res).email)
+            email = JSON.parse(res).email;
         })
+        return email
     })
 
-    const [options, setoptions] = useState([{
-        id:1,
-        option:'All',
-        isActive:true,
-    },
+    const [options, setoptions] = useState([
     {
         id:2,
         option:'Poultry',
@@ -122,11 +119,6 @@ function Filter ({starImage, navigation, setMarketData}){
     })
     const [d, setD] = ('')
     const [optionSort, setOptionSort] = useState([
-        {
-        id:1,
-        option:'All',
-        isActive:true
-    },
     {
         id:2,
         option:'Most Recent',
@@ -144,11 +136,6 @@ function Filter ({starImage, navigation, setMarketData}){
     }
 ])
     const [rating, setRating] = useState([
-        {
-            id:1,
-            option:'All',
-            isActive:true,
-        },
         {
             id:2,
             option:'1',
@@ -175,10 +162,13 @@ function Filter ({starImage, navigation, setMarketData}){
             isActive:false,
         }
     ]) 
+    const [activeActivity, setActiveActivity] = useState(false)
+
+
+
     let handleChange = useCallback((item)=>{
         let item_id = item.id;
         setoptions((prev)=>{
-            console.log(prev);
             for (let n of prev){
                 if (item_id != n.id){
                     n.isActive = false;
@@ -190,14 +180,12 @@ function Filter ({starImage, navigation, setMarketData}){
             return[...prev]
         })
     }, )
-    var [filterData, setFilterData] = useState(
+    const [filterData, setFilterData] = useState(
         {
             categories:optionSelected,
             rating:optionRatingSelected,
             sort:optionSortSelected,
             priceRange:priceRange,
-
-
         }
     ) 
 
@@ -232,7 +220,6 @@ function Filter ({starImage, navigation, setMarketData}){
     let handleChange2 = useCallback((item)=>{
         let item_id = item.id;
         setOptionSort((prev)=>{
-            console.log(prev);
             for (let n of prev){
                 if (item_id != n.id){
                     n.isActive = false;
@@ -247,7 +234,6 @@ function Filter ({starImage, navigation, setMarketData}){
     let handleChange3 = useCallback((item)=>{
         let item_id = item.id;
         setRating((prev)=>{
-            console.log(prev);
             for (let n of prev){
                 if (item_id != n.id){
                     n.isActive = false;
@@ -260,12 +246,21 @@ function Filter ({starImage, navigation, setMarketData}){
         })
     })
     let handlefilterData = async(data)=>{
-        console.log(data)
-       let filteredData =  data.map((value)=>{
-
-            console.log(value.foodType.includes(filterData.categories))
+       let filteredData =  data.filter((value)=>{
+        let categories = value.foodType.includes(filterData.categories)
+        let rating = (value.rating >= filterData.rating  )
+        let foodPrice = parseInt(value.Price.slice(1))
+        let foodPriceCheck = (foodPrice <= filterData.priceRange.max) && (foodPrice >= filterData.priceRange.min)
+        if (filterData.categories.toLowerCase() == 'all'){
+            categories = true;
+        }
+        if (filterData.rating.toLowerCase() == 'all'){
+            rating == true;
+        }
+        console.log('categories: ',categories)
+        console.log('rating: ',rating)
+        return categories && rating && foodPriceCheck
         })
-
         return filteredData
     }
 
@@ -356,26 +351,37 @@ function Filter ({starImage, navigation, setMarketData}){
 
 
             <View style = {styles.ApplyFilterContainer}>
-                <TouchableOpacity style = {styles.ApplyFilterActive} activeOpacity={0.7} onPress={()=>{
+                <TouchableOpacity style = {[styles.ApplyFilterActive, {flexDirection:'row', alignItems:'center'}]} activeOpacity={0.7} onPress={
                     
-                     getEmail().then(async()=>{
+                    ()=>{
+                    setActiveActivity(true)
+                     getEmail().then(async(email)=>{
+                        console.log(email)
                         await axios.get(`https://4v6gzz-3001.csb.app/v1/marketData/${email}`)
                         .then((res)=>{
                             if (res.status == 200){
                                 handlefilterData(res.data)
                                 .then((value)=>{
                                     console.log(value)
-                                    // setMarketData(value)
+                                    setFilteredData(value)
+                                    setInitialChange(false)
                                 })
-
-                                
-                                
                             }
+                        })
+                        .catch((err)=>{
+                            console.log(err)
+                        })
+                        .finally(()=>{
+                            setTimeout(()=>{
+                                setActiveActivity(false);
+                                navigation.navigate('MarketPlace', {email:email})
+                                }, 800)
                         })
 
                      })
                       }}>
                     <Text style = {styles.applyFilterText}>Apply Filter</Text>
+                    {activeActivity && <ActivityIndicator color='black' size={'small'}/>}
                 </TouchableOpacity>
                 <TouchableOpacity style = {styles.ApplyFilter}>
                     <Text style = {styles.applyFilterText}>Reset Filter</Text>

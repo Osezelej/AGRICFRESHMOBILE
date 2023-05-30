@@ -1,6 +1,5 @@
 import { TouchableWithoutFeedback, Keyboard, View, StyleSheet,Text, ScrollView, FlatList, TouchableOpacity, Image, Animated, useColorScheme,  } from "react-native";
 import { useState, useEffect,useCallback, useRef, memo,  } from 'react';
-import { dataApi } from "../data/data";
 import MarketItems, {  FavouritesData } from "../components/marketItems";
 import OptionHeader from "../components/optionHeader";
 import { SimpleLineIcons, Ionicons } from '@expo/vector-icons';
@@ -266,7 +265,11 @@ export default function MarketPlace({
     email,
     handleActivity,
     marketData,
-    setMarketData
+    setMarketData, 
+    d,
+    setD,
+    filteredData,
+    setFilteredData
 
 
 }){
@@ -322,13 +325,12 @@ const [options, setoptions] = useState([{
 }
 ]);
 
+const [dataApi, setDataApi] = useState('');
 const [names, setNames] = useState('MarketPlace');
 const [active, setActive] = useState('#ffdb28');
 const [image, setImage] = useState(images);
 const [itemName, setItemName] = useState('');
 const [optionSelected, setOptionSelected] = useState('')
-
-const [d, setD] = useState(false)
 
 
 let handleChange = useCallback((item)=>{
@@ -349,23 +351,29 @@ let handleChange = useCallback((item)=>{
     })
 }, )
 
+let handleOptionData = async(text)=>{
+    let data ;
+    await axios.put(`https://4v6gzz-3001.csb.app/v1/search/${email}/${text}`)
+    .then((res)=>{
+        data = res.data
+    })
+    .catch((err)=>{
+        console.log(err)
+    })
+
+    return data
+}
+
 useEffect(()=>{
-    console.log(d)
+
     if (d){
+        setMarketData([])
         if(optionSelected.toLowerCase() == 'all'){
-            setMarketData(dataApi)
+            setMarketData(dataApi);
         }else{
-            setMarketData((prev)=>{
-                let newMarketData = []
-                for (let i of dataApi){
-                    for (let n of i.foodType){
-                        if (n.toLowerCase() == optionSelected.toLowerCase()){
-                            newMarketData.push(i);
-                        }
-                    }
-        
-                }
-                return newMarketData
+            handleOptionData(optionSelected.toLowerCase())
+            .then((data)=>{
+                setMarketData(data)
             })
         }
        
@@ -396,21 +404,36 @@ let buyClicked = async (item_name)=>{
 }
 
 async function fetchData (email){
+    let data;
     await axios.get(`https://4v6gzz-3001.csb.app/v1/marketData/${email}`)
     .then((res)=>{
         if(res.status ==  200){
-            setMarketData(res.data)
+            data = res.data
         }
     })
     .catch(e=>console.log(e))
 
+    return data
+
 }
 
-useEffect(useCallback(()=>{
-    if(marketData.length == 0 ){
-        fetchData(email);
+useEffect(()=>{
+    console.log('market')
+    if(filteredData.length == 0){
+        
+        if(marketData.length == 0 ){
+            console.log(marketData)
+            fetchData(email) 
+            .then((data)=>{
+                setMarketData(data);
+                setDataApi(data)
+            })
+        }
+    }else{
+        console.log(filteredData)
+        setMarketData(filteredData)
     }
-}), [])
+}, [filteredData])
 
 
 
@@ -428,7 +451,6 @@ useEffect(useCallback(()=>{
                                     <FlatList
                                         data={marketData}
                                         keyExtractor={items=>items.id}
-                                        refreshing={true}
                                         ListEmptyComponent = {<View style={{flex:1,
                                         backgroundColor:'white',
                                         flexDirection: 'row',
@@ -440,15 +462,15 @@ useEffect(useCallback(()=>{
                                             </Text>
                                         </View>}
                                         renderItem ={({item})=>(<MarketItems 
-                                        styles={styles} 
-                                        item = {item}  
-                                        contentImages = {contentImages} 
-                                        navigation = {navigation} 
-                                        handlePress={buyClicked}
-                                        cartData={cartData}
-                                        handleCartName={handleCartName}
-                                        handleActivity={handleActivity}
-                                        />)}
+                                                styles={styles} 
+                                                item = {item}  
+                                                contentImages = {contentImages} 
+                                                navigation = {navigation} 
+                                                handlePress={buyClicked}
+                                                cartData={cartData}
+                                                handleCartName={handleCartName}
+                                                handleActivity={handleActivity}
+                                                />)}
                                         style={{flex:1}}
                                     />
                     

@@ -39,7 +39,11 @@ export default function FootIconsNavigaiton({
     setCartBadge,
     manageCart,
     marketData,
-    setMarketData
+    setMarketData,
+    d,
+    setD,
+    setFilteredData,
+    filteredData
 }) { 
     let email = route.params.email
     const [name, setName] = useState('Cart');
@@ -139,6 +143,10 @@ export default function FootIconsNavigaiton({
                 email={email}
                 marketData = {marketData}
                 setMarketData={setMarketData}
+                d={d}
+                setD={setD}
+                filteredData={filteredData}
+                setFilteredData={setFilteredData}
                 />)}
             </Tab.Screen>
 
