@@ -369,7 +369,10 @@ useEffect(()=>{
     if (d){
         setMarketData([])
         if(optionSelected.toLowerCase() == 'all'){
-            setMarketData(dataApi);
+            fetchData(email)
+            .then((data)=>{
+                setMarketData(data);
+            })
         }else{
             handleOptionData(optionSelected.toLowerCase())
             .then((data)=>{

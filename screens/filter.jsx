@@ -1,4 +1,4 @@
-import {View, StyleSheet, Text, Image, TouchableOpacity, ScrollView} from 'react-native';
+import {View, StyleSheet, Text, Image, TouchableOpacity, ScrollView, Alert} from 'react-native';
 import { memo, useCallback, useEffect, useState } from 'react';
 import OptionButton from '../components/optionButton';
 import { ActivityIndicator, TextInput } from '@react-native-material/core';
@@ -58,12 +58,13 @@ const styles = StyleSheet.create({
     },
 })
 function Filter ({starImage, navigation, setMarketData, setInitialChange, setFilteredData}){
-
+    const [email1, setEmail] = useState('')
     let getEmail = useCallback(async()=>{
         let email = '';
         await AsyncStorage.getItem('userEmail', (err, res)=>{
             email = JSON.parse(res).email;
         })
+        setEmail(email)
         return email
     })
 
@@ -163,6 +164,7 @@ function Filter ({starImage, navigation, setMarketData, setInitialChange, setFil
         }
     ]) 
     const [activeActivity, setActiveActivity] = useState(false)
+    const [activeActivityReset, setActiveIndicatorReset] = useState(false)
 
 
 
@@ -197,12 +199,14 @@ function Filter ({starImage, navigation, setMarketData, setInitialChange, setFil
 
     }, [optionSelected])
 
+
     useEffect(()=>{
         setFilterData((prev)=>{
             return{...prev, rating:optionRatingSelected}
         })
 
     }, [optionRatingSelected])
+
 
     useEffect(()=>{
         setFilterData((prev)=>{
@@ -216,6 +220,7 @@ function Filter ({starImage, navigation, setMarketData, setInitialChange, setFil
             return{...prev, priceRange:priceRange}
         })
     }, [priceRange])
+
 
     let handleChange2 = useCallback((item)=>{
         let item_id = item.id;
@@ -250,15 +255,24 @@ function Filter ({starImage, navigation, setMarketData, setInitialChange, setFil
         let categories = value.foodType.includes(filterData.categories)
         let rating = (value.rating >= filterData.rating  )
         let foodPrice = parseInt(value.Price.slice(1))
+        
+        if (filterData.priceRange.min == ''){
+            setFilterData((prev)=>{
+                return {...prev, priceRange:{...priceRange, min:0}}
+            })
+        }
+        if(filterData.priceRange.max == ''){
+            setFilterData((prev)=>{
+                return {...prev, priceRange:{...priceRange, max:0}}
+            })
+        }
+
+
         let foodPriceCheck = (foodPrice <= filterData.priceRange.max) && (foodPrice >= filterData.priceRange.min)
-        if (filterData.categories.toLowerCase() == 'all'){
-            categories = true;
+        if(filterData.priceRange.max == 0 && filterData.priceRange.min == 0){
+            foodPriceCheck = true
         }
-        if (filterData.rating.toLowerCase() == 'all'){
-            rating == true;
-        }
-        console.log('categories: ',categories)
-        console.log('rating: ',rating)
+        console.log(foodPriceCheck)
         return categories && rating && foodPriceCheck
         })
         return filteredData
@@ -356,7 +370,7 @@ function Filter ({starImage, navigation, setMarketData, setInitialChange, setFil
                     ()=>{
                     setActiveActivity(true)
                      getEmail().then(async(email)=>{
-                        console.log(email)
+                    
                         await axios.get(`https://4v6gzz-3001.csb.app/v1/marketData/${email}`)
                         .then((res)=>{
                             if (res.status == 200){
@@ -369,7 +383,12 @@ function Filter ({starImage, navigation, setMarketData, setInitialChange, setFil
                             }
                         })
                         .catch((err)=>{
-                            console.log(err)
+                            Alert.alert('Network error', 'Check your network connection and try again', [ {
+                                text:'ok',
+                                
+                            }
+                            
+                            ], {})
                         })
                         .finally(()=>{
                             setTimeout(()=>{
@@ -383,8 +402,15 @@ function Filter ({starImage, navigation, setMarketData, setInitialChange, setFil
                     <Text style = {styles.applyFilterText}>Apply Filter</Text>
                     {activeActivity && <ActivityIndicator color='black' size={'small'}/>}
                 </TouchableOpacity>
-                <TouchableOpacity style = {styles.ApplyFilter}>
+                <TouchableOpacity style = {[styles.ApplyFilter, {flexDirection:'row',}]} onPress={()=>{
+                    setActiveIndicatorReset(true)
+                    setTimeout(()=>{
+                        setActiveIndicatorReset(false)
+                        navigation.navigate('MarketPlace', {email:email1})
+                    }, 1200)
+                }}>
                     <Text style = {styles.applyFilterText}>Reset Filter</Text>
+                    {activeActivityReset && <ActivityIndicator color='black' size={'small'}/>}
                 </TouchableOpacity>
             </View>
     </View>

@@ -468,7 +468,7 @@ let manageCart = useCallback(()=>{
               }
 
             </Stack.Screen>
-     
+              
 
           </Stack.Navigator> 
         </NavigationContainer> 
