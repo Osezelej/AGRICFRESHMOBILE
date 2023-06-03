@@ -41,9 +41,9 @@ const styles = StyleSheet.create({
         padding:4,
     }
 })
-function WalletHead({visibilityImages}){
+function WalletHead({visibilityImages, walletBal, name, email}){
     const [hidden, setHidden] = useState(visibilityImages[1]);
-    const [number, setNumber] = useState('30000.00');
+    const [number, setNumber] = useState(walletBal);
     const [visible, setVisible] = useState('flex')
 
     let handleVisibility = useCallback(()=>{
@@ -58,19 +58,19 @@ function WalletHead({visibilityImages}){
 
     useEffect(()=>{
         if (hidden == visibilityImages[0]){
-            setNumber('8076360300')
+            setNumber(email)
             setVisible('none')
         }else{
-            setNumber('30000.00')
+            setNumber(walletBal)
             setVisible('flex')
         }
     },[hidden])
     return<View style={styles.headertag}>
         <View>
-            <Text style={styles.acctname}>Account Name: Art Template</Text>
+            <Text style={styles.acctname}>Account Name: {name}</Text>
             <Text style={styles.acct}>Account Balance:</Text>
                 <View style={styles.acctbalContainer}>
-                    <Text style={styles.acctbal}>{number}</Text>
+                {visible == 'none'?<Text style={[styles.acctbal, {fontSize:21}]}>{number}</Text>:<Text style={[styles.acctbal]}>{number}</Text>}
                     <Text style={[styles.currency, {display:visible}]}>NGN</Text>
                 </View>
         </View>

@@ -1,8 +1,8 @@
-import { TouchableWithoutFeedback, Keyboard, View, StyleSheet, Image, Text } from "react-native";
-import { memo } from "react";
+import { TouchableWithoutFeedback, Keyboard, View, StyleSheet, Image, Text, Pressable } from "react-native";
+import { memo, useEffect, useState } from "react";
 import {AntDesign} from '@expo/vector-icons';
 import UserOptions from "../components/userOptions";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const styles = StyleSheet.create({
     container:{
@@ -25,10 +25,11 @@ const styles = StyleSheet.create({
         height:100
     },
     topContainer:{
-        alignItems:"center"
+        alignItems:"center",
+
     },
     username:{
-        fontSize:16.5,
+        fontSize:25,
         fontWeight:'bold',
         marginTop:5
     },
@@ -42,11 +43,22 @@ const styles = StyleSheet.create({
     },
     UserOptionsContainer:{
         alignItems:'center'
+    },
+    usernameContainer:{
+        maxWidth:'60%',
     }
 })
 
 function Profile({navigation, userIcon, userProfileDetails}) {
+    const [userName, setUserName] = useState('')
+    
+    async function getUsername(){
+        await AsyncStorage.getItem('userData', (err, res)=>{
+            setUserName(JSON.parse(res).name) 
+        })
+    }
 
+    useEffect(()=>{getUsername()}, [])
     return<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
             <View style={styles.body}>
@@ -54,7 +66,8 @@ function Profile({navigation, userIcon, userProfileDetails}) {
                     <View style={styles.profileImageContainer}>
                     <AntDesign name="user" size={100} color="#3b3b3b" />
                     </View>
-                    <Text style={styles.username}>Art Template</Text>
+                    <Pressable style={styles.usernameContainer}>
+                    <Text style={styles.username}>{userName}</Text></Pressable>
                 </View>
                 <View style={styles.bottomContainer}>
                     {userProfileDetails.map((object)=>(<View key={object.id} style={styles.UserOptionsContainer}>

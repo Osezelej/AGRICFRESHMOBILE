@@ -43,7 +43,9 @@ export default function FootIconsNavigaiton({
     d,
     setD,
     setFilteredData,
-    filteredData
+    filteredData,
+    balance,
+    setBalance
 }) { 
     let email = route.params.email
     const [name, setName] = useState('Cart');
@@ -191,6 +193,8 @@ export default function FootIconsNavigaiton({
                           visibilityImages={visibilityImages}
                           cardOption = {PaymentOptions}
                           navigation={navigation}
+                          balance={balance}
+                          setBalance={setBalance}
               />}
             </Tab.Screen>
 

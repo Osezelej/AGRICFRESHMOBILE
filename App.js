@@ -71,23 +71,12 @@ const userProfileDetails = [{id:1, label:"Order history", image:orderImage, isAc
   {id:6, label:"Address", image:addressImage, isActive:false},
   {id:7, label:"Logout", image:logoutImage, isActive:false},
 ];
-const PaymentOptions = [
-  {
-    cardname:'Credit Card',
+const PaymentOptions = {
+    cardname:'Fund your wallet',
     cardOption:creditCard, 
     navigation:'Card'
-  }, 
-  {
-    cardname:'Google Pay', 
-    cardOption:googleCard,
-    navigation:false,
-  },
-  {
-    cardname:'Apple Pay',
-    cardOption:appleCard,
-    navigation:false,
   }
- ]
+ 
                             
 export default function App() {
   // setStatusBarStyle('dark')
@@ -117,6 +106,11 @@ const [searchWord, setSearchWord] = useState('');
 const [searchData, setSearchData] = useState([])
 const [activeIndicator, setActiveIndicator] = useState(false);
 const [email, setEmail] = useState()
+
+// wallet balance
+const [wbalance, setWBalance] = useState(0);
+
+
 let handleSearchTextChange = useCallback ((text)=>{
   setSearchWord(text);
   if (text.length > 0){
@@ -126,6 +120,17 @@ let handleSearchTextChange = useCallback ((text)=>{
     setActiveIndicator(false)
   }
 })
+// to save the user information on the user phone 
+async function saveUserData (email, name, walletBal){
+  let user_data =   JSON.stringify({
+    email:email,
+    name:name,
+    walletBal:walletBal
+  }) 
+  await AsyncStorage.setItem('userData', user_data)
+
+}
+
 
 // to search for data in mongodb
 let searchDatabase = useCallback(async()=>{
@@ -192,7 +197,6 @@ let manageCart = useCallback(()=>{
           <Stack.Navigator>
           <Stack.Screen
               name = "Login"  
-              component={Login} 
               options={{   
                 headerTitleAlign:'center',
                 title:'',
@@ -201,7 +205,11 @@ let manageCart = useCallback(()=>{
                 headerShadowVisible:false
                }}
               
-            />
+          >
+            {(props)=><Login {...props}
+              saveUserData={saveUserData}
+            />}
+          </Stack.Screen>
             <Stack.Screen
               name = "ForgotPassword"  
               component={FrgtpswdCode} 
@@ -261,6 +269,8 @@ let manageCart = useCallback(()=>{
                 setD={setD}
                 filteredData={filteredData}
                 setFilteredData={setFilteredData}
+                balance={wbalance}
+                setBalance={setWBalance}
                 />)}
 
               </Stack.Screen>
@@ -308,6 +318,8 @@ let manageCart = useCallback(()=>{
               {(props)=><Wallet {...props} 
                           visibilityImages={visibilityImages}
                           cardOption = {PaymentOptions}
+                          balance={wbalance}
+                          setBalance={setWBalance}
               />}
             </Stack.Screen>
 
@@ -319,7 +331,10 @@ let manageCart = useCallback(()=>{
                 animation:'fade_from_bottom'
               }}
             >
-              {(props)=><Card {...props} cards={cards}
+              {(props)=><Card {...props} 
+                          cards={cards}
+                          balance = {wbalance}
+                          setBalance = {setWBalance}
               />}
             </Stack.Screen>
 

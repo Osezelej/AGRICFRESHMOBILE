@@ -1,12 +1,14 @@
-import { ScrollView, View,Text, StyleSheet, Pressable, TextInput, TouchableOpacity, FlatList } from "react-native";
+import { ScrollView, View,Text, StyleSheet, Pressable, TextInput, TouchableOpacity, Alert } from "react-native";
 import { memo, useCallback, useState } from "react";
-import CreditCard from "../components/creditCard";
+import { PayWithFlutterwave } from "flutterwave-react-native";
 import { MaterialIcons } from '@expo/vector-icons';
+import axios from "axios";
 
 const styles = StyleSheet.create({
     container:{
         flex:1,
         backgroundColor:'white',
+        padding:20
     },
     addCardContainer:{
         flexDirection:'row',
@@ -20,14 +22,16 @@ const styles = StyleSheet.create({
         fontWeight:'700'
     },
     input:{
-        marginHorizontal:10,
         borderWidth:1.5,
         paddingHorizontal:10,
         paddingVertical:7,
         borderRadius:5,
         marginVertical:10,
-        fontSize:16,
-        fontWeight:'bold'
+        fontSize:18,
+        fontWeight:'bold',
+        alignContent:'center',
+        justifyContent:'center',
+        alignItems:'center'
     },
     CreditCardContainer:{
         flex:1,
@@ -52,9 +56,26 @@ const styles = StyleSheet.create({
     }
 });
 
-function Card({navigation, cards}){
-    console.log(cards)
+function Card({navigation, route, balance, setBalance}){
+
+    const [email, setEmail] = useState(route.params.email);
+    const [tx_ref, setTx_ref] = useState(route.params.tx_ref);
     const [focusColor, setFocusColor] = useState('#898989');
+    const [amount, setAmount] = useState('');
+    const [isValid, setIsvalid] = useState(false);
+    const [showcheckout, setShowCheckout] = useState(false);
+    const [state, setState] = useState(true)
+
+    const generateTransactionRef = (length) => {
+        var result = '';
+        var characters =
+          'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charactersLength = characters.length;
+        for (var i = 0; i < length; i++) {
+          result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return `flw_tx_ref_${result}`;
+      };
    
     let handleFocus = useCallback(()=>{
         setFocusColor((prev)=>{
@@ -66,45 +87,79 @@ function Card({navigation, cards}){
         })
     })
 
+
+    let handleTextChange = useCallback((text)=>{
+
+        if (isNaN(text)){
+            setIsvalid(true)
+            setShowCheckout(false)
+        }else{
+            
+            setIsvalid(false)
+            setShowCheckout(true)
+            setAmount(text)
+        }
+        
+    })
+
     return<ScrollView style={styles.container}>
     <View style={styles.CreditCardContainer}>
-            <FlatList 
-                horizontal={true}
-                data={cards}
-                pinchGestureEnabled={true}
-                keyExtractor={items=>items.id}
-                renderItem={({item})=><Pressable>
-                                        <CreditCard
-                                            cardNumber={item.cardNumber}
-                                            ownerName={item.ownerName} 
-                                            cardType={item.cardType}
-                                            expiringDate={item.expiringDate}
-                 />
-                 </Pressable>} 
-            />
-            <Pressable onPress={()=>navigation.navigate('Add new Card')}>
-                <View style={styles.addCardContainer}>
-                    <MaterialIcons name="add" size={22} color="#e4c423" />
-                    <Text style={styles.addCardText}>Add new card</Text>
-                </View>
-            </Pressable>
+            {isValid &&   <Text style={{
+                color:'red',
+                fontSize:16,
+                fontWeight:'600',
+
+            }}>Enter a valid Amount.</Text>}
             <View style={styles.inputContainer}>
                 <TextInput 
                     style={[styles.input, {borderColor:focusColor, height:60}]}
                     placeholder='Amount' 
                     onFocus={handleFocus} 
                     onBlur={handleFocus}
-                    keyboardType='number-pad'
+                    keyboardType='numeric'
+                    onChangeText={handleTextChange}
+                    value={amount}
                     />
             </View>
     </View>
-    <TouchableOpacity activeOpacity={0.8}>
-        <View style={styles.submitContainer}>
-            <Pressable >
-                <Text style={styles.submit}>SUBMIT</Text>
-            </Pressable>
-        </View>
-    </TouchableOpacity>
+        {showcheckout && <PayWithFlutterwave
+                            options={{
+                                tx_ref:tx_ref,
+                                authorization:'FLWPUBK_TEST-ba508ec2f481c6534ffb291870398ecd-X',
+                                customer:{
+                                    email:email
+                                },
+                                currency:'NGN',
+                                amount:parseInt(amount),
+                                payment_options:'card',
+                            }}
+                            onRedirect={(data)=>{
+                                if (data.status == 'completed'){
+                                    Alert.alert('SUCCESS', 'Agric_Fresh wallet funded successfully', [{
+                                        text:'OK',
+                                        onPress:async()=>{
+                                            await axios.post(`https://4v6gzz-3001.csb.app/v1/update/${email}`, {"newemail":"", "name":"", "walletBal":amount})
+                                            .then((res)=>{
+                                                if(res.status == 200){
+                                                    let data = res.data;
+                                                    let walletBal = data["walletBal"]
+                                                    console.log(walletBal)
+                                                    setBalance(walletBal);
+                                                    navigation.goBack()
+                                                }
+                                            })
+                                            .catch((e)=>{
+                                                console.log(e);
+                                            })
+                                        
+                                        }
+                                    }])
+                                }
+
+                                
+                            }}
+                            
+                        />}
     </ScrollView>
 }
 export default memo(Card);

@@ -7,7 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
-export function Login({navigation, route}){
+export function Login({navigation, route, saveUserData}){
     let email = ''
     navigation.canGoBack(false)
     if (route.params != undefined){
@@ -46,17 +46,24 @@ export function Login({navigation, route}){
                     Alert.alert('LOGIN SUCCESSFULL','', [{
                         text:'0K',
                         onPress:async ()=>{
-                            setPassword('')
-                           
+                            let data = res.data;
+                            let email = data[0].email;
+                            let name = data[0].name;
+                            let walletBal = data[0].walletBal
+
+                            console.log(res.data);
+                            setPassword('');
+                            saveUserData(email, name, walletBal).then(()=>{
                                 navigation.navigate('MarketPlace', {email:Email})
-    
-                            
+                            })
+                           
+                    
                         }
                     }])
                 }
             })
             .catch((e)=>{
-                Alert.alert('Warning', 'Invalid Email or Password', [
+                Alert.alert('NETWORK ERROR', 'Invalid Email or Password', [
                     {
                         text:'Cancel',
                         onPress:()=>{
