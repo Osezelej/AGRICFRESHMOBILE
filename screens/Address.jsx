@@ -40,12 +40,16 @@ function Address({setAddrData, navigation, route}) {
 let handlePress = useCallback (()=>{
   if (data.state && data.Country && data.LGA &&  data.phone && data.loc && data.title && data.address){
     console.log(data)
-    Alert.alert('CONFIRM YOUR ADDRESS', ` Title:${data.title.toUpperCase()}\n Country:${data.Country}\n state:${data.state} \n LGA:${data.LGA} \n Bustop:${data.loc} \n PhoneNumber:${data.phone}\n Street:${data.address}`,[{text:'Ok', onPress:()=>{
+    Alert.alert('CONFIRM YOUR ADDRESS', ` Title:${data.title.toUpperCase()}\n Country:${data.Country}\n state:${data.state} \n LGA:${data.LGA} \n Bustop:${data.loc} \n PhoneNumber:${data.phone}\n Street:${data.address}`, [{text:'Ok', onPress:()=>{
 
       setAddrData((prev)=>{
         return[...prev, {id:prev.length + 1, address:`${data.address}, ${data.loc}, ${data.LGA}, ${data.state}, ${data.Country}.`, phone:data.phone, title:data.title}]
        })
-       navigation.navigate('Order',{readyToBuydata:Data, itemnumber:itemOrdered})
+       if(route.params != undefined){
+          navigation.navigate('Order',{readyToBuydata:Data, itemnumber:itemOrdered})
+       }else{
+        navigation.goBack()
+       }
     }}, {text:'cancel'}])
 
 

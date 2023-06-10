@@ -80,4 +80,4 @@ function WalletHead({visibilityImages, walletBal, name, email}){
 
         </View>
 }
-export default memo(WalletHead)
+export default WalletHead;

@@ -2,6 +2,7 @@ import { memo, useCallback, useEffect, useState } from "react";
 import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import WalletHead from "../components/walletHead";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useIsFocused } from "@react-navigation/native";
 
 const styles = StyleSheet.create({
     container:{
@@ -47,14 +48,7 @@ function Wallet({visibilityImages, cardOption, navigation, balance, setBalance})
         return e
     }
 
-    async function getbalance(){
-        let e  = '';
-        await AsyncStorage.getItem('userData', (err, res)=>{
-            e = JSON.parse(res).walletBal
-        })
-        return e
 
-    }
 
     async function getName(){
         let e  = '';
@@ -80,8 +74,9 @@ function Wallet({visibilityImages, cardOption, navigation, balance, setBalance})
     //   handle fund your wallet event
 
     let handlePress = useCallback(()=>{
-        setTx_ref(generateTransactionRef(10))
-        navigation.navigate('Card', {tx_ref:tx_ref, email:email})
+        let tx_ref = generateTransactionRef(10);
+        console.log(tx_ref);
+        navigation.navigate('Card', {tx_ref:tx_ref, email:email});
     })
 
     //   to get email once the page opens
@@ -89,13 +84,13 @@ function Wallet({visibilityImages, cardOption, navigation, balance, setBalance})
         getEmail().then((res)=>{
             setEmail(res)
         })
-        getbalance().then((res)=>{
-            setBalance(res)
-        })
+      
         getName().then((res)=>{
             setName(res)
         })
     },[])
+
+    const isFocused = useIsFocused()
 
     return<ScrollView style={styles.container}>
             <View style={styles.body}>
@@ -137,4 +132,4 @@ function Wallet({visibilityImages, cardOption, navigation, balance, setBalance})
     </ScrollView>
 }
 
-export default memo(Wallet)
+export default Wallet;

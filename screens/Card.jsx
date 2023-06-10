@@ -1,8 +1,8 @@
 import { ScrollView, View,Text, StyleSheet, Pressable, TextInput, TouchableOpacity, Alert } from "react-native";
 import { memo, useCallback, useState } from "react";
-import { PayWithFlutterwave } from "flutterwave-react-native";
-import { MaterialIcons } from '@expo/vector-icons';
+import { PayWithFlutterwave, FlutterwaveButton } from "flutterwave-react-native";
 import axios from "axios";
+import { useIsFocused } from "@react-navigation/native";
 
 const styles = StyleSheet.create({
     container:{
@@ -102,6 +102,8 @@ function Card({navigation, route, balance, setBalance}){
         
     })
 
+    const isFocused = useIsFocused();
+
     return<ScrollView style={styles.container}>
     <View style={styles.CreditCardContainer}>
             {isValid &&   <Text style={{
@@ -122,7 +124,7 @@ function Card({navigation, route, balance, setBalance}){
                     />
             </View>
     </View>
-        {showcheckout && <PayWithFlutterwave
+        <PayWithFlutterwave
                             options={{
                                 tx_ref:tx_ref,
                                 authorization:'FLWPUBK_TEST-ba508ec2f481c6534ffb291870398ecd-X',
@@ -133,6 +135,8 @@ function Card({navigation, route, balance, setBalance}){
                                 amount:parseInt(amount),
                                 payment_options:'card',
                             }}
+
+                            
                             onRedirect={(data)=>{
                                 if (data.status == 'completed'){
                                     Alert.alert('SUCCESS', 'Agric_Fresh wallet funded successfully', [{
@@ -142,9 +146,10 @@ function Card({navigation, route, balance, setBalance}){
                                             .then((res)=>{
                                                 if(res.status == 200){
                                                     let data = res.data;
+                                                    console.log(data)
                                                     let walletBal = data["walletBal"]
                                                     console.log(walletBal)
-                                                    setBalance(walletBal);
+                                                    setBalance((prev)=>prev + parseInt(amount));
                                                     navigation.goBack()
                                                 }
                                             })
@@ -159,7 +164,7 @@ function Card({navigation, route, balance, setBalance}){
                                 
                             }}
                             
-                        />}
+                        />
     </ScrollView>
 }
-export default memo(Card);
+export default Card;

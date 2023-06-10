@@ -45,9 +45,7 @@ function AddresseGuide({navigation, addreses, route}){
 
     if(route.params != undefined){
         var data = route.params.readyToBuydata;
-
         var itemOrdered = route.params.itemnumber;
-
     }
     
     let [visibleCont, setVisibleCont] = useState(false)
@@ -65,19 +63,16 @@ function AddresseGuide({navigation, addreses, route}){
         />
         <View >
             <View style={styles.addAddr}>
-                <TouchableOpacity style={styles.addAddrButton} onPress={()=>{navigation.navigate('AddressGuide', {readyToBuydata:data, itemnumber:itemOrdered})}}>
+                <TouchableOpacity style={styles.addAddrButton} onPress={()=>{route.params.from == 'Profile'? navigation.navigate('AddressGuide'): navigation.navigate('AddressGuide', {readyToBuydata:data, itemnumber:itemOrdered})}}>
                     <Text style={styles.addAddrButtonText}>ADD NEW ADDRESS</Text>
                 </TouchableOpacity>
             </View>
             {visibleCont &&  <View style={styles.addAddr}>
-                <TouchableOpacity style={styles.addAddrButton} onPress={()=>{navigation.navigate('Order', {readyToBuydata:data, itemnumber:itemOrdered})}}>
+                <TouchableOpacity style={styles.addAddrButton} onPress={()=>{route.params.from == 'Profile'? navigation.goBack(): navigation.navigate('Order', {readyToBuydata:data, itemnumber:itemOrdered})}}>
                     <Text style={styles.addAddrButtonText}>CONTINUE</Text>
                 </TouchableOpacity>
             </View>}
-           
         </View>
-        
-        
     </View>
 }
 

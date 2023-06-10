@@ -177,6 +177,7 @@ export default function FootIconsNavigaiton({
                     navigation = {navigation}
                     image = {cartImage}
                     getItem = {getCartData}
+                    balance={balance}
                 />}
             </Tab.Screen>
             <Tab.Screen

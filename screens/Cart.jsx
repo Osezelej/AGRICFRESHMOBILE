@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
 })
 
 
-function Cart({navigation, name, manageCartMinus, cartData, removeItem, image, getItem}){
+function Cart({navigation, name, manageCartMinus, cartData, removeItem, image, getItem, balance}){
     const [ttlData, setTtlData] = useState([...dataApi])
      const OrderItemdata = [...cartData]
      const [cartName, setCartName] = useState('Cart')
@@ -191,7 +191,7 @@ function Cart({navigation, name, manageCartMinus, cartData, removeItem, image, g
                                 <Text style={styles.username}>Art Template</Text>
                             </View>
                             <View style={styles.balWallet}>
-                                <Text style={styles.acctText}>N3000.00</Text>
+                                <Text style={styles.acctText}>N{balance}</Text>
                                 <Pressable style={styles.fWalletButton} onPress={()=>{navigation.navigate('Wallet')}}>
                                     <Text>Fund Wallet</Text>
                                 </Pressable>

@@ -28,6 +28,7 @@ import Search from './screens/search';
 import SearchHead from './components/searchHead';
 import Filter from './screens/filter';
 import FrgtpswdCode from './screens/frgtpswdCode';
+import OrderHistory from './screens/orderHistory';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
@@ -66,7 +67,7 @@ const Images = [searchImage, FilterImage];
 const userProfileDetails = [{id:1, label:"Order history", image:orderImage, isActive:true},
   {id:2, label:"User Profile", image:profileImage, isActive:false},
   {id:3, label:"Favourites", image:favouriteImage, isActive:false},
-  {id:4, label:"Cart", image:cartImage, isActive:false},
+  // {id:4, label:"Cart", image:cartImage, isActive:false},
   {id:5, label:"Transactions", image:paymentImage, isActive:false},
   {id:6, label:"Address", image:addressImage, isActive:false},
   {id:7, label:"Logout", image:logoutImage, isActive:false},
@@ -121,6 +122,7 @@ let handleSearchTextChange = useCallback ((text)=>{
   }
 })
 // to save the user information on the user phone 
+const [dataSaved, setDataSaved] = useState('');
 async function saveUserData (email, name, walletBal){
   let user_data =   JSON.stringify({
     email:email,
@@ -128,6 +130,7 @@ async function saveUserData (email, name, walletBal){
     walletBal:walletBal
   }) 
   await AsyncStorage.setItem('userData', user_data)
+  setDataSaved('saved')
 
 }
 
@@ -184,6 +187,24 @@ async function  handleCartData(item){
 let manageCart = useCallback(()=>{
   setCartBadge(cartBadge + 1);
 })
+
+// add to Wallet
+
+
+async function getbalance(){
+  let e  = '';
+  await AsyncStorage.getItem('userData', (err, res)=>{
+      e = JSON.parse(res).walletBal
+  })
+  return e
+}
+
+useEffect(()=>{
+  getbalance().then((res)=>{
+    setWBalance(res)
+  })
+
+}, [dataSaved])
 
 
   return (<View style ={styles.container}>
@@ -483,7 +504,18 @@ let manageCart = useCallback(()=>{
               }
 
             </Stack.Screen>
+              <Stack.Screen
+              name='Order history'
               
+              options={{
+                headerShadowVisible:false,
+                animation:'simple_push',
+                headerTitleAlign:'center',
+                
+              }}
+              >
+                {(prpos)=><OrderHistory/>}
+              </Stack.Screen>
 
           </Stack.Navigator> 
         </NavigationContainer> 

@@ -28,7 +28,7 @@ function UserOption ({image, navigation, navigationLink}){
         if (navigationLink == 'Logout'){
             navigation.navigate('Login')
         }else{
-            navigation.navigate(navigationLink)
+            navigation.navigate(navigationLink, {from:'Profile'})
         }
     }} onPressIn={handlePress} onPressOut={handlePress}>
             <Image source={image} style={styles.image}/>

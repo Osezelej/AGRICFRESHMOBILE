@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
 
 }) 
 
-function Wallet({TImage, visibilityImages}){
+function Wallet({TImage, visibilityImages, }){
     const [transactions, setTransactions] = useState([]);
 
 
