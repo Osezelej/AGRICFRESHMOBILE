@@ -4,7 +4,6 @@ import { memo, useState, useCallback, useEffect } from 'react';
 const styles = StyleSheet.create({
     headertag:{
         backgroundColor:'#ffdb28',
-        flex:1,
         marginHorizontal:20,
         marginVertical:20,
         paddingHorizontal:20,

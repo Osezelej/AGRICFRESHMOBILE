@@ -325,7 +325,11 @@ useEffect(()=>{
                 animation:'slide_from_right'
               }}
             >
-              {(props)=><Transaction {...props} TImage={TImage} visibilityImages={visibilityImages}/>}
+              {(props)=><Transaction {...props} 
+              TImage={TImage} 
+              visibilityImages={visibilityImages}
+              balance={wbalance}
+              />}
             </Stack.Screen>
 
             <Stack.Screen

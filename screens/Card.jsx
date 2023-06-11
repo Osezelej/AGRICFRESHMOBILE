@@ -139,10 +139,11 @@ function Card({navigation, route, balance, setBalance}){
                             
                             onRedirect={(data)=>{
                                 if (data.status == 'completed'){
+                                    
                                     Alert.alert('SUCCESS', 'Agric_Fresh wallet funded successfully', [{
                                         text:'OK',
                                         onPress:async()=>{
-                                            await axios.post(`https://4v6gzz-3001.csb.app/v1/update/${email}`, {"newemail":"", "name":"", "walletBal":amount})
+                                            await axios.post(`https://4v6gzz-3001.csb.app/v1/update/${email}`, {"newemail":"", "name":"", "walletBal":amount, trx_id:tx_ref})
                                             .then((res)=>{
                                                 if(res.status == 200){
                                                     let data = res.data;
@@ -150,13 +151,12 @@ function Card({navigation, route, balance, setBalance}){
                                                     let walletBal = data["walletBal"]
                                                     console.log(walletBal)
                                                     setBalance((prev)=>prev + parseInt(amount));
-                                                    navigation.goBack()
+                                                    navigation.goBack();
                                                 }
                                             })
                                             .catch((e)=>{
                                                 console.log(e);
                                             })
-                                        
                                         }
                                     }])
                                 }
