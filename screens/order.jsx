@@ -1,6 +1,7 @@
-import { memo } from "react";
-import { View, FlatList, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { memo, useState } from "react";
+import { View, FlatList, Text, StyleSheet, TouchableOpacity, Image, Alert, Modal } from "react-native";
 import OrderItem from "../components/orderitem";
+import { ActivityIndicator } from "@react-native-material/core";
 
 
 const styles = StyleSheet.create({
@@ -79,10 +80,59 @@ const styles = StyleSheet.create({
     checkoutTotal:{
         fontSize:20,
         fontWeight:'bold'
-    }
+    },
+    modalContainer:{
+        flex:1,
+        flexDirecction:'row',
+        justifyContent:'center',
+        alignItems:'center'
+
+    },
+    contentContainer:{
+        height:'70%',
+        width:'85%',
+        backgroundColor:'white',
+        elevation:10,
+        borderRadius:10,
+        padding:15,
+    },
+    successImage:{
+        height:100,
+        width:100
+    },
+    headContainer:{
+        flexDirection:'column',
+        justifyContent:'center',
+        alignItems:'center'
+    },
+    successImageContainer:{
+        borderRadius:100,
+        elevation:13,
+        padding:1,
+
+    },
+    orderText:{
+        fontSize:20,
+        fontWeight:'500',
+        marginTop:10,
+
+    },
+    orderIdContainer:{
+        flexDirection:'row',
+        flexWrap:'wrap',
+        marginBottom:4
+    },
+    orderIdHeader:{
+        fontSize:14.6,
+        fontWeight:'bold'
+    },
+    transactionIdContainer:{
+        paddingVertical:10
+    },
+    
 });
 
-function Order ({navigation, route, deliveryImage, deliveryImage2}){
+function Order ({navigation, route, deliveryImage, deliveryImage2, balance, successImage}){
     
     if(route.params != undefined){
         var data = route.params.readyToBuydata;
@@ -101,6 +151,36 @@ function Order ({navigation, route, deliveryImage, deliveryImage2}){
             }
         }
     }
+
+    function handlePress(){
+        setActiveActivity(true)
+        if (total > balance){
+            Alert.alert('Insufficient Funds', 'You do not have sufficient balance in your wallet to make this transaction. \n\ndo you want to fund your wallet?', [
+                
+            {
+                text:'No'
+            },
+            {
+                 text:'yes',
+                onPress:()=>{
+                        navigation.navigate('Wallet')
+                        setActiveActivity(false)
+                },
+                style:'default'
+                    
+            }
+        ])
+        }else{
+            setModalVisibility(true)
+        }
+        
+        setTimeout(()=>{
+            setActiveActivity(false)
+        }, 1000)
+    }
+    const [activeActivity, setActiveActivity] = useState(false);
+    const [modalVisibility, setModalVisibility] = useState(false);
+
     return <View style = {styles.body}>
                 <View style={styles.TextContainer}>
                     <Text style = {styles.header}>Order</Text>
@@ -127,17 +207,60 @@ function Order ({navigation, route, deliveryImage, deliveryImage2}){
                         </View>
                     </View>
                     <View style={styles.checkoutContainer}>
-                        <TouchableOpacity style={styles.checkout} activeOpacity={0.6}>
+                    {activeActivity?<View style={styles.checkout}>
+                            <ActivityIndicator size={26} color="black"/>
+                        </View>:
+                        <TouchableOpacity style={styles.checkout} activeOpacity={0.6} onPress={handlePress}>
                             <View style={{flexDirection:'row', justifyContent:'space-evenly'}}>
                                 <Text style={styles.checkoutText}>CHECKOUT</Text>
                                 <Text style={styles.checkoutTotal}>N{total}</Text>
                             </View>
-                            
-                        </TouchableOpacity>
+                        </TouchableOpacity>}
+                        
                     </View>
+        </View>
+        <Modal 
+        visible={modalVisibility}
+        onDismiss={()=>{}}
+        onRequestClose={()=>{}}
+        transparent={true}
+        animationType={'slide'}
+        >
+            <View style={styles.modalContainer}>
+                <View style={styles.contentContainer}>
+                    <View style={styles.headContainer}>
+                        <View style={styles.successImageContainer}>
+                                <Image source={successImage} style={styles.successImage} />
+                        </View>
+                        <Text style={styles.orderText}>SuccessFull !!!</Text>
+                    </View>
+                    <View style={styles.transactionIdContainer}>
+                        <View style={styles.orderIdContainer}>
+                            <Text style={styles.orderIdHeader}>Order ID:</Text>
+                            <Text style={styles.orderDetail}>mvfs_24njrvik94</Text>
+                        </View>
+                        <View style={styles.orderIdContainer}>
+                            <Text style={styles.orderIdHeader}>Customer Address:</Text>
+                            <Text style={styles.orderDetail}>21, Ogunyoumi street, Kosofe, Lagos state, Nigeria. </Text>
+                        </View>
+                        <View style={styles.orderIdContainer}>
+                            <Text style={styles.orderIdHeader}>Customer tel:</Text>
+                            <Text style={styles.orderDetail}>08076320300</Text>
+                        </View>
+                        <Text>Dear customer, please note that you have limited time to cancel order Thank you!.</Text>
+                    </View>
+                    <View style={styles.orderContentContainer}>
+
+                    </View>
+                    <TouchableOpacity onPress={()=>{
+                        setModalVisibility(false)
+                    }}>
+                        <Text>cancel</Text>
+                    </TouchableOpacity>
                 </View>
-
-
+            </View>
+        </Modal>
     </View>
 }
+
 export default memo(Order)

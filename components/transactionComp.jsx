@@ -44,7 +44,7 @@ function TransactionComp({item}){
     
     let Dte = new Date(item.date.slice(0, item.date.indexOf('+')));
     const weekDay = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
-    
+
     const month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
     let trxDate = Dte.getDay();
     let day = weekDay[trxDate];
@@ -55,9 +55,11 @@ function TransactionComp({item}){
     console.log(trxMonth)
 
     return<View style={styles.trxContainer}>
-            <View style={styles.trxIdHead}>
-                {item.credit_debit == 'credit'?<Text style={styles.trxIdText}>{item.credit_debit}</Text>:<Text style={[styles.trxIdText, {backgroundColor:'#f8a4a4'}]}>{item.credit_debit}</Text>}
-            </View>
+    {item.credit_debit == 'credit'?<View style={styles.trxIdHead}>
+                <Text style={styles.trxIdText}>{item.credit_debit}</Text>
+            </View>:<View style={[styles.trxIdHead,  {backgroundColor:'#f8a4a4'}]}>
+                <Text style={[styles.trxIdText]}>{item.credit_debit}</Text>
+            </View> }
             <View style={styles.trxBody}>
                 <Text style={styles.trxId}>{item.transaction_Id}</Text>
                 {item.credit_debit == 'credit'?<Text style={styles.walletBal}>+{item.walletBal}</Text>:<Text style={styles.walletBal}>-{item.walletBal}</Text>}

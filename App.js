@@ -35,7 +35,7 @@ import axios from 'axios';
 
 const Stack = createNativeStackNavigator();
 
-let logoImages = require('./assets/images/Agricfresh.png');
+let logoImages = require('./assets/icon.png');
 let searchImage = require('./assets/images/search-interface-symbol.png');
 let FilterImage = require('./assets/images/setting.png');
 let cartImage = require('./assets/images/shopping-cart.gif');
@@ -60,6 +60,8 @@ let masterCard = require ('./assets/images/Mastercard_2019_logo.svg.png');
 let visaCard = require('./assets/images/Visa.png');
 let deliveryImage = require('./assets/images/fastDelivery.png');
 let deliveryImage2 = require('./assets/images/foodDelivery.png');
+let successImage = require('./assets/images/success.png');
+
 
 const visibilityImages = [VisibleImage, notVisibleImage];
 
@@ -189,7 +191,7 @@ let manageCart = useCallback(()=>{
 })
 
 // add to Wallet
-
+let [firstLoad, setFirstLoad] = useState(false)
 
 async function getbalance(){
   let e  = '';
@@ -200,9 +202,13 @@ async function getbalance(){
 }
 
 useEffect(()=>{
-  getbalance().then((res)=>{
-    setWBalance(res)
-  })
+  if(firstLoad){
+    getbalance().then((res)=>{
+      setWBalance(res)
+    })
+  }else{
+    setFirstLoad(true)
+  }
 
 }, [dataSaved])
 
@@ -433,6 +439,8 @@ useEffect(()=>{
                 <Order {...props} 
                   deliveryImage = {deliveryImage}
                   deliveryImage2 = {deliveryImage2}
+                  balance={wbalance}
+                  successImage={successImage}
                 />
               )
 
