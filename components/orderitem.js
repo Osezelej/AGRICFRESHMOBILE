@@ -57,17 +57,17 @@ function OrderItem({data}){
     return<View style = {styles.orderBody}>
         <Image source={{uri:data.Image}} style={styles.image}/>
         <View style={styles.orderBodyinfo}>
-        <View style={styles.numContainer}>
-            
-        <Text style={styles.numOfItem}>{data.num}X</Text>
-        </View>
-
-            <View style={styles.namePrice}>
-                <Text style={styles.name}>{data.Name}</Text>
-                <View style={styles.priceContainer}>
-                    <Text style={styles.price}>{data.Price}</Text>
-                </View>
+            <View style={styles.numContainer}>
+                
+            <Text style={styles.numOfItem}>{data.num}X</Text>
             </View>
+
+                <View style={styles.namePrice}>
+                    <Text style={styles.name}>{data.Name}</Text>
+                    <View style={styles.priceContainer}>
+                        <Text style={styles.price}>{data.Price}</Text>
+                    </View>
+                </View>
 
         </View>
     </View>
