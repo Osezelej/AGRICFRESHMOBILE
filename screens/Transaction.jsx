@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
     },
     transactionHistoryContainer:{
         padding:20,
+        flex:1
     },
     transactionHeaderText:{
         fontSize:20,
@@ -58,8 +59,14 @@ const styles = StyleSheet.create({
         marginLeft:5,
         fontSize:17,
         fontWeight:'500',
-    }
+    },
+    transactionBody:{
+        flex:1
+    },
 
+    container:{
+        flex:1
+    }
 
 }) 
 

@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { View, FlatList, Text, StyleSheet, TouchableOpacity, Image, Alert, Modal, ScrollView } from "react-native";
 import OrderItem from "../components/orderitem";
 import { ActivityIndicator } from "@react-native-material/core";
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
         paddingVertical:10,
     },
     orderDetail:{
-        fontSize:16,
+        fontSize:14,
         fontWeight:'500',
         color:'#636363'
     },
@@ -190,16 +190,37 @@ const styles = StyleSheet.create({
         borderRadius:10,
         elevation:10
     },
-
+    vericontentContainer:{
+        width:'85%',
+        backgroundColor:'white',
+        elevation:10,
+        flexDirection:'row',
+        paddingHorizontal:10,
+        paddingVertical:10,
+        alignItems:'center',
+    },
+    veriData:{
+        fontSize:16,
+        marginLeft:10
+    }
 });
 
-function Order ({navigation, route, deliveryImage, deliveryImage2, balance, successImage}){
+function Order ({navigation, 
+    route, 
+    deliveryImage, 
+    deliveryImage2, 
+    balance, 
+    successImage,
+    order,
+    setOrder,
+    setBalance,
+    setCartData,
+    setCartBadge
+}){
     
     if(route.params != undefined){
         var data = route.params.readyToBuydata;
-        var productId = data.map((value)=>{
-            return value._id
-        })
+        
         let itemOrdered = route.params.itemnumber;
         var total = 500;
         for (let items of data){
@@ -213,6 +234,10 @@ function Order ({navigation, route, deliveryImage, deliveryImage2, balance, succ
                 }
             }
         }
+        // to get the product id
+        var productId = data.map((value)=>{
+            return {productId:value._id, numOfitem:value.num}
+        })
     }
 
     
@@ -239,24 +264,24 @@ function Order ({navigation, route, deliveryImage, deliveryImage2, balance, succ
         }else{
             Alert.alert('Confirm your Order', 'Are you sure you want to continue?', [
                 {
-                    text:'No',
+                    text:'No, cancel',
             },
             {
                 text:'yes',
                 onPress:()=>{
-                    generateNum_store().then(async ()=>{
-
-                        // await axios.post(`https://4v6gzz-3001.csb.app/v1/orderTransaction/${email}`, {})
-                        // .then((res)=>{
-                        //     console.log
-                        // })
-                        // .catch((erro)=>{
-                        //     console.log(erro)
-                        // })
-                        // .finally(()=>{
-                            
-                        // })
-                    })
+                    if (ordRef.length > 0){
+                        const data = {
+                            orderId:ordRef,
+                            orders:[...productId]
+                        }
+                        removeMoneyFromWallet(data).then((value)=>{
+                            if (value){
+                                setOrderCon('Order')
+                                handleOrderTrans(data)
+                            }
+                        })
+                        
+                    }
                 }
             }
             ])
@@ -305,41 +330,106 @@ function Order ({navigation, route, deliveryImage, deliveryImage2, balance, succ
     const [modalVisibility, setModalVisibility] = useState(false);
     const [ordRef, setOrdRef] = useState('');
     const [email, setEmail] = useState('');
+    const [veriModalVisibility, setVeriModalVisibility]= useState(false);
+    const [orderCon, setOrderCon]= useState('Items')
+    const justStarted = useRef(false);
 
     useEffect(()=>{
         genEmail()
+        generateNum_store()
     }, []);
 
     // upload to the back end once checkout have been pressed
     async function handleOrderTrans(data){
-        await axios.post(`https://4v6gzz-3001.csb.app/v1/orderTransaction/${email}`, {...data})
-        .then((res)=>{
+        await axios.get(`https://4v6gzz-3001.csb.app/v1/getOrder/${data.orderId}`)
+        .then(async (res)=>{
             if (res.status == 200){
-                console.log(res.data);
-                setModalVisibility(true);
+                if(res.data == 1){
+                    Alert.alert('Error', 
+                    'please go back to the previous page and click continue', 
+                    [{text:'ok', onPress:()=>{
+                        navigation.goBack()
+                    }}])
+                }else{
+
+                    await axios.post(`https://4v6gzz-3001.csb.app/v1/orderTransaction/${email}`, {...data})
+                        .then((res)=>{
+           
+                         if (res.status == 200){
+                                console.log(res.data);
+                                setOrder(res.data)
+                                setVeriModalVisibility(false)
+                                setModalVisibility(true);
+                                setCartData([]);
+                                setCartBadge(0)
+                        }})
+                        .catch((err)=>{
+                            console.log(err)
+                         })
+                        .finally(()=>{
+                            setTimeout(()=>{
+                                setActiveActivity(false)
+                            }, 1000);
+                        })
+                    }
+            }else{
+                Alert.alert('Error', 
+                'please go back to the previous page and click continue', 
+                [{text:'ok', onPress:()=>{
+                    navigation.goBack()
+                }}])
             }
         })
         .catch((err)=>{
             console.log(err)
         })
-        .finally(()=>{
-            setTimeout(()=>{
-                setActiveActivity(false)
-            }, 1000);
-        })
     }
 
-    // to get after ordRef have been created
-    useEffect(()=>{
-        if (ordRef.length > 0){
-            const data = {
-                orderId:ordRef,
-                orders:[...productId]
+    // to deduct money from the wallet 
+    async function removeMoneyFromWallet(data){
+        setVeriModalVisibility(true)
+        let success = false;
+        await axios.get(`https://4v6gzz-3001.csb.app/v1/checkPayment/${ordRef}`)
+        .then(async (res)=>{
+            console.log(res.data)
+            if (res.status == 200){
+                if (res.data == 1){
+                    Alert.alert('Error', 
+                                'please go back to the previous page and click continue', 
+                                [{text:'ok', onPress:()=>{
+                                    navigation.goBack()
+                                }}])
+                }else{
+                    setOrderCon('Payment')
+                    await axios.post(`https://4v6gzz-3001.csb.app/v1/debitWallet/${email}`, {amount:total, orderId:ordRef})
+                    .then((res)=>{
+                        if (res.status == 200){
+                            let data = res.data;
+                                console.log(data)
+                                let walletBal = data["walletBal"]
+                                console.log(walletBal)
+                                setBalance(walletBal)
+                                success=true
+                        }
+                    })
+                    .catch((err)=>{console.log('second',err)})
+                }
             }
-            console.log(data)
-            handleOrderTrans(data)
+        })
+        .catch((err)=>{
+            console.log('first', err)
+        })
+
+        return success
+    }
+
+
+    useEffect(()=>{
+        if(justStarted.current){
+            justStarted.current = false;
+            navigation.navigate('MarketPlace', {email:email})
         }
-    }, [ordRef])
+    }, [modalVisibility])
 
     return <View style = {styles.body}>
                 <View style={styles.TextContainer}>
@@ -379,6 +469,19 @@ function Order ({navigation, route, deliveryImage, deliveryImage2, balance, succ
                         
                     </View>
         </View>
+        <Modal
+        visible={veriModalVisibility}
+        transparent={true}
+        animationType={'slide'}
+        >
+         <View style={styles.modalContainer}>
+            <View style={styles.vericontentContainer}>
+                
+                <ActivityIndicator size={45} color={'#ffdb28'}/>
+                <Text style={styles.veriData}>Verifying {orderCon}</Text>
+            </View>
+         </View>
+        </Modal>
 
         <Modal 
         visible={modalVisibility}
@@ -398,7 +501,9 @@ function Order ({navigation, route, deliveryImage, deliveryImage2, balance, succ
                     <View style={styles.transactionIdContainer}>
                         <View style={styles.orderIdContainer}>
                             <Text style={styles.orderIdHeader}>Order ID:</Text> 
-                                <Text style={styles.orderDetail}>mvfs_24njrvik94</Text>
+                                <Text style={styles.orderDetail}>
+                                    {ordRef}
+                                </Text>
                         </View>
                         <View style={styles.orderIdContainer}>
                             <Text style={styles.orderIdHeader}>Total Price:</Text> 
@@ -428,6 +533,7 @@ function Order ({navigation, route, deliveryImage, deliveryImage2, balance, succ
                     </View>
                     <View style={styles.Orderfooter}>
                         <TouchableOpacity style={styles.okayContainer} onPress={()=>{
+                            justStarted.current = true;
                             setModalVisibility(false)
                         }}>
                             <Text style={styles.OrderfooterText}>Okay</Text>

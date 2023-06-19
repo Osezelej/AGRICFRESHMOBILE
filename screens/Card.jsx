@@ -150,7 +150,7 @@ function Card({navigation, route, balance, setBalance}){
                                                     console.log(data)
                                                     let walletBal = data["walletBal"]
                                                     console.log(walletBal)
-                                                    setBalance((prev)=>prev + parseInt(amount));
+                                                    setBalance(walletBal);
                                                     navigation.goBack();
                                                 }
                                             })

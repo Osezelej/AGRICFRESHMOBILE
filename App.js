@@ -113,6 +113,10 @@ const [email, setEmail] = useState()
 // wallet balance
 const [wbalance, setWBalance] = useState(0);
 
+// user order History
+const [order, setOrder] = useState([]);
+
+
 
 let handleSearchTextChange = useCallback ((text)=>{
   setSearchWord(text);
@@ -441,6 +445,11 @@ useEffect(()=>{
                   deliveryImage2 = {deliveryImage2}
                   balance={wbalance}
                   successImage={successImage}
+                  order={order}
+                  setOrder={setOrder}
+                  setBalance={setWBalance}
+                  setCartData={setCartData}
+                  setCartBadge={setCartBadge}
                 />
               )
 
@@ -523,6 +532,7 @@ useEffect(()=>{
                 headerShadowVisible:false,
                 animation:'simple_push',
                 headerTitleAlign:'center',
+                title:'Order History'
                 
               }}
               >

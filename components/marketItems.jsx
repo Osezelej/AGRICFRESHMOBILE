@@ -47,11 +47,11 @@ function MarketItems({
                 .then(()=>{
                     setTimeout(()=>{
                         setActiveActivity(false);
-                    }, 1200)
+                    }, 500)
                 })
          
         })
-        }, 800)
+        }, 300)
         
     }
 
