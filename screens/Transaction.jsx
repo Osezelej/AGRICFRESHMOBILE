@@ -143,8 +143,6 @@ function Wallet({TImage, visibilityImages, balance, navigation}){
             
     }, [email])
 
-    let D = new Date("2023-06-11T19:14:32.019842")
-    console.log(D.getDay())
 
 
     return<View style={styles.body}>

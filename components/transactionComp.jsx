@@ -23,15 +23,15 @@ const styles = StyleSheet.create({
     trxIdHead:{
         backgroundColor:'#a5f8a4',
         paddingVertical:2,
-        paddingHorizontal:12,
+        paddingHorizontal:7,
         borderRadius:10
     },
     trxIdText:{
-        fontSize:15,
+        fontSize:13,
         fontWeight:'600'
     },
     trxId:{
-        fontSize:20,
+        fontSize:18,
         fontWeight:'500'
     }, 
     walletBal:{
