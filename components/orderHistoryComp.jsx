@@ -8,8 +8,7 @@ const styles = StyleSheet.create({
     },
     title:{
         fontSize:13,
-        fontWeight:'600',
-        
+        fontWeight:'600',  
     },
     titleHead:{
         paddingVertical:2,
@@ -18,13 +17,12 @@ const styles = StyleSheet.create({
         marginBottom:10
     },
     text:{
-     
         fontSize:18,
         fontWeight:'500'   
     }
 })
 
-function OrderHistoryComp({data, }){
+function OrderHistoryComp({data, navigation}){
     let Dte = new Date(data.created_at.slice(0, data.created_at.indexOf('+')));
     const weekDay = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
 
@@ -50,6 +48,7 @@ function OrderHistoryComp({data, }){
                     </View>}
                     trailing={props =><MaterialIcons name='chevron-right' {...props}/>}
                     secondaryText={`${day}, ${date}, ${trxMonth}, ${year}.`}
+                    onPress = {()=>{navigation.navigate('orderItem')}}
     />
     }else if(data.status.toLowerCase() == 'delivered'){
         
@@ -65,6 +64,7 @@ function OrderHistoryComp({data, }){
                     </View>}
                     trailing={props =><MaterialIcons name='chevron-right' {...props}/>}
                     secondaryText={`${day}, ${date}, ${trxMonth}, ${year}.`}
+                    onPress = {()=>{navigation.navigate('orderItem')}}
     />
     }else{
         return <ListItem
@@ -79,6 +79,7 @@ function OrderHistoryComp({data, }){
                     </View>}
                     trailing={props =><MaterialIcons name='chevron-right' {...props}/>}
                     secondaryText={`${day}, ${date}, ${trxMonth}, ${year}.`}
+                    onPress = {()=>{navigation.navigate('orderItem')}}
     />
     }
 }

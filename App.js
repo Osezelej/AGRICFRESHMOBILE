@@ -29,6 +29,7 @@ import SearchHead from './components/searchHead';
 import Filter from './screens/filter';
 import FrgtpswdCode from './screens/frgtpswdCode';
 import OrderHistory from './screens/orderHistory';
+import OrderItem from './screens/OrderItem';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
@@ -61,7 +62,10 @@ let visaCard = require('./assets/images/Visa.png');
 let deliveryImage = require('./assets/images/fastDelivery.png');
 let deliveryImage2 = require('./assets/images/foodDelivery.png');
 let successImage = require('./assets/images/success.png');
-
+let foodBasket = require('./assets/images/vegetable.gif');
+let checkedImage = require('./assets/images/checked.png');
+let deliveryManImage = require('./assets/images/delivery-man.png');
+let unCheckedImage = require('./assets/images/unChecked.png')
 
 const visibilityImages = [VisibleImage, notVisibleImage];
 
@@ -536,8 +540,26 @@ useEffect(()=>{
                 
               }}
               >
-                {(prpos)=><OrderHistory/>}
+                {(props)=><OrderHistory   {...props}/>}
               </Stack.Screen>
+
+              <Stack.Screen
+              name='orderItem'
+              options={{
+                headerShadowVisible:false,
+                animation:'slide_from_right',
+                headerTitleAlign:'center',
+                title:'Order'
+              }}
+              >
+                {(props)=><OrderItem  {...props}
+                  foodBasketImage = {foodBasket}
+                  deliveryImage={deliveryImage}
+                  checkedImage={checkedImage}
+                  deliveryManImage={deliveryManImage}
+                />}
+              </Stack.Screen>
+
 
           </Stack.Navigator> 
         </NavigationContainer> 

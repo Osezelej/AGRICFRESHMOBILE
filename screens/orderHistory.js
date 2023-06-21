@@ -11,12 +11,12 @@ const styles = StyleSheet.create({
     }
 })
 
-function OrderHistory({navigation, route}){
+function OrderHistory({navigation}){
     const [orderHistory, setOrderHistory]= useState([]);
     const [refreshing, setRefreshing] = useState(true);
     const [email, setEmail] = useState('');
 
-
+    console.log(navigation)
 
     async function getEmail(){
       
@@ -29,7 +29,6 @@ function OrderHistory({navigation, route}){
     useEffect(()=>{
         getEmail();
     }, []);
-
 
     async function getOrderHistory(){
         let data = '';
@@ -69,6 +68,7 @@ function OrderHistory({navigation, route}){
             />}
             renderItem={({item})=><OrderHistoryComp
                 data = {item}
+                navigation={navigation}
             />}
             keyExtractor={items=>items.order_id}
         />
