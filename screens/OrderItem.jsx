@@ -1,7 +1,9 @@
 import {View, StyleSheet, Image, Text, FlatList, TouchableOpacity, ScrollView} from 'react-native';
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
-
+import { ActivityIndicator } from '@react-native-material/core';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const styles = StyleSheet.create({
     body:{
@@ -201,30 +203,94 @@ const data = [{
 	foodType:['fruit']
 },
 ]
-function OrderItem({navigation, foodBasketImage, deliveryImage,checkedImage,deliveryManImage}){
-    const [activeTransit, setActiveTransit] = useState(true)
-    const [activeDelivered, setActiveDelivered] = useState(true)
+function OrderItem({navigation, foodBasketImage, deliveryImage,checkedImage,deliveryManImage, route}){
+    const [activeTransit, setActiveTransit] = useState(false)
+    const [activeDelivered, setActiveDelivered] = useState(false)
+    const [activeActivity, setActiveActivity]= useState(true)
+    const [email, setEmail] = useState('');
+
+    let {order_id} = route.params;
+    async function getEmail(){
+        let e = '';
+        await AsyncStorage.getItem('userEmail').then((val)=>{
+            let userEmail = JSON.parse(val).email;
+            setEmail(userEmail);
+        })
+    }
+
+    // to get the entire marketData
+    async function handleData(email){
+        await axios.get(`https://4v6gzz-3001.csb.app/v1/marketData/${email}`)
+        .then((res)=>{
+            console.log(res.data)
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
 
 
-    return<View style={styles.body}>
+    }
+
+    // to get the orderData
+    async function handleorderData(order_id){
+        await axios.get(`https://4v6gzz-3001.csb.app/v1/getOrderPayment/${order_id}`)
+            .then((res)=>{
+                console.log(res.data)
+            })
+            .catch((err)=>{
+                console.log(err)
+            })
+    }
+
+    // to get the entire data
+    async function getData(){
+        await axios.get(`https://4v6gzz-3001.csb.app/v1/orderDetail/${order_id}`)
+        .then( (res)=>{
+            let email = res.data[0].email;
+
+            handleorderData(order_id).then(()=>{
+                handleData(email)
+            })
+        })
+        .catch((err)=>{
+            connsol.log(err)
+        })
+    }
+
+
+    // set the email when the app open
+    useEffect(()=>{
+        getData
+    }, [])
+
+    // once the email is set we want to get entire data
+  
+    if(activeActivity){
+        return <View style={[styles.body, {flexDirection:'row', 
+        justifyContent:'center', 
+        alignItems:'center'}]}>
+            <ActivityIndicator color='#ffdb28' size={45}/>
+        </View>
+    }else{
+        return<View style={styles.body}>
             <View style={styles.imageContainer}>
                 <Image source={foodBasketImage} style={styles.Image}/>
             </View>
-        <View style={styles.deliveryStatus}>
-            <View style ={styles.deliveryStatusContainer}>
-                <Image source={checkedImage} style={styles.statusImage}/>
-                <MaterialIcons name="check" size={20} color="black" />
-            </View>
-            <View style={styles.progressLine}></View>
-            <View style ={styles.deliveryStatusContainer}>
-                <Image source={deliveryImage} style={styles.statusImage}/>
-                <MaterialIcons name="check" size={20} color={activeTransit?"black":"#e2e2e2"} />
-            </View>
-            <View style={styles.progressLine}></View>
-            <View style ={styles.deliveryStatusContainer}>
-                <Image source={deliveryManImage} style={styles.statusImage}/>
-                <MaterialIcons name="check" size={20} color={activeDelivered?"black":"#e2e2e2"} />
-            </View>
+            <View style={styles.deliveryStatus}>
+                <View style ={styles.deliveryStatusContainer}>
+                    <Image source={checkedImage} style={styles.statusImage}/>
+                    <MaterialIcons name="check" size={20} color="black" />
+                </View>
+                <View style={styles.progressLine}></View>
+                <View style ={styles.deliveryStatusContainer}>
+                    <Image source={deliveryImage} style={styles.statusImage}/>
+                    <MaterialIcons name="check" size={20} color={activeTransit?"black":"#e2e2e2"} />
+                </View>
+                <View style={styles.progressLine}></View>
+                <View style ={styles.deliveryStatusContainer}>
+                    <Image source={deliveryManImage} style={styles.statusImage}/>
+                    <MaterialIcons name="check" size={20} color={activeDelivered?"black":"#e2e2e2"} />
+                </View>
         </View>
         <View style={styles.detialContainer}>
             <Text style ={styles.detail}>Order Confirmed</Text>
@@ -239,7 +305,7 @@ function OrderItem({navigation, foodBasketImage, deliveryImage,checkedImage,deli
             <View style={[styles.ordertitleDetail, {marginTop:5}]}>
                 <Text  style={styles.ordertitle} >Delivery Status:</Text>
                 <View style={styles.pendingContainer}>
-                     <Text style={styles.orderDetail}>Pending</Text>
+                    <Text style={styles.orderDetail}>Pending</Text>
                 </View>
             </View>
             <View style={styles.ordertitleDetail}>
@@ -272,6 +338,8 @@ function OrderItem({navigation, foodBasketImage, deliveryImage,checkedImage,deli
 
         </View>
     </View>
+    }
+   
 }
 
 

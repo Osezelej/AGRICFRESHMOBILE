@@ -16,10 +16,7 @@ function OrderHistory({navigation}){
     const [refreshing, setRefreshing] = useState(true);
     const [email, setEmail] = useState('');
 
-    console.log(navigation)
-
     async function getEmail(){
-      
         await AsyncStorage.getItem('userEmail').then((res)=>{
             let email = JSON.parse(res).email
             setEmail(email)
@@ -51,7 +48,6 @@ function OrderHistory({navigation}){
             setTimeout(()=>{setRefreshing(false)},500)
         })
     }, [email])
-    console.log(orderHistory)
     return<View style={styles.body}>
         <FlatList 
             data={orderHistory}

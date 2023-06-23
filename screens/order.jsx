@@ -236,7 +236,7 @@ function Order ({navigation,
         }
         // to get the product id
         var productId = data.map((value)=>{
-            return {productId:value._id, numOfitem:value.num}
+            return {productId:value.id, numOfitem:value.num}
         })
     }
 
