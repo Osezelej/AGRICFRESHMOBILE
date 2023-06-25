@@ -1,7 +1,9 @@
-import {memo, useCallback, useState}from 'react';
+import {memo, useCallback, useEffect, useState}from 'react';
 import { StyleSheet, TextInput, View,Text, TouchableOpacity, Alert, ScrollView  } from 'react-native';
 import NigeriaDetails from 'naija-state-local-government';
 import { SelectList } from 'react-native-dropdown-select-list';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 function Address({setAddrData, navigation, route}) {
   if(route.params != undefined){
     var Data = route.params.readyToBuydata;
@@ -12,6 +14,7 @@ function Address({setAddrData, navigation, route}) {
   // console.log(NigeriaDetails.all())
   const [data,  setData] = useState({})
   const [lgas, setlga] = useState('')
+  const [email, setEmail] = useState('');
   const country = [
     {key:1, value:"Nigeria"},
   ];
@@ -37,14 +40,42 @@ function Address({setAddrData, navigation, route}) {
     
   }) 
 
+  // to get email
+  async function getEmail(){
+    await AsyncStorage.getItem('userEmail').then((data)=>{
+      let email = JSON.parse(data).email
+      setEmail(email)
+    })
+  }
+
+  //to get address  
+  const generateTransactionRef = (length) => {
+    var result = '';
+    var characters =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return `AgFh_addr_ref_${result}`;
+  };
+
 let handlePress = useCallback (()=>{
   if (data.state && data.Country && data.LGA &&  data.phone && data.loc && data.title && data.address){
-    console.log(data)
-    Alert.alert('CONFIRM YOUR ADDRESS', ` Title:${data.title.toUpperCase()}\n Country:${data.Country}\n state:${data.state} \n LGA:${data.LGA} \n Bustop:${data.loc} \n PhoneNumber:${data.phone}\n Street:${data.address}`, [{text:'Ok', onPress:()=>{
+    // console.log(data)
+    Alert.alert('CONFIRM YOUR ADDRESS', ` Title:${data.title.toUpperCase()}\n Country:${data.Country}\n state:${data.state} \n LGA:${data.LGA} \n Bustop:${data.loc} \n PhoneNumber:${data.phone}\n Street:${data.address}`, [
+      {
+        text:'Ok', 
+        onPress:async ()=>{
 
-      setAddrData((prev)=>{
-        return[...prev, {id:prev.length + 1, address:`${data.address}, ${data.loc}, ${data.LGA}, ${data.state}, ${data.Country}.`, phone:data.phone, title:data.title}]
-       })
+          await axios.post(`https://4v6gzz-3001.csb.app/v1/addUserAddress/${email}`, {addrId:generateTransactionRef(10),email:email,title:data.title,phone:data.phone, address:`${data.address}, ${data.loc}, ${data.LGA}, ${data.state}, ${data.Country}.` })
+          .then((res)=>{
+            console.log(res.data)
+          })
+          .catch((err)=>{
+            console.log(err)
+          });
+
        if(route.params != undefined){
           navigation.navigate('Order',{readyToBuydata:Data, itemnumber:itemOrdered})
        }else{
@@ -58,9 +89,13 @@ let handlePress = useCallback (()=>{
   }
 })
 
+  useEffect(()=>{
+    getEmail()
+  }, [])
+
+
   return (
     <ScrollView style={styles.container}>
-
       <View style={styles.TextContainer}>
         <Text style = {styles.header}>Enter New Location</Text>
       </View>

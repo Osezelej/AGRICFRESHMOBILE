@@ -1,6 +1,6 @@
 import {View, StyleSheet, Image, Text, FlatList, TouchableOpacity, ScrollView} from 'react-native';
 import { memo, useEffect, useState } from 'react';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons, SimpleLineIcons, Feather} from '@expo/vector-icons';
 import { ActivityIndicator } from '@react-native-material/core';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -121,8 +121,34 @@ const styles = StyleSheet.create({
         marginLeft:10,
 
     },
-
+    iconContainer:{
+        flexDirection:'column',
+        position:'absolute',
+        right:10,
+        alignItems:'flex-end',
+        zIndex:3
+    },
+    icon:{
+        marginTop:13,
+        borderWidth:1.5,
+        padding:5,
+        alignSelf:'center',
+        borderRadius:50,
+        paddingTop:7.5,
+        paddingLeft:7.5,
+        marginLeft:10
+    },
+    phoneDetailContainer:{
+        flexDirection:'row',
+        alignItems:'center'
+    },
+    AddressDetailContainer:{
+        flexDirection:'row',
+        alignItems:'center'
+    }
 })
+
+// dummy data
 const data = [{
 	id:1,
 	'Name': 'full chicken', 
@@ -208,6 +234,9 @@ function OrderItem({navigation, foodBasketImage, deliveryImage,checkedImage,deli
     const [activeDelivered, setActiveDelivered] = useState(false)
     const [activeActivity, setActiveActivity]= useState(true)
     const [email, setEmail] = useState('');
+    const [orderData, setOrderData] = useState(null);
+    const [icon1, setIcon1] = useState(false);
+    const [icon2, setIcon2] = useState(false)
 
     let {order_id} = route.params;
     async function getEmail(){
@@ -220,52 +249,82 @@ function OrderItem({navigation, foodBasketImage, deliveryImage,checkedImage,deli
 
     // to get the entire marketData
     async function handleData(email){
+        let data = [];
         await axios.get(`https://4v6gzz-3001.csb.app/v1/marketData/${email}`)
         .then((res)=>{
-            console.log(res.data)
+            if(res.status == 200){
+                data = res.data;
+            }
         })
         .catch((err)=>{
-            console.log(err)
-        })
+            console.log(err);
+        });
 
-
+        return data;
     }
 
     // to get the orderData
     async function handleorderData(order_id){
+        let data = [];
         await axios.get(`https://4v6gzz-3001.csb.app/v1/getOrderPayment/${order_id}`)
             .then((res)=>{
-                console.log(res.data)
+                if (res.status == 200){
+                    data = res.data;
+                }
             })
             .catch((err)=>{
                 console.log(err)
             })
+            return data;
     }
 
-    // to get the entire data
+    // to get the entire data 
     async function getData(){
+        let data = [];
         await axios.get(`https://4v6gzz-3001.csb.app/v1/orderDetail/${order_id}`)
-        .then( (res)=>{
+        .then( async(res)=>{
             let email = res.data[0].email;
 
-            handleorderData(order_id).then(()=>{
-                handleData(email)
+            await handleorderData(order_id).then(async(orderData)=>{
+                data = orderData;
+
+                await handleData(email).then((entiredata)=>{
+                    entiredata.forEach((dataValue)=>{
+
+                        orderData.orders.forEach((orderValue)=>{
+                            if(dataValue.id == orderValue.productId){
+                                
+                                orderValue.productId = dataValue
+                                console.log(data)
+                            }
+                        })
+                    })
+                })
             })
+            setOrderData(data)
         })
-        .catch((err)=>{
-            connsol.log(err)
+        .catch((err)=>{ 
+            console.log(err)
         })
+    }
+
+    // display phone
+   function showPhone(){
+        icon2?setIcon2(false):setIcon2(true)
+    }
+    function showAddress(){
+        icon1?setIcon1(false):setIcon1(true)
     }
 
 
     // set the email when the app open
     useEffect(()=>{
-        getData
+        getData()
     }, [])
 
     // once the email is set we want to get entire data
   
-    if(activeActivity){
+    if(activeActivity && !orderData){
         return <View style={[styles.body, {flexDirection:'row', 
         justifyContent:'center', 
         alignItems:'center'}]}>
@@ -273,11 +332,42 @@ function OrderItem({navigation, foodBasketImage, deliveryImage,checkedImage,deli
         </View>
     }else{
         return<View style={styles.body}>
+        <View style={styles.iconContainer}>
+            <View style={styles.phoneDetailContainer}>
+            {icon1 &&<View style={{maxWidth:150, 
+                            padding:7, 
+                            alignItems:'flex-start',
+                            borderWidth:1.5, 
+                            borderColor:'#10d3d6',
+                            backgroundColor:'white',
+                        
+                            }}>
+                    <Text style={{fontWeight:'500'}}>21, ogunyomi street, kosofe, lagos, Nigeria.</Text>
+                </View>}
+                <SimpleLineIcons name="location-pin" size={18} color="black" style = {[styles.icon, {backgroundColor:icon1 ? '#ffdg28':'white'}]} onPress={showAddress}/>
+                
+            </View>
+            <View style={styles.AddressDetailContainer}>
+            {icon2 &&<View style={{maxWidth:150, 
+                            padding:7, 
+                            alignItems:'flex-start',
+                            borderWidth:1.5, 
+                            borderColor:'#10d3d6',
+                            backgroundColor:'white'
+                            }}>
+                    <Text style={{fontWeight:'500'}}>08128191829</Text>
+                </View>}
+                {icon2 ? <Feather name="phone" size={18} color="black"  style= {[styles.icon, {backgroundColor:'#ffdg28'}]} onPress={showPhone}/>:<Feather name="phone" size={18} color="black"  style= {[styles.icon, {backgroundColor:'white'}]} onPress={showPhone}/>}
+
+            </View>
+            
+        </View>
             <View style={styles.imageContainer}>
                 <Image source={foodBasketImage} style={styles.Image}/>
             </View>
             <View style={styles.deliveryStatus}>
                 <View style ={styles.deliveryStatusContainer}>
+                
                     <Image source={checkedImage} style={styles.statusImage}/>
                     <MaterialIcons name="check" size={20} color="black" />
                 </View>
@@ -300,7 +390,7 @@ function OrderItem({navigation, foodBasketImage, deliveryImage,checkedImage,deli
         <View style={styles.headerContainer}>
             <View style={styles.ordertitleDetail}>
                 <Text  style={styles.ordertitle} >Order ID:</Text>
-                <Text style={styles.orderDetail}>AgFh_ord_ref_9TlXUyGxYk</Text>
+                <Text style={styles.orderDetail}>{orderData.orderId}</Text>
             </View>
             <View style={[styles.ordertitleDetail, {marginTop:5}]}>
                 <Text  style={styles.ordertitle} >Delivery Status:</Text>
@@ -310,21 +400,22 @@ function OrderItem({navigation, foodBasketImage, deliveryImage,checkedImage,deli
             </View>
             <View style={styles.ordertitleDetail}>
                 <Text  style={styles.ordertitle} >Price:</Text>
-                <Text style={styles.orderDetail}>10000</Text>
-            </View>
+                <Text style={styles.orderDetail}>N{orderData.walletBal}</Text>
+            </View> 
+           
         </View>
         
         <View style={styles.orderItemContainer}>
             <FlatList
-                keyExtractor={item=>item.id}
-                data={data}
+                keyExtractor={item=>item.productId.id}
+                data={orderData.orders}
                 renderItem={({item})=><View style = {styles.orderBody}>
-                                <Image source={{uri:item.Image}} style={styles.image}/>
+                                <Image source={{uri:item.productId.Image}} style={styles.image}/>
                                 <View style={styles.orderBodyinfo}>
                                     <View style={styles.namePrice}>
-                                        <Text style={styles.name}>{item.Name}</Text>
+                                        <Text style={styles.name}>{item.productId.Name}</Text>
                                         <View style={styles.numContainer}>
-                                            <Text style={styles.numOfItem}>X{item.num}</Text>
+                                            <Text style={styles.numOfItem}>X{item.numOfitem}</Text>
                                         </View>
                                     </View>
                                 </View>
