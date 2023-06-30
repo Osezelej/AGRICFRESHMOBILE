@@ -119,7 +119,6 @@ const styles = StyleSheet.create({
     orderBodyinfo:{
         flexDirection:'row',
         marginLeft:10,
-
     },
     iconContainer:{
         flexDirection:'column',
@@ -295,7 +294,6 @@ function OrderItem({navigation, foodBasketImage, deliveryImage,checkedImage,deli
                             if(dataValue.id == orderValue.productId){
                                 
                                 orderValue.productId = dataValue
-                                console.log(data)
                             }
                         })
                     })
@@ -322,6 +320,10 @@ function OrderItem({navigation, foodBasketImage, deliveryImage,checkedImage,deli
         getData()
     }, [])
 
+    useEffect(()=>{
+        console.log(orderData)
+    }, [orderData])
+
     // once the email is set we want to get entire data
   
     if(activeActivity && !orderData){
@@ -342,7 +344,7 @@ function OrderItem({navigation, foodBasketImage, deliveryImage,checkedImage,deli
                             backgroundColor:'white',
                         
                             }}>
-                    <Text style={{fontWeight:'500'}}>21, ogunyomi street, kosofe, lagos, Nigeria.</Text>
+                    <Text style={{fontWeight:'500'}}>{orderData.address}</Text>
                 </View>}
                 <SimpleLineIcons name="location-pin" size={18} color="black" style = {[styles.icon, {backgroundColor:icon1 ? '#ffdg28':'white'}]} onPress={showAddress}/>
                 
@@ -355,7 +357,7 @@ function OrderItem({navigation, foodBasketImage, deliveryImage,checkedImage,deli
                             borderColor:'#10d3d6',
                             backgroundColor:'white'
                             }}>
-                    <Text style={{fontWeight:'500'}}>08128191829</Text>
+                    <Text style={{fontWeight:'500'}}>{orderData.phone}</Text>
                 </View>}
                 {icon2 ? <Feather name="phone" size={18} color="black"  style= {[styles.icon, {backgroundColor:'#ffdg28'}]} onPress={showPhone}/>:<Feather name="phone" size={18} color="black"  style= {[styles.icon, {backgroundColor:'white'}]} onPress={showPhone}/>}
 

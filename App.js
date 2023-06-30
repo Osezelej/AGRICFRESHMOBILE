@@ -133,12 +133,13 @@ let handleSearchTextChange = useCallback ((text)=>{
 })
 // to save the user information on the user phone 
 const [dataSaved, setDataSaved] = useState('');
-async function saveUserData (email, name, walletBal){
+async function saveUserData (email, name, walletBal, userImg){
   let user_data =   JSON.stringify({
     email:email,
     name:name,
-    walletBal:walletBal
-  }) 
+    walletBal:walletBal,
+    userImg:userImg
+  })
   await AsyncStorage.setItem('userData', user_data)
   setDataSaved('saved')
 
@@ -438,7 +439,7 @@ useEffect(()=>{
               options={{
                 headerShadowVisible:false,
                 headerTitleAlign:'center',
-                animation:'fade_from_bottom',
+                animation:'slide_from_bottom',
                 title:''
               }} 
             >

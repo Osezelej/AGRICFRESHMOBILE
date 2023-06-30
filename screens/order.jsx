@@ -220,10 +220,11 @@ function Order ({navigation,
     
     if(route.params != undefined){
         var data = route.params.readyToBuydata;
-        
+        var addr = route.params.addr;
         let itemOrdered = route.params.itemnumber;
         var total = 500;
         for (let items of data){
+
             for (let item  of itemOrdered){
                 if (items.id == item.id){
                     items.num = item.num
@@ -272,7 +273,8 @@ function Order ({navigation,
                     if (ordRef.length > 0){
                         const data = {
                             orderId:ordRef,
-                            orders:[...productId]
+                            orders:[...productId],
+                            ...addr
                         }
                         removeMoneyFromWallet(data).then((value)=>{
                             if (value){

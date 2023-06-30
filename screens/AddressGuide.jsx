@@ -19,7 +19,7 @@ addAddr:{
 },
 
 addAddrButton:{
-    paddingVertical:15,
+    paddingVertical:10,
     backgroundColor:'#ffdb28',
     elevation:10,
     borderRadius:15,
@@ -57,6 +57,10 @@ function AddresseGuide({navigation, route}){
     const [email, setEmail] = useState('');
     const [activeActivity, setActiveActivity] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
+    const [activeAddr, setActiveAddr] = useState(true);
+    const [orderAddrData, setOrderAddrData]= useState({});
+
+
     async function getEmail(){
         await AsyncStorage.getItem('userEmail').then((data)=>{
             let email = JSON.parse(data).email
@@ -68,7 +72,6 @@ function AddresseGuide({navigation, route}){
         await axios.get(`https://4v6gzz-3001.csb.app/v1/getAddr/${email}`)
         .then((res)=>{
             if(res.status == 200){
-                console.log(res.data)
                 setAddr(res.data)
                 setActiveActivity(false)
             }
@@ -103,29 +106,44 @@ function AddresseGuide({navigation, route}){
             <Text style={styles.titleText}>SAVED ADDRESSES</Text>
         </View>
     <FlatList
-        renderItem={({item})=>(<AddresComp addrDetail={item} setVisibleCont={setVisibleCont} />)}
+        renderItem={({item})=>(<AddresComp 
+                            addrDetail={item} 
+                            setVisibleCont={setVisibleCont} 
+                            activeAddr={activeAddr}
+                            setActiveAddr = {setActiveAddr}
+                            setOrderAddrData={setOrderAddrData}
+        />)
+        }
+
         data={addreses}
-        keyExtractor={item=>item.AddrId}
+        keyExtractor={item=>item.addrId}
         refreshControl={<RefreshControl
                 refreshing={refreshing}
                 onRefresh={()=>{
                     setRefreshing(true)
                     getData().then((value)=>{
-                setTimeout(()=>{setRefreshing(false)},300)
+                setTimeout(()=>{
+                    setRefreshing(false);
+                    setActiveAddr(true);
+                },300)
                     })
                     }}
                 colors={['#ffdb28']}
             />}
         style={{flex:1}}
     />
+
     <View >
         <View style={styles.addAddr}>
+
             <TouchableOpacity style={styles.addAddrButton} onPress={()=>{route.params.from == 'Profile'? navigation.navigate('AddressGuide'): navigation.navigate('AddressGuide', {readyToBuydata:data, itemnumber:itemOrdered})}}>
                 <Text style={styles.addAddrButtonText}>ADD NEW ADDRESS</Text>
             </TouchableOpacity>
+
         </View>
+
         {visibleCont &&  <View style={styles.addAddr}>
-            <TouchableOpacity style={styles.addAddrButton} onPress={()=>{route.params.from == 'Profile'? navigation.goBack(): navigation.navigate('Order', {readyToBuydata:data, itemnumber:itemOrdered})}}>
+            <TouchableOpacity style={styles.addAddrButton} onPress={()=>{route.params.from == 'Profile'? navigation.goBack(): navigation.navigate('Order', {readyToBuydata:data, itemnumber:itemOrdered, addr:orderAddrData})}}>
                 <Text style={styles.addAddrButtonText}>CONTINUE</Text>
             </TouchableOpacity>
         </View>}
@@ -133,6 +151,6 @@ function AddresseGuide({navigation, route}){
 </View>
     }
    
-}
+} 
 
 export default memo(AddresseGuide)

@@ -3,6 +3,11 @@ import { memo, useState, useEffect } from "react";
 import {AntDesign, Feather} from '@expo/vector-icons'
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import supabase from "../data/database";
+import { decode } from 'base64-arraybuffer';
+import { imageUrl } from "../data/database";
+import axios from "axios";
+import { ActivityIndicator } from "@react-native-material/core";
 
 const styles = StyleSheet.create({
     container:{
@@ -20,8 +25,8 @@ const styles = StyleSheet.create({
         marginTop:5
     },
     profileImageContainer:{
-        width:155,
-        height:157,
+        width:145,
+        height:147,
         backgroundColor:'#e3e3e3',
         borderRadius:100,
         alignItems:'center',
@@ -79,33 +84,206 @@ const styles = StyleSheet.create({
 function UserProfile({navigation}) {
     const [image, setImage] = useState(null);
     const [userName, setUserName] = useState('');
-    const [EditUsername, setEditUserName] = useState(userName);
+    const [EditUsername, setEditUserName] = useState('');
     const [email, setEmail] = useState('');
+    const [editEmail, setEditEmail] = useState('')
+    const [imgUrl, setImgUrl] = useState(null);
+    const [userimageFilename, setImageFilename] = useState('');
+    const [userData, setUserData] = useState('');
+    const [showError, setShowError] = useState(false);
+    const [activeActivity, setActiveActivity] = useState(false);
+    let character = ['!', '#', '$', '%', '^', '&', '*', '(', ')', '{', '}', ':', '"', "'", '<', '>', '?', '/', '~', '`', '\\', '=', '-', '_', ',', ';'];
+
+    async function getImageurl(){
+        
+        await AsyncStorage.getItem('userData').then((data)=>{
+            let res =JSON.parse(data).userImg;
+            let name_ = JSON.parse(data).name;
+            let email_ = JSON.parse(data).email;
+
+            setUserData(JSON.parse(data));
+            if(res){
+                let img_url = imageUrl + res;
+                setImgUrl(img_url)
+                setImageFilename(res)
+            }else{
+                setImgUrl(null)
+            }
+            setEditUserName(name_);
+            setEditEmail(email_);
+        })
+    }
+
     async function pickImage(){
+
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes:ImagePicker.MediaTypeOptions.Images,
             allowsEditing:true,
             aspect:[4, 4],
             allowsMultipleSelection:false,
             quality:0.5,
-            
+            base64:true,
         });
+
+        let index = result.assets[0].uri.lastIndexOf('/');
+        let fileName = result.assets[0].uri.slice(index + 1);
         if(!result.canceled){
-                setImage(result.assets[0].uri);
+
+                if (imageUrl){
+                    await axios.get(`https://4v6gzz-3001.csb.app/v1/deleteuserImg/${userimageFilename}`)
+                    .then((res)=>{
+                        console.log(res.data)
+                        setImage({uri:result.assets[0].uri, fileName:fileName, base64:result.assets[0].base64});
+
+                    })
+                    .catch((err)=>{
+                        console.log(err)
+                    })
+                }else{
+                    setImage({uri:result.assets[0].uri, fileName:fileName, base64:result.assets[0].base64});
+                }
         }else{
             Alert.alert('Canceled', 'The image selection have been canceled');
         }
     }
     
+
     async function getUsername(){
         await AsyncStorage.getItem('userData', (err, res)=>{
             setUserName(JSON.parse(res).name) 
         });
     }
 
+    async function uploadImage(){
+        let filename = `${generateTransactionRef(15)}-${image.fileName}`;
+        let ext = image.fileName.slice(image.fileName.lastIndexOf('.') + 1);
+        
+        const {data, error} = await supabase.storage
+        .from('images')
+        .upload(`userImage/${filename}`,  decode(image.base64), {
+            cacheControl: "3600",
+            upsert: false,
+            contentType:`image/${ext}`
+          })
+          if(data){
+            await axios.get(`https://4v6gzz-3001.csb.app/v1/updateProfile/image/${email}/${filename}`)
+            .then(async(res)=>{
+                if(res.data == 0){
+                    Alert.alert('NETWORK ERROR', 'There is an error please check your network and try again.')
+                    const {data, error} = await supabase
+                    .storage
+                    .from('images')
+                    .remove([`userImage/${filename}`])
+                }else{
+                    let data = JSON.stringify({
+                        ...userData,
+                        userImg:res.data
+                    })
+                    await AsyncStorage.setItem('userData', data);
+                    setImgUrl(imageUrl + res.data);
+                    setImageFilename(res.data);
+                }
+            })
+            .catch(async(err)=>{
+                Alert.alert('NETWORK ERROR', 'There is an error please check your network and try again.')
+                const {data, error} = await supabase
+                    .storage
+                    .from('images')
+                    .remove([`userImage/${filename}`])
+            })
+          }
+    }
+
+    useEffect(()=>{
+        if(image){
+            uploadImage().catch((err)=>{
+                console.log(err)
+            })
+        }
+    },[image])
+    useEffect(()=>{
+        let active = false;
+        character.forEach((value)=>{
+            if (editEmail.includes(value)){
+                setShowError(true)
+                active = true
+                
+            }
+        })
+        if(!active){
+            setShowError(false)
+        }
+    }, [editEmail])
+
+    const generateTransactionRef = (length) => {
+        var result = '';
+        var characters =
+          'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charactersLength = characters.length;
+        for (var i = 0; i < length; i++) {
+          result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return `AgFh_img_ref_${result}`;
+      };
 
 
-    useEffect(()=>{getUsername()}, []);
+    async function getEmail(){
+        await AsyncStorage.getItem('userEmail').then((res)=>{
+            setEmail(JSON.parse(res).email)
+        })
+    }
+
+    useEffect(()=>{
+        getUsername()
+        getImageurl()
+        getEmail()
+    }, []);
+
+
+// to handle applyChange 
+    function handleApplyChange(){
+        if (showError == false){
+            if ((userName == EditUsername) && (email == editEmail)){
+                console.log('pass')
+            }else{    
+                setActiveActivity(true)
+                Alert.alert('Warning', 'Are you sure you want to update your profile details?', [{
+                    text:'ok',
+                    onPress:async()=>{
+                        let useremail = '';
+                        let name = '';
+    
+                        if (userName == EditUsername){
+                            name = '';
+                        }else{
+                            name = EditUsername;
+                        }
+    
+                        if(email == editEmail){
+                            useremail = '';
+                        }else{
+                            useremail = editEmail;
+                        }
+    
+                        await axios.post(`https://4v6gzz-3001.csb.app/v1/update/${email}`, {newemail:useremail, name:name, walletBal:''})
+                        .then((res)=>{
+                            console.log(res.data);
+                        }).catch((err)=>{
+                            console.log(err);
+                        })
+                        .finally(()=>{
+                            setTimeout(()=>{
+                                
+                            setActiveActivity(false)
+                            }, 500)
+                        })
+                    }  
+                }])
+            }
+        }
+        
+    }
+
 
 
     return  <ScrollView style={styles.container}>
@@ -114,7 +292,7 @@ function UserProfile({navigation}) {
                     <View style={styles.topContainer}>
 
                         <View style={styles.profileImageContainer}>
-                            {image ?<Image source={{uri:image}} style={{width:153, height:155, borderRadius:100}}/>:<AntDesign name="user" size={100} color="#3b3b3b" />}
+                            {imgUrl?<Image source={{uri:imgUrl}} style={{width:143, height:145, borderRadius:100}}/>:<AntDesign name="user" size={100} color="#3b3b3b" />}
                             
                             <TouchableOpacity style={styles.editIconContainer} activeOpacity={0.5} onPress={pickImage}>
                                 <Feather name="edit-2" size={20} color="black" />
@@ -125,6 +303,7 @@ function UserProfile({navigation}) {
 
                     </View>
                     <View style={styles.bottomContainer}>
+                        
                         <View style={styles.nameContainer}>
                             <Text style={styles.Label}>Name:</Text>
                             <TextInput 
@@ -135,6 +314,11 @@ function UserProfile({navigation}) {
                                 onChangeText={setEditUserName}
                             />
                         </View>
+                        {showError && <Text style = {{
+                            color:'red',
+                            fontSize:16,
+                            fontWeight:'500'
+                        }}>Please Enter a valid Emaill Address</Text>}
                         <View style={styles.nameContainer}>
                             <Text style={styles.Label}>Email:</Text>
                             <TextInput 
@@ -142,13 +326,17 @@ function UserProfile({navigation}) {
                                 style={styles.Field} 
                                 selectionColor={'black'} 
                                 keyboardType={'email-address'}
-                                value = {email}
-                                onChangeText={setEmail}
+                                value = {editEmail}
+                                onChangeText={setEditEmail}
                             />
                         </View>
-                            <TouchableOpacity activeOpacity={0.5} style={styles.applyChanges}>
+                        <TouchableOpacity activeOpacity={0.5} style={[styles.applyChanges, {flexDirection:'row',}]} onPress={handleApplyChange}>
                                 <Text style={{fontSize:18, fontWeight:'500'}}>Apply Changes</Text>
+                                {activeActivity && <ActivityIndicator size={"small"}/>}
                             </TouchableOpacity>
+                            
+                        
+                            
                     </View>
                    
                     
