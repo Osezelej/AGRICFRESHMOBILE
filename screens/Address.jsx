@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
   saveTexttouch:{
     paddingVertical:10,
     alignItems:'center',
-    backgroundColor:'#ffdb28',
+    backgroundColor:'#ffaf36',
     elevation:10,
   },
   saveTextContainer:{

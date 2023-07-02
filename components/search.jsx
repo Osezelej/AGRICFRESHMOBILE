@@ -1,14 +1,17 @@
 import {View, Text, StyleSheet, TouchableHighlight, Image, Pressable, TouchableOpacity} from 'react-native';
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { imageUrl } from '../data/database';
 const styles = StyleSheet.create({
 
 logoImage:{
-    width:100,
-    height:100,
-    position:'absolute',
-    top:-50,
-    left:-22
+    width:55,
+    height:45,
+    borderRadius:15,
+    marginTop:10,
+    
+
 },
 headerContainer:{
     flexDirection:'row',
@@ -37,6 +40,17 @@ iconStyle:{
 })
 
 function SearchHeader({image, setState, logoImage, navigation, searchItem}){
+    const [userImage, setUserImage ] = useState(null);
+    async function getImageData(){
+        await AsyncStorage.getItem('userData').then((data)=>{
+            let res = JSON.parse(data)
+            if(res.userImg != null){
+                let image = imageUrl + res.userImg
+            }
+
+        })
+    }
+
     return(
         <View style={styles.headerContainer}>
             <View>

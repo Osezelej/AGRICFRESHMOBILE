@@ -496,7 +496,7 @@ export const styles = StyleSheet.create({
     },
     submit:{
         display:'flex',
-        backgroundColor:'#ffdb28',
+        backgroundColor:'#ffaf36',
         paddingVertical:15,
         justifyContent:'center',
         alignItems:'center',

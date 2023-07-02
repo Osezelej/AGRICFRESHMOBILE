@@ -9,7 +9,7 @@ import axios from "axios";
 
 
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
     body:{
         flex:1,
 
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
 
     },
     activeOptionContainer:{
-        backgroundColor:'#ffdb28',
+        backgroundColor:'#ffaf36',
         paddingVertical:3,
         paddingHorizontal:15,
         borderRadius:30,
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     farmIconContainer:{
         width:50,
         height:50,
-        backgroundColor:'#ffdb28',
+        backgroundColor:'#ffaf36',
         borderRadius:40,
         marginRight:25,
     },
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
         fontWeight:'600'
     },
     buyContainer:{
-        backgroundColor:'#ffdb28',
+        backgroundColor:'#ffaf36',
         padding:7,
         paddingHorizontal:19,
         borderRadius:10,
@@ -258,8 +258,7 @@ const styles = StyleSheet.create({
 export default function MarketPlace({
     navigation,
     images, 
-    contentImages, 
-    manageCart, 
+    contentImages,
     handleCartName, 
     cartData, 
     email,
@@ -269,7 +268,6 @@ export default function MarketPlace({
     d,
     setD,
     filteredData,
-    setFilteredData
 
 
 }){
@@ -471,8 +469,7 @@ useEffect(()=>{
                                                 navigation = {navigation} 
                                                 handlePress={buyClicked}
                                                 cartData={cartData}
-                                                handleCartName={handleCartName}
-                                                handleActivity={handleActivity}
+                                                email={email}
                                                 />)}
                                         style={{flex:1}}
                                     />
@@ -482,7 +479,7 @@ useEffect(()=>{
                                         <Text style={styles.alertText}>{itemName} have been added to cart!!</Text>
                                     </Animated.View>
                     </View>: <View style = {[styles.body, {flex:1, backgroundColor:'white', alignItems:"center", justifyContent:'center'}]}>
-                                <ActivityIndicator size={'large'} color="#ffdb28"/> 
+                                <ActivityIndicator size={'large'} color="#ffaf28"/> 
                     </View>
                     }
             </View>

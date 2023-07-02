@@ -12,14 +12,14 @@ const styles = StyleSheet.create({
         paddingHorizontal:10,
         borderRadius:8,
         paddingVertical:5,
-        borderColor:'#ffdb28'
+        borderColor:'#ffaf36'
     }
 })
 
 function VerificationComp({item}){
 
     if(item.isActive){
-        return <View style={[styles.body, {backgroundColor:'#ffdb28'}]} activeOpacity={0.5}>
+        return <View style={[styles.body, {backgroundColor:'#ffaf36'}]} activeOpacity={0.5}>
                 <Ionicons name="checkmark-sharp" size={15} color="black" />
                 <Text>{item.text}</Text>
         </View>

@@ -325,11 +325,14 @@ useEffect(()=>{
             />
              <Stack.Screen
               name='Favourites'
-              component={Favourites}
-              options={{title:'Favourites', animation:"simple_push", headerShadowVisible:false, headerTitle:(props)=>(<SearchHeader2 {...props} 
-                image={Images} 
-                setState = {handleState}/>),}}
-            />
+              
+              options={{title:'', animation:"simple_push", headerShadowVisible:false}}
+            >
+              {(props)=><Favourites {...props} 
+              contentImages={[star1Image,starImage, commentImage]}
+              cartData={handleCartData}
+              />}
+            </Stack.Screen>
             
             <Stack.Screen
               name='Transactions'

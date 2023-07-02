@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     },
    
     fundWallet:{
-        backgroundColor:'#ffdb28',
+        backgroundColor:'#ffaf28',
         marginHorizontal:20,
         padding:10,
         alignItems:'center',

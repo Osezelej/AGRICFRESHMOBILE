@@ -6,6 +6,7 @@ import MarketCard from '../components/tTLCard';
 import { dataApi } from "../data/data";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from 'axios';
+import { imageUrl } from "../data/database";
 
 
 const styles = StyleSheet.create({
@@ -34,22 +35,23 @@ const styles = StyleSheet.create({
     },
     profileImageContainer:{
         backgroundColor:'#e3e3e3',
-        padding:7,
-        paddingHorizontal:8,
-        borderRadius:20,
+        padding:2,
+        paddingHorizontal:2,
+        borderRadius:30,
         marginRight:5, 
 
     },
     userIconName:{
         flexDirection:'row',
         alignItems:'center',
-        maxWidth:70
+        maxWidth:150,
     }, 
     username:{
-        fontWeight:'bold'
+        fontWeight:'bold',
+        fontSize:16
     },
     fWalletButton:{
-        backgroundColor:'#ffdb28',
+        backgroundColor:'#ffaf36',
         padding:6,
         elevation:10,
         borderRadius:10
@@ -98,16 +100,30 @@ const styles = StyleSheet.create({
 
 
 function Cart({navigation, name, manageCartMinus, cartData, removeItem, image, getItem, balance}){
-    const [ttlData, setTtlData] = useState([...dataApi])
+    const [ttlData, setTtlData] = useState([])
      const OrderItemdata = [...cartData]
      const [cartName, setCartName] = useState('Cart')
+     const [userimage, setImage] = useState(null)
+     const [userName, setUserName] = useState('user')
      async function getCartData(){
         await AsyncStorage.getItem('cartData', (e, res)=>{
             console.log(res)
         })
      }
      
-     for (let item of OrderItemdata){
+     async function getUserData(){
+        await AsyncStorage.getItem('userData').then((data)=>{
+            let res = JSON.parse(data)
+            let name = res.name
+            if (res.userImg != null){
+                let userImg = imageUrl + res.userImg
+                setImage(userImg)
+            }
+
+            setUserName(name)
+        })
+     }
+          for (let item of OrderItemdata){
         item.num = 1;
         console.log(item)
      }
@@ -176,7 +192,9 @@ function Cart({navigation, name, manageCartMinus, cartData, removeItem, image, g
         cartName == 'Cart'?setCartName('Cart '):setCartName('Cart')
      },[setTtlData]);
 
-
+    useEffect(()=>{
+        getUserData()
+    }, [])
     return<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
             <View style={styles.headerContainer}>
@@ -186,9 +204,9 @@ function Cart({navigation, name, manageCartMinus, cartData, removeItem, image, g
                     <View style={styles.userAccountHeader}>
                             <View style={styles.userIconName}>
                                 <View style={styles.profileImageContainer}>
-                                    <AntDesign name="user" size={30} color="#3b3b3b" />
+                                  {userimage ? <Image source={{uri:userimage}} style={{width:35, height:35, borderRadius:30}}/>:  <AntDesign name="user" size={30} color="#3b3b3b" />}
                                 </View>
-                                <Text style={styles.username}>Art Template</Text>
+                                <Text style={styles.username}>{userName}</Text>
                             </View>
                             <View style={styles.balWallet}>
                                 <Text style={styles.acctText}>N{balance}</Text>

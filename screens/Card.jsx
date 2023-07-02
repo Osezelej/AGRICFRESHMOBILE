@@ -80,7 +80,7 @@ function Card({navigation, route, balance, setBalance}){
     let handleFocus = useCallback(()=>{
         setFocusColor((prev)=>{
             if (prev == '#898989'){
-                return '#ffdb28'
+                return '#ffaf36'
             }else{
                 return '#898989'
             }

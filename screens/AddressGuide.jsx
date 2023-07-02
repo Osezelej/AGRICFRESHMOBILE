@@ -20,7 +20,7 @@ addAddr:{
 
 addAddrButton:{
     paddingVertical:10,
-    backgroundColor:'#ffdb28',
+    backgroundColor:'#ffaf36',
     elevation:10,
     borderRadius:15,
     display:'flex',
@@ -98,7 +98,7 @@ function AddresseGuide({navigation, route}){
             justifyContent:'center', 
             alignItems:'center',
             backgroundColor:'white'}}>
-            <ActivityIndicator color='#ffdb28' size={45}/>
+            <ActivityIndicator color='#ffaf36' size={45}/>
         </View>
     }else{
         return <View style={styles.body}>
@@ -128,7 +128,7 @@ function AddresseGuide({navigation, route}){
                 },300)
                     })
                     }}
-                colors={['#ffdb28']}
+                colors={['#ffaf36']}
             />}
         style={{flex:1}}
     />

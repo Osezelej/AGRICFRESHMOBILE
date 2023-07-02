@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
         position:'absolute',
         right:5,
         padding:3,
-        backgroundColor:'#ffdb28',
+        backgroundColor:'#ffaf28',
         top:8,
         borderRadius:10
 
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
         marginBottom:25
     },
     applyChanges:{
-        backgroundColor:'#ffdb28',
+        backgroundColor:'#ffaf28',
         elevation:5,
         marginBottom:10,
         flexDirection:'row',
@@ -243,7 +243,7 @@ function UserProfile({navigation}) {
 // to handle applyChange 
     function handleApplyChange(){
         if (showError == false){
-            if ((userName == EditUsername) && (email == editEmail)){
+            if ((userName == EditUsername)){
                 console.log('pass')
             }else{    
                 setActiveActivity(true)
@@ -259,15 +259,14 @@ function UserProfile({navigation}) {
                             name = EditUsername;
                         }
     
-                        if(email == editEmail){
-                            useremail = '';
-                        }else{
-                            useremail = editEmail;
-                        }
-    
-                        await axios.post(`https://4v6gzz-3001.csb.app/v1/update/${email}`, {newemail:useremail, name:name, walletBal:''})
-                        .then((res)=>{
-                            console.log(res.data);
+                        console.log(useremail, name)
+                        await axios.post(`https://4v6gzz-3001.csb.app/v1/update/${email}`, {name:name, walletBal:''})
+                        .then(async (res)=>{
+                            let data = JSON.stringify({
+                                ...userData,
+                                name:res.data.name
+                            })
+                            await AsyncStorage.setItem('userData', data);
                         }).catch((err)=>{
                             console.log(err);
                         })
@@ -312,22 +311,6 @@ function UserProfile({navigation}) {
                                 selectionColor={'black'}
                                 value={EditUsername}
                                 onChangeText={setEditUserName}
-                            />
-                        </View>
-                        {showError && <Text style = {{
-                            color:'red',
-                            fontSize:16,
-                            fontWeight:'500'
-                        }}>Please Enter a valid Emaill Address</Text>}
-                        <View style={styles.nameContainer}>
-                            <Text style={styles.Label}>Email:</Text>
-                            <TextInput 
-                                placeholder='Enter your Email' 
-                                style={styles.Field} 
-                                selectionColor={'black'} 
-                                keyboardType={'email-address'}
-                                value = {editEmail}
-                                onChangeText={setEditEmail}
                             />
                         </View>
                         <TouchableOpacity activeOpacity={0.5} style={[styles.applyChanges, {flexDirection:'row',}]} onPress={handleApplyChange}>

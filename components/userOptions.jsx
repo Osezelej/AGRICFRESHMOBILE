@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
 })
 function UserOption ({image, navigation, navigationLink}){
     const [active, setActive] = useState('white')
-    let handlePress = useCallback(()=>{active == '#ffdb28'?setActive('white'):setActive('#ffdb28')})
+    let handlePress = useCallback(()=>{active == '#ffaf28'?setActive('white'):setActive('#ffaf28')})
     return <Pressable style={{
         padding:10,
         borderWidth:1,

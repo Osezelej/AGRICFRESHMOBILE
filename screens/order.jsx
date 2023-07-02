@@ -70,8 +70,8 @@ const styles = StyleSheet.create({
         fontWeight:'900',
     },
     checkout:{
-        backgroundColor:'#ffdb28',
-        paddingVertical:15,
+        backgroundColor:'#ffaf28',
+        paddingVertical:10,
         borderRadius:20
     },
     checkoutText:{
@@ -479,7 +479,7 @@ function Order ({navigation,
          <View style={styles.modalContainer}>
             <View style={styles.vericontentContainer}>
                 
-                <ActivityIndicator size={45} color={'#ffdb28'}/>
+                <ActivityIndicator size={45} color={'#ffaf28'}/>
                 <Text style={styles.veriData}>Verifying {orderCon}</Text>
             </View>
          </View>

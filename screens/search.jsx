@@ -3,6 +3,7 @@ import {ActivityIndicator} from '@react-native-material/core'
 import {memo, useState, useRef, useEffect} from 'react';
 import MarketItems from '../components/marketItems';
 import { SimpleLineIcons, Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -112,7 +113,7 @@ const styles = StyleSheet.create({
         fontWeight:'600'
     },
     buyContainer:{
-        backgroundColor:'#ffdb28',
+        backgroundColor:'#ffaf28',
         padding:7,
         paddingHorizontal:19,
         borderRadius:10,
@@ -149,6 +150,7 @@ function Search({
     
     let currentData = useRef(new Animated.Value(0)).current
     const [itemName, setItemName] = useState('');
+    const [email, setEmail] = useState('');
     
 let buyClicked = async (item_name)=>{
 
@@ -171,10 +173,17 @@ let buyClicked = async (item_name)=>{
     }),
 ]).start()
 }
+    async function getEmail(){
+        await AsyncStorage.getItem('userEmail').then((data)=>{
+            setEmail(JSON.parse(data).email)
+        })
+    }
 
-
+    useEffect(()=>{
+        getEmail()
+    }, [])
     return<View style={styles.body}>
-        {activeIndicator && <ActivityIndicator color='#ffdb28' size={'large'}/>}
+        {activeIndicator && <ActivityIndicator color='#ffaf28' size={'large'}/>}
         <FlatList
             data = {searchData}
             renderItem={({item})=><MarketItems 
@@ -184,6 +193,7 @@ let buyClicked = async (item_name)=>{
                                         navigation = {navigation} 
                                         handlePress={buyClicked}
                                         cartData={cartData}
+                                        email={email}
                                         />
             }
             ListEmptyComponent={<View style={{
@@ -194,8 +204,7 @@ let buyClicked = async (item_name)=>{
                     fontSize:16,
                     fontWeight:'400'
                      }}>
-                    No available data that march this search,
-                    Type another key word.
+                    No available data.
                 </Text>
             </View>}
         />

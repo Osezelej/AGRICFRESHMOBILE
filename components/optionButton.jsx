@@ -7,12 +7,12 @@ function OptionButton ({styles, active, item, handleChange, d, filterRender}){
             handleChange(item);
         }} activeOpacity={0.7}>
                                             
-        <View style = {{ backgroundColor: item.isActive ? active:'white',
+        <View style = {{ backgroundColor: item.isActive ? '#ffaf36':'white',
                         paddingVertical:7,
                         paddingHorizontal:15,
                         borderRadius:30,
                         borderWidth:0.5,
-                        borderColor:'#ffdb28',
+                        borderColor:'#ffaf36',
                         marginRight:5,
                         marginVertical:5
 
@@ -23,7 +23,7 @@ function OptionButton ({styles, active, item, handleChange, d, filterRender}){
    }else{
             return<TouchableOpacity style={styles.background} onPress={()=>{handleChange(item); d =true }} activeOpacity={0.7}>
                                                 
-            <View style = {{ backgroundColor: item.isActive ? active:'white',
+            <View style = {{ backgroundColor: item.isActive ? '#ffaf36':'white',
                             paddingVertical:3,
                             paddingHorizontal:15,
                             borderRadius:30,

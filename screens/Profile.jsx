@@ -3,6 +3,8 @@ import { memo, useEffect, useState } from "react";
 import {AntDesign} from '@expo/vector-icons';
 import UserOptions from "../components/userOptions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { imageUrl } from "../data/database";
+
 
 const styles = StyleSheet.create({
     container:{
@@ -13,8 +15,8 @@ const styles = StyleSheet.create({
         flex:1,
     },
     profileImageContainer:{
-        width:162,
-        height:164,
+        width:142,
+        height:144,
         backgroundColor:'#e3e3e3',
         borderRadius:100,
         alignItems:'center',
@@ -46,15 +48,24 @@ const styles = StyleSheet.create({
     },
     usernameContainer:{
         maxWidth:'60%',
+    },
+    image:{
+        width:142,
+        height:144,
+        borderRadius:100
     }
 })
 
 function Profile({navigation, userIcon, userProfileDetails}) {
-    const [userName, setUserName] = useState('')
+    const [userName, setUserName] = useState('');
+    const [image_Url, setImage_url] = useState(null);
     
     async function getUsername(){
         await AsyncStorage.getItem('userData', (err, res)=>{
             setUserName(JSON.parse(res).name) 
+            if(JSON.parse(res).userImg){   
+                setImage_url(imageUrl + JSON.parse(res).userImg)
+            }
         })
     }
 
@@ -64,7 +75,7 @@ function Profile({navigation, userIcon, userProfileDetails}) {
             <View style={styles.body}>
                 <View style={styles.topContainer}>
                     <View style={styles.profileImageContainer}>
-                    <AntDesign name="user" size={100} color="#3b3b3b" />
+                    {image_Url ? <Image source={{uri:image_Url}} style={styles.image}/>:<AntDesign name="user" size={100} color="#3b3b3b" />}
                     </View>
                     <Pressable style={styles.usernameContainer}>
                     <Text style={styles.username}>{userName}</Text></Pressable>

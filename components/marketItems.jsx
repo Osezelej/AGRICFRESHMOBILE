@@ -1,6 +1,7 @@
-import {memo, useState, useCallback, } from 'react';
+import {memo, useState, useCallback, useEffect, } from 'react';
 import { View, Text, Pressable, Image } from 'react-native';
 import { ActivityIndicator, Avatar } from '@react-native-material/core';
+import axios from 'axios';
 
 let FavouritesData = [];
 function removeFavContent (id){
@@ -14,28 +15,59 @@ function MarketItems({
     navigation, 
     handlePress, 
     cartData,
+    from,
+    email,
 
 } ) {
     
     const [activeActivity, setActiveActivity] = useState(false)
-    const [favImage, setFavImage] = useState({image:contentImages[0], valid:false});
+    const [favImage, setFavImage] = useState(false);
     
-    const handlePressFav = useCallback(()=>{
+    useEffect(()=>{
+        if (item.isFav){
+        setFavImage(true)
+    }
+}, [])
     
-       setFavImage((prev)=>{
-            if (prev.valid){
-               FavouritesData = FavouritesData.filter((value)=>{
-                    
-                    return value.id != item.id})
-                return{image:contentImages[0], valid:false}
-            }else{
-                FavouritesData.push(item)
-            return { valid:true, image:contentImages[1]}
-            }
-            
-       },[favImage])
 
-    });
+    async function addToFav(){
+        await axios.get(`https://4v6gzz-3001.csb.app/v1/updateUserFav/${email}`, {
+                    params:{
+                        productId:item.id,
+                        task:'add'
+                    }
+            })
+            .then((res)=>{
+                console.log(res.data)
+
+            })
+            .catch((err)=>{
+                console.log(err)
+            })
+    }
+
+    async function removeFromFav(){
+        await axios.get(`https://4v6gzz-3001.csb.app/v1/updateUserFav/${email}`, {
+                    params:{
+                        productId:item.id,
+                        task:'remove'
+                    }
+            })
+            .then((res)=>{
+                console.log(res.data)
+            })
+            .catch((err)=>{
+                console.log(err)
+            })
+    }
+    function handlePressFavAdd(){
+        setFavImage(true);
+        addToFav();
+    }
+    function handlePressFavRemove(){
+        setFavImage(false);
+        removeFromFav();
+    }
 
     async function handleEvent(){
         setActiveActivity(true);
@@ -82,11 +114,16 @@ function MarketItems({
             <Text style={styles.contentPrice}>{item.Price}.00</Text>
         </View>
         <Pressable style={[styles.likeCommentBuy, {marginLeft:15}]} >
+        
             <View style={styles.contentimagescontainer}>
-                <Pressable style={styles.contentImagecontainer} onPress={handlePressFav}>
-                        <Image source={favImage.image} style={styles.contentImage}/>
+            {from != 'favourite' && ( favImage ? <Pressable style={styles.contentImagecontainer} onPress={handlePressFavRemove}>
+                        <Image source={contentImages[1]} style={styles.contentImage}/>
                     <Text style={styles.imageText}>Like</Text>
-                </Pressable>
+                </Pressable>:<Pressable style={styles.contentImagecontainer} onPress={handlePressFavAdd}>
+                        <Image source={contentImages[0]} style={styles.contentImage}/>
+                    <Text style={styles.imageText}>Like</Text>
+                </Pressable>)}
+                
                 <Pressable style={styles.contentImagecontainer} onPress={()=>{
                     navigation.navigate('Comment')
                 }}>

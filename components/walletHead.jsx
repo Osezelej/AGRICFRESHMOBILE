@@ -3,7 +3,7 @@ import { memo, useState, useCallback, useEffect } from 'react';
 
 const styles = StyleSheet.create({
     headertag:{
-        backgroundColor:'#ffdb28',
+        backgroundColor:'#ffaf36',
         marginHorizontal:20,
         marginVertical:20,
         paddingHorizontal:20,
