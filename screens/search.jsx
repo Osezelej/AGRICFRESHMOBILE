@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     farmIconContainer:{
         width:50,
         height:50,
-        backgroundColor:'#ffdb28',
+        backgroundColor:'#ffaf28',
         borderRadius:40,
         marginRight:25,
     },

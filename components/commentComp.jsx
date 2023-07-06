@@ -32,7 +32,7 @@ function Comment({data}){
     let mins = timeSent.getMinutes();
 
     {if(data.type == 'sent'){
-        return <View style={[styles.commentBody, {backgroundColor:'#ffdb28'}]}>
+        return <View style={[styles.commentBody, {backgroundColor:'#ffaf28'}]}>
             <Text style={styles.accountName}>Art Template</Text>
             <Text style={styles.Text}>{data.message}</Text>
             <Text style={styles.time}>{hrs}:{mins}</Text>

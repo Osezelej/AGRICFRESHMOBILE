@@ -1,7 +1,8 @@
 import {View, FlatList, Text, ScrollView, StyleSheet, TextInput, TouchableOpacity, Alert} from 'react-native';
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import Comments from '../components/commentComp';
 import { MaterialIcons } from '@expo/vector-icons';
+import { io } from 'socket.io-client';
 
 
 const styles = StyleSheet.create({
@@ -73,21 +74,27 @@ function Comment(){
         setCommentTyped('')
     })
 
+    useEffect(()=>{
+        var socket = io('https://4v6gzz-3001.csb.app')
+        socket.connect()
+    }, [])
     return<View style={styles.container}>
-            <ScrollView style={styles.body}>
-               {CommentData.map((item)=>{
-                if (item.type == 'sent'){
-                    return <View style = {[styles.commentContainer, {flexDirection:'row-reverse'}]} key ={item.id}>
-                    <Comments data={item}/>
-                </View>
-                }else{
-                    return <View style = {[styles.commentContainer,]} key ={item.id}>
-                    <Comments data={item}/>
-                </View>
+            <View style={styles.body}>
+                <FlatList 
+                    data={CommentData}
+                    renderItem={({item})=>{
+                        if (item.type == 'sent'){
+                                return <View style = {[styles.commentContainer, {flexDirection:'row-reverse'}]} key ={item.id}>
+                                            <Comments data={item}/>
+                                        </View>
+                            }else{
+                                return <View style = {[styles.commentContainer,]} key ={item.id}>
+                                            <Comments data={item}/>
+                                        </View>
                 }
-               
-               })}
-            </ScrollView>
+                    }}
+                />
+            </View>
             <View style={styles.textInputContainer}>
                 <TextInput 
                     value = {commentTyped}
@@ -99,7 +106,7 @@ function Comment(){
                     onChangeText = {(text)=>{setCommentTyped(text)}}
                 />
                 <TouchableOpacity style={styles.sendContainer} onPress={handlePress} activeOpacity={0.5}>
-                    <MaterialIcons name="send" size={34} color="#ffdb28" />
+                    <MaterialIcons name="send" size={34} color="#ffaf28" />
                 </TouchableOpacity>
             </View>
     </View>
