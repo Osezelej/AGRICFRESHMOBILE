@@ -221,7 +221,6 @@ useEffect(()=>{
 
 }, [dataSaved])
 
-
   return (<View style ={styles.container}>
          <StatusBar/>
         {/* <Animated_page

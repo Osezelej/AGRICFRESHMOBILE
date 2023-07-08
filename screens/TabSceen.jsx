@@ -200,7 +200,7 @@ export default function FootIconsNavigaiton({
             </Tab.Screen>
 
             <Tab.Screen
-                name="NewsFeed"
+                name="Chats"
                 component={NewsFeed}
                 options={{ headerShadowVisible:false,
                  tabBarIcon:({focused, color, size})=>(<Image source={newsImage} style={styles.image}/>)}}

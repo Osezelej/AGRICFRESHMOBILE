@@ -125,7 +125,7 @@ function MarketItems({
                 </Pressable>)}
                 
                 <Pressable style={styles.contentImagecontainer} onPress={()=>{
-                    navigation.navigate('Comment')
+                    navigation.navigate('Comment', {item:item})
                 }}>
                     <Image source={contentImages[2]} style={styles.contentImage}/>
                     <Text style={styles.imageText}>Negotiate</Text>
