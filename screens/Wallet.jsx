@@ -90,8 +90,11 @@ function Wallet({visibilityImages, cardOption, navigation, balance, setBalance})
         })
     },[])
 
-    const isFocused = useIsFocused()
-
+    
+    const isfocused = useIsFocused();
+    useEffect(()=>{
+        console.log(isfocused)
+    }, [isfocused])
     return<ScrollView style={styles.container}>
             <View style={styles.body}>
                     <WalletHead 

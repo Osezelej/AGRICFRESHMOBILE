@@ -3,8 +3,6 @@ import {styles} from './signUp';
 import { useEffect, useState } from "react";
 import { ActivityIndicator } from "@react-native-material/core";
 import axios from "axios";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 
 export function Login({navigation, route, saveUserData}){
     let email = ''
@@ -53,6 +51,7 @@ export function Login({navigation, route, saveUserData}){
 
                             console.log(res.data);
                             setPassword('');
+                        
                             saveUserData(email, name, walletBal, userImg).then(()=>{
                                 navigation.navigate('MarketPlace', {email:Email})
                             })

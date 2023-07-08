@@ -32,6 +32,7 @@ import OrderHistory from './screens/orderHistory';
 import OrderItem from './screens/OrderItem';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { io } from 'socket.io-client';
 
 
 const Stack = createNativeStackNavigator();
@@ -133,17 +134,7 @@ let handleSearchTextChange = useCallback ((text)=>{
 })
 // to save the user information on the user phone 
 const [dataSaved, setDataSaved] = useState('');
-async function saveUserData (email, name, walletBal, userImg){
-  let user_data =   JSON.stringify({
-    email:email,
-    name:name,
-    walletBal:walletBal,
-    userImg:userImg
-  })
-  await AsyncStorage.setItem('userData', user_data)
-  setDataSaved('saved')
 
-}
 
 
 // to search for data in mongodb
@@ -163,7 +154,25 @@ let searchDatabase = useCallback(async()=>{
 
 
 })
+const socket = useRef(io('https://4v6gzz-3001.csb.app', {autoConnect:false})).current 
 
+async function saveUserData (email, name, walletBal, userImg){
+  let user_data =   JSON.stringify({
+    email:email,
+    name:name,
+    walletBal:walletBal,
+    userImg:userImg
+  })
+  await AsyncStorage.setItem('userData', user_data)
+  setDataSaved('saved')
+  connectIO(email, name)
+
+}
+// function that connects to socket io
+async function connectIO(email, name){
+  socket.auth = {name:name, email:email}
+  socket.connect()
+}
 //  to effect the searchDatabase function
 useEffect(()=>{
   if(searchWord.length > 0){
@@ -209,6 +218,7 @@ async function getbalance(){
   })
   return e
 }
+
 
 useEffect(()=>{
   if(firstLoad){
@@ -474,7 +484,9 @@ useEffect(()=>{
             >
               {(props)=>(
 
-                <Comment {...props} />
+                <Comment {...props} 
+                  socket={socket}
+                />
               )
 
               }

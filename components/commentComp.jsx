@@ -70,7 +70,7 @@ function Comment({data, productData}){
         </View>
        
     }else{
-        return <View style = {{flexDirection:'row', alignItems:'center',}}>
+        return <View style = {{flexDirection:'row', alignItems:'center', width:'100%'}}>
                 <View style={[{
                     marginLeft:0, 
                     marginRight:5,  

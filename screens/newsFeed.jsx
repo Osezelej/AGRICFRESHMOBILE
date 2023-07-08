@@ -1,26 +1,171 @@
-import { TouchableWithoutFeedback, Keyboard, View, StyleSheet, Text } from "react-native";
-import { memo, useEffect } from "react";
+import { TouchableWithoutFeedback, Keyboard, View, StyleSheet, Text, FlatList,  Animated, Pressable, } from "react-native";
+import { memo, useEffect, useState, useRef } from "react";
 import { useIsFocused } from "@react-navigation/native";
+import { ActivityIndicator, Avatar, ListItem } from "@react-native-material/core";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {Ionicons } from '@expo/vector-icons';
 
 const styles = StyleSheet.create({
     body:{
         flex:1,
         backgroundColor:'white',
-        flexDirection:'row',
+        flexDirection:'column',
         justifyContent:'center',
         alignItems:'center'
+    },
+    container:{
+        backgroundColor:'white',
+        flex:1
+
+    },
+     buyContainer:{
+        backgroundColor:'#ffaf36',
+        width:50,
+        height:40,
+        elevation:5,
+        marginRight:15,
+        justifyContent:'center',
+        alignItems:'center',
+        borderRadius:10
+
+
+    },
+    buyText:{
+        fontSize:17,
+        fontWeight:'800'
+    },
+    alertbody:{
+        backgroundColor:'#4f9d5c',
+        position:'absolute',
+        flex:1,
+        width:'100%',
+        padding:5,
+        alignItems:'center',
+        flexDirection:'row',
+        justifyContent:'center'
+    },
+    alertText:{
+        color:'white',
+        fontSize:18,
+        fontWeight:'700',
+        marginLeft:10,
     }
 })
-function NewsFeed({navigation}){
+function NewsFeed({navigation, cartData}){
+
+    const [activeActivity, setActiveActivity] = useState(true);
+    const [email, setEmail] = useState('');
+    const [data, setData] = useState([]);
+    const [itemName, setItemName] = useState('');
+    const [activeActivity_, setActiveActivity_] = useState(false)
+    let currentData = useRef(new Animated.Value(0)).current;
+
+    async function getEmail(){
+        await AsyncStorage.getItem('userEmail').then((data)=>{
+            let res = JSON.parse(data).email
+            setEmail(res)
+        })
+    }
     const isfocused = useIsFocused();
     useEffect(()=>{
-        console.log(isfocused)
+        if(isfocused){    
+            getEmail()
+            setActiveActivity(true)
+            setTimeout(()=>{
+                setActiveActivity(false)
+            }, 20)
+            
+        getChatData()
+        }
+        
+    
     }, [isfocused])
-    return<TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{flex:1}}>
-        <View style={styles.body}>
-            <Text>No notifications</Text>
+ 
+    async function getChatData(){
+        let comment = []
+        await AsyncStorage.getItem('yourChatData').then((data)=>{
+            if(data){
+               let res = JSON.parse(data)
+               comment = res.reverse();
+            }
+        })
+        setData(comment)
+    }
+    
+let buyClicked = async (item_name)=>{
+
+    setItemName(item_name)
+    Animated.sequence([
+    Animated.timing(currentData, {
+        toValue:1,   
+        duration: 5,
+       useNativeDriver: true,
+    }),
+    Animated.timing(currentData, {
+        toValue:1,   
+        duration: 1000,
+       useNativeDriver: true,
+    }),
+    Animated.timing(currentData, {
+        toValue:0,   
+        duration: 500,
+       useNativeDriver: true,
+    }),
+]).start()
+}
+    async function handleEvent(item){
+        setActiveActivity_(true);
+        setTimeout(()=>{
+            cartData(item)
+        .then(()=>{
+           
+                buyClicked(item.Name)
+                .then(()=>{
+                    setTimeout(()=>{
+                        setActiveActivity_(false);
+                    }, 500)
+                })
+         
+        })
+        }, 300)
+        
+    }
+
+
+    if(activeActivity){
+        return<View  style={[styles.body, {flex:1}]}>
+                <ActivityIndicator color="#ffaf36" size={45}/>
+                <Text>No notifications</Text>
         </View>
-    </TouchableWithoutFeedback> 
+    }else{
+        return<TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{flex:1}}>
+            <View style={styles.container}>
+                <FlatList
+                    data={data}
+                    renderItem={({item})=><ListItem
+                        leadingMode="avatar"
+                        title={<Text style={{fontWeight:'bold'}}>{item.farmName.toUpperCase()}</Text>}
+                        leading={<Avatar image={{uri:item.Image}}/>}
+                        trailing={()=><Pressable style={[styles.buyContainer, {flexDirection:'row', alignItems:'center'}]} onPress={()=>{ handleEvent(item)}}>
+                                            <Text style={styles.buyText}> Buy </Text>
+
+                                            {activeActivity_ && <ActivityIndicator size={10} color='black'/>}
+                            </Pressable>}
+                            secondaryText={'FOR: ' + item.Name.toUpperCase()}
+                            overline={<Text style={{color:'green', fontSize:12}}>{item.Price}</Text>}
+                        onPress={()=>{navigation.navigate('Comment', {item:item})}}
+                    />}
+                    
+
+                />
+                 <Animated.View style={[styles.alertbody, {opacity:currentData}]}>
+                                        <Ionicons name="checkmark-sharp" size={24} color="white" />
+                                        <Text style={styles.alertText}>{itemName} have been added to cart!!</Text>
+                                    </Animated.View>
+            </View>
+        </TouchableWithoutFeedback> 
+    }
+    
 }
 
 export default memo(NewsFeed);
