@@ -40,10 +40,6 @@ const styles = StyleSheet.create({
 })
 
 function Comment({data, productData}){
-    const timeSent = new Date()
-    
-    let hrs = timeSent.getHours();
-    let mins = timeSent.getMinutes();
     const [userimage, setuserImage] = useState(null)
     const [productImage, setProductImage] = useState(productData.Image)
     async function getUserData(){
@@ -65,7 +61,8 @@ function Comment({data, productData}){
                                 </View>
                     <View style={[styles.commentBody, {backgroundColor:'#ffaf28'}]}>
                     <Text style={styles.Text}>{data.message}</Text>
-                    <Text style={styles.time}>{hrs}:{mins}</Text>
+
+                    <Text style={styles.time}>sent</Text>
                 </View>
         </View>
        
@@ -85,7 +82,7 @@ function Comment({data, productData}){
                 <View style={[styles.commentBody, {backgroundColor:'#4f9d5c',}]}>
                     <Text style={[styles.accountName, {color:'white'}]}>{productData.farmName}</Text>
                     <Text style={[styles.Text, {color:'white'}]}>{data.message}</Text>
-                    <Text style={styles.time}>{hrs}:{mins}</Text>
+                    <Text style={styles.time}>sent</Text>
                 </View>
         </View>
        

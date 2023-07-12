@@ -4,6 +4,7 @@ import Comments from '../components/commentComp';
 import { MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ActivityIndicator } from '@react-native-material/core';
+import KeyboardAvoidingView from 'react-native/Libraries/Components/Keyboard/KeyboardAvoidingView';
 
 const styles = StyleSheet.create({
     container:{
@@ -45,7 +46,6 @@ const styles = StyleSheet.create({
 function Comment({route, socket}){
     const [CommentData, setCommentData] = useState([]);
 
-    
     const [productData, setProductData] = useState(null);
     const [commentTyped, setCommentTyped] = useState('');
     const [email, setEmail] = useState('');
@@ -57,9 +57,8 @@ function Comment({route, socket}){
                     setchatData();
                 if(prev.length < 1){
                     setItemData();
-
                     return[
-                        {id:1, message:commentTyped, type:'sent' }
+                        {id:1, message:commentTyped, type:'sent',}
                     ]
                 }else{
                     return[...prev, {id: prev[prev.length - 1].id + 1, message:commentTyped, type:'sent'}]
@@ -67,7 +66,7 @@ function Comment({route, socket}){
             })
             socket.emit('private_message',{
                 message:commentTyped,
-                to:'osezelejoseph@gmail.com'
+                to:productData._id
             })
         }else{
             Alert.alert('Error', 'Type a message before you send')
@@ -191,9 +190,10 @@ function Comment({route, socket}){
         
     }, [CommentData])
 
+    let mychats  = useRef(null)
 
     if (productData){
-        return<View style={styles.container}>
+        return<KeyboardAvoidingView style={styles.container}>
             <View style={styles.body}>
                 <View style={{alignItems:'center', flexDirection:'row', justifyContent:'center'}}>
                     <Text style={{color:'#818181'}}>You are Negotiating with</Text>
@@ -202,6 +202,7 @@ function Comment({route, socket}){
                     <Text style={{fontSize:16, fontWeight:'bold'}}> {productData.Name}</Text>
                 </View>
                 <FlatList 
+                 ref={mychats}
                     data={CommentData}
                     renderItem={({item})=>{
                         if (item.type == 'sent'){
@@ -214,6 +215,10 @@ function Comment({route, socket}){
                                         </View>
                 }
                     }}
+                    onLayout={()=>{mychats.current.scrollToEnd()}}
+                    onContentSizeChange={()=>{
+                        mychats.current.scrollToEnd()
+                    }}
                 />
             </View>
             <View style={styles.textInputContainer}>
@@ -225,12 +230,13 @@ function Comment({route, socket}){
                     selectionColor = '#d0d0d0'
                     multiline = {true}
                     onChangeText = {(text)=>{setCommentTyped(text)}}
+                   
                 />
                 <TouchableOpacity style={styles.sendContainer} onPress={handlePress} activeOpacity={0.5}>
                     <MaterialIcons name="send" size={34} color="#ffaf28" />
                 </TouchableOpacity>
             </View>
-    </View>
+    </KeyboardAvoidingView>
     }else{
         return <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <ActivityIndicator color='#ffaf38' size={40}/>

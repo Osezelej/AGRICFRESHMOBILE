@@ -1,9 +1,10 @@
-import { TouchableWithoutFeedback, Keyboard, View, StyleSheet, Text, FlatList,  Animated, Pressable, } from "react-native";
+import { TouchableWithoutFeedback, Keyboard, View, StyleSheet, Text, FlatList,  Animated, } from "react-native";
 import { memo, useEffect, useState, useRef } from "react";
 import { useIsFocused } from "@react-navigation/native";
 import { ActivityIndicator, Avatar, ListItem } from "@react-native-material/core";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {Ionicons } from '@expo/vector-icons';
+import ChatComp from "../components/chatComp";
 
 const styles = StyleSheet.create({
     body:{
@@ -50,8 +51,9 @@ const styles = StyleSheet.create({
         fontWeight:'700',
         marginLeft:10,
     }
+   
 })
-function NewsFeed({navigation, cartData}){
+function NewsFeed({navigation, cartData, setChatBadge,newMessageId,setNewMessageId }){
 
     const [activeActivity, setActiveActivity] = useState(true);
     const [email, setEmail] = useState('');
@@ -70,6 +72,7 @@ function NewsFeed({navigation, cartData}){
     useEffect(()=>{
         if(isfocused){    
             getEmail()
+            setChatBadge(0)
             setActiveActivity(true)
             setTimeout(()=>{
                 setActiveActivity(false)
@@ -77,8 +80,6 @@ function NewsFeed({navigation, cartData}){
             
         getChatData()
         }
-        
-    
     }, [isfocused])
  
     async function getChatData(){
@@ -86,7 +87,15 @@ function NewsFeed({navigation, cartData}){
         await AsyncStorage.getItem('yourChatData').then((data)=>{
             if(data){
                let res = JSON.parse(data)
+               res.forEach((item)=>{
+                if(newMessageId.includes(item._id)){
+                    item.isNew = true
+                }else{
+                    item.isNew = false
+                }
+               })
                comment = res.reverse();
+               console.log(comment)
             }
         })
         setData(comment)
@@ -118,14 +127,12 @@ let buyClicked = async (item_name)=>{
         setTimeout(()=>{
             cartData(item)
         .then(()=>{
-           
                 buyClicked(item.Name)
                 .then(()=>{
                     setTimeout(()=>{
                         setActiveActivity_(false);
                     }, 500)
                 })
-         
         })
         }, 300)
         
@@ -142,21 +149,14 @@ let buyClicked = async (item_name)=>{
             <View style={styles.container}>
                 <FlatList
                     data={data}
-                    renderItem={({item})=><ListItem
-                        leadingMode="avatar"
-                        title={<Text style={{fontWeight:'bold'}}>{item.farmName.toUpperCase()}</Text>}
-                        leading={<Avatar image={{uri:item.Image}}/>}
-                        trailing={()=><Pressable style={[styles.buyContainer, {flexDirection:'row', alignItems:'center'}]} onPress={()=>{ handleEvent(item)}}>
-                                            <Text style={styles.buyText}> Buy </Text>
-
-                                            {activeActivity_ && <ActivityIndicator size={10} color='black'/>}
-                            </Pressable>}
-                            secondaryText={'FOR: ' + item.Name.toUpperCase()}
-                            overline={<Text style={{color:'green', fontSize:12}}>{item.Price}</Text>}
-                        onPress={()=>{navigation.navigate('Comment', {item:item})}}
+                    renderItem={({item})=><ChatComp
+                        navigation={navigation}
+                        item={item}
+                        handleEvent={handleEvent}
+                        activeActivity_={activeActivity_}
+                        setNewMessageId={setNewMessageId}
+                        
                     />}
-                    
-
                 />
                  <Animated.View style={[styles.alertbody, {opacity:currentData}]}>
                                         <Ionicons name="checkmark-sharp" size={24} color="white" />

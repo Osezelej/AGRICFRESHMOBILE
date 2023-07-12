@@ -40,7 +40,7 @@ export function Login({navigation, route, saveUserData}){
             await axios.post('https://4v6gzz-3001.csb.app/v1/login', {email:Email, password:Password})
             .then((res)=>{
                 if(res.data && res.status == 200){
-                    Alert.alert('LOGIN SUCCESSFULL','', [{
+                    Alert.alert(`WELCOME BACK, ${res.data[0].name.toUpperCase()}`,'LOGIN SUCCESS!', [{
                         text:'0K',
                         onPress:async ()=>{
                             let data = res.data;

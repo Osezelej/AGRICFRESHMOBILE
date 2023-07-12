@@ -45,12 +45,16 @@ export default function FootIconsNavigaiton({
     setFilteredData,
     filteredData,
     balance,
-    setBalance
+    setBalance,
+    socket,
+    connectIO,
+    setNewMessageId,
+    newMessageId
 }) { 
     let email = route.params.email
     const [name, setName] = useState('Cart');
-
-
+    const [itemFirst, setItemFirst] = useState([])
+    const [chatBadge, setChatBadge] = useState(0)
 
     let manageCartMinus= useCallback(()=>{
         setCartBadge(cartBadge - 1);
@@ -65,7 +69,10 @@ export default function FootIconsNavigaiton({
         await AsyncStorage.setItem('userEmail', JSON.stringify({email:route.params.email}))
     })
 
-    useEffect(()=>{getEmail()},[])
+    useEffect(()=>{
+        getEmail()
+
+    },[])
         
 
         async function getCartData (){
@@ -149,6 +156,11 @@ export default function FootIconsNavigaiton({
                 setD={setD}
                 filteredData={filteredData}
                 setFilteredData={setFilteredData}
+                socket={socket}
+                connectIO = {connectIO}
+                setChatBadge={setChatBadge}
+                setItemFirst = {setItemFirst}
+                setNewMessageId={setNewMessageId}
                 />)}
             </Tab.Screen>
 
@@ -202,11 +214,19 @@ export default function FootIconsNavigaiton({
             <Tab.Screen
                 name="Chats"
                 options={{ headerShadowVisible:false,
-                 tabBarIcon:({focused, color, size})=>(<Image source={newsImage} style={styles.image}/>)}}
+                 tabBarIcon:({focused, color, size})=>(<Image source={newsImage} style={styles.image}/>),
+                 tabBarBadge:chatBadge,
+                 tabBarBadgeStyle:{backgroundColor:'#ffaf36', fontSize:13, fontWeight:'bold'},
+                 
+                 }}
             >
                 {(props)=><NewsFeed {...props} 
                 navigation={navigation}
                     cartData = {handleCartData}
+                    itemFirst={itemFirst}
+                    setChatBadge={setChatBadge}
+                    newMessageId={newMessageId}
+                    setNewMessageId={setNewMessageId}
                 />}
             </Tab.Screen>
             

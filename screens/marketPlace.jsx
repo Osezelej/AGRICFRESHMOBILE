@@ -6,6 +6,7 @@ import { SimpleLineIcons, Ionicons } from '@expo/vector-icons';
 import { ActivityIndicator } from "@react-native-material/core";
 import { useFocusEffect } from "@react-navigation/native";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 
@@ -268,7 +269,11 @@ export default function MarketPlace({
     d,
     setD,
     filteredData,
-
+    socket,
+    connectIO,
+    setChatBadge,
+    setItemFirst,
+    setNewMessageId,
 
 }){
     navigation.canGoBack(false)
@@ -329,6 +334,15 @@ const [active, setActive] = useState('#ffdb28');
 const [image, setImage] = useState(images);
 const [itemName, setItemName] = useState('');
 const [optionSelected, setOptionSelected] = useState('')
+const [name, setName] = useState('')
+
+async function getUserName(){
+    await AsyncStorage.getItem('userData').then((data)=>{
+        let res = JSON.parse(data).name
+        setName(res)
+    })
+}
+
 
 
 let handleChange = useCallback((item)=>{
@@ -362,6 +376,7 @@ let handleOptionData = async(text)=>{
     return data
 }
 
+
 useEffect(()=>{
 
     if (d){
@@ -369,7 +384,11 @@ useEffect(()=>{
         if(optionSelected.toLowerCase() == 'all'){
             fetchData(email)
             .then((data)=>{
-                setMarketData(data);
+                if(data){
+                    setMarketData(data);
+                }else{
+                    
+                }
             })
         }else{
             handleOptionData(optionSelected.toLowerCase())
@@ -381,6 +400,89 @@ useEffect(()=>{
     }
    
 }, [options])
+
+useEffect(()=>{
+    if(marketData.length > 0){
+      getUserName()
+
+    }
+  }, [marketData])
+
+  const [unsentMessages, setUnsentMessagges] = useState(null)
+  const [dropedMessage, setDropedMessage] = useState(null)
+  useEffect(()=>{
+    if(name.length > 0){
+        connectIO(email, name);
+        socket.on('connect', ()=>{
+            socket.emit('unsentMessages', 'data')
+            socket.on('sentMessage', (data)=>{
+                setChatBadge(data.length)
+                let verifiedId = []
+                //looping through data
+                for (let m of data){
+                    let isP = true
+                    //looping through verifiedData to see if the id exixts
+                    for (let id of verifiedId){
+                        if (m.from == id){
+                            isP = false
+                            break;
+                        }
+                    }
+                    // if the id does not exist
+                    if(isP){
+                        let eachMessage ={id:'', message:[]} 
+                        if (eachMessage.id.length == 0){
+                            eachMessage.id = m.from;
+                            verifiedId.push(m.from);
+                            setNewMessageId(prev=>{
+                                return [...prev, m.from]
+                            })
+                        }
+                        for(let message of data){
+                            if(eachMessage.id == message.from){
+                                eachMessage.message.push(message.message);
+                            }
+                        }
+                        setDropedMessage(eachMessage)
+                        
+                    }
+                    
+                }
+               socket.emit('done', '')
+            })  
+        })
+    }
+  }, [name])
+  useEffect(()=>{
+    if(dropedMessage){
+        console.log(dropedMessage)
+        getCommentData({from:dropedMessage.id, message:dropedMessage.message}).then((val)=>{
+            saveUnsentComment(dropedMessage.id, val)
+        })
+   
+    }
+  }, [dropedMessage]) 
+
+
+  async function getCommentData({from, message}){
+    let result = '';
+    await AsyncStorage.getItem(from).then((data)=>{
+        console.log
+        let res = JSON.parse(data).messages;
+        for (let m of message){
+            let newData = {id: res[res.length - 1].id + 1, message:m, type:'recieve'}
+            res.push(newData)
+
+        }
+        let data_ = {messages:res}
+        result = JSON.stringify(data_)
+    })
+    return result;
+
+  }
+    async function saveUnsentComment(key, value){
+    await AsyncStorage.setItem(key, value)
+  }
 
 let buyClicked = async (item_name)=>{
 

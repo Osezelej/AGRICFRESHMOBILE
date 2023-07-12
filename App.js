@@ -97,6 +97,7 @@ const [cartBadge, setCartBadge] = useState(0);
 const [state, setState] = useState(false);
 let handleState = useCallback(()=>(state?setState(false):setState(true)))
 const [cards, setCards] = useState([]);
+const [newMessageId, setNewMessageId] = useState([]);
 const [addrData, setaddrData] = useState([
   {
       id:1,
@@ -165,7 +166,7 @@ async function saveUserData (email, name, walletBal, userImg){
   })
   await AsyncStorage.setItem('userData', user_data)
   setDataSaved('saved')
-  connectIO(email, name)
+ 
 
 }
 // function that connects to socket io
@@ -197,15 +198,19 @@ async function  handleCartData(item){
           }
       }
       if (i){
-          manageCart()
           return [...prev, item]
       }else{
           return[...prev]
       }
   })
 }
+useEffect(()=>{
+  if(cartData.length > 0){
+    manageCart()
+  }
+}, [cartData])
 let manageCart = useCallback(()=>{
-  setCartBadge(cartBadge + 1);
+  setCartBadge(cartData.length);
 })
 
 // add to Wallet
@@ -230,6 +235,7 @@ useEffect(()=>{
   }
 
 }, [dataSaved])
+
 
   return (<View style ={styles.container}>
          <StatusBar/>
@@ -316,6 +322,10 @@ useEffect(()=>{
                 setFilteredData={setFilteredData}
                 balance={wbalance}
                 setBalance={setWBalance}
+                socket={socket}
+                connectIO={connectIO}
+                setNewMessageId={setNewMessageId}
+                newMessageId={newMessageId}
                 />)}
 
               </Stack.Screen>
@@ -572,6 +582,7 @@ useEffect(()=>{
                   deliveryImage={deliveryImage}
                   checkedImage={checkedImage}
                   deliveryManImage={deliveryManImage}
+                  setCartData={setCartData}
                 />}
               </Stack.Screen>
 

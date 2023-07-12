@@ -22,6 +22,7 @@ function OrderHistory({navigation}){
             setEmail(email)
         })
     }
+    
     // get Email
     useEffect(()=>{
         getEmail();
@@ -60,7 +61,7 @@ function OrderHistory({navigation}){
                 setTimeout(()=>{setRefreshing(false)},500)
                     })
                     }}
-                colors={['#ffdb28']}
+                colors={['#ffaf28']}
             />}
             renderItem={({item})=><OrderHistoryComp
                 data = {item}

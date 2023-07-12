@@ -42,7 +42,7 @@ function OrderHistoryComp({data, navigation}){
                         flexDirection:'row'
                     }}>
                         <Text style={[styles.title, {color:'#888888'}]}>Status:  </Text>
-                        <View style={[styles.titleHead , {backgroundColor:'#ffdb28'}]}>
+                        <View style={[styles.titleHead , {backgroundColor:'#ffaf28'}]}>
                             <Text style={styles.title}>{data.status}</Text>
                         </View> 
                     </View>}

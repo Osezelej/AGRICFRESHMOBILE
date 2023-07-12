@@ -1,5 +1,5 @@
-import {View, StyleSheet, Image, Text, FlatList, TouchableOpacity, ScrollView} from 'react-native';
-import { memo, useEffect, useState } from 'react';
+import {View, StyleSheet, Image, Text, FlatList, TouchableOpacity, ScrollView, Alert} from 'react-native';
+import { memo, useEffect, useRef, useState } from 'react';
 import { MaterialIcons, SimpleLineIcons, Feather} from '@expo/vector-icons';
 import { ActivityIndicator } from '@react-native-material/core';
 import axios from 'axios';
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
         
     },
     pendingContainer:{
-        backgroundColor:'#ffdb28',
+        backgroundColor:'#ffaf36',
         paddingVertical:3,
         paddingHorizontal:10,
         borderRadius:10,
@@ -105,16 +105,17 @@ const styles = StyleSheet.create({
         paddingHorizontal:10,
     },
     reOrderContainer:{
-        backgroundColor:'#42a0ff',
-        paddingVertical:15,
+        backgroundColor:'#ffaf36',
+        paddingVertical:10,
         justifyContent:'center',
         alignItems:'center',
-        borderRadius:10
+        borderRadius:10,
+        width:150
     },
     orderText:{
         fontSize:18,
         fontWeight:'600',
-        color:'white'
+        color:'black'
     }, 
     orderBodyinfo:{
         flexDirection:'row',
@@ -228,7 +229,7 @@ const data = [{
 	foodType:['fruit']
 },
 ]
-function OrderItem({navigation, foodBasketImage, deliveryImage,checkedImage,deliveryManImage, route}){
+function OrderItem({navigation, foodBasketImage, deliveryImage,checkedImage,deliveryManImage, route, setCartData}){
     const [activeTransit, setActiveTransit] = useState(false)
     const [activeDelivered, setActiveDelivered] = useState(false)
     const [activeActivity, setActiveActivity]= useState(true)
@@ -269,6 +270,7 @@ function OrderItem({navigation, foodBasketImage, deliveryImage,checkedImage,deli
             .then((res)=>{
                 if (res.status == 200){
                     data = res.data;
+                    
                 }
             })
             .catch((err)=>{
@@ -278,21 +280,26 @@ function OrderItem({navigation, foodBasketImage, deliveryImage,checkedImage,deli
     }
 
     // to get the entire data 
+    const [data, setData] = useState([])
     async function getData(){
         let data = [];
         await axios.get(`https://4v6gzz-3001.csb.app/v1/orderDetail/${order_id}`)
         .then( async(res)=>{
             let email = res.data[0].email;
-
+            console.log('res.data', res.data)
             await handleorderData(order_id).then(async(orderData)=>{
+                console.log(orderData)
                 data = orderData;
 
                 await handleData(email).then((entiredata)=>{
+                    
                     entiredata.forEach((dataValue)=>{
-
+                       
                         orderData.orders.forEach((orderValue)=>{
                             if(dataValue.id == orderValue.productId){
-                                
+                                setData((prev)=>{
+                                    return [...prev , dataValue]
+                                })
                                 orderValue.productId = dataValue
                             }
                         })
@@ -317,12 +324,10 @@ function OrderItem({navigation, foodBasketImage, deliveryImage,checkedImage,deli
 
     // set the email when the app open
     useEffect(()=>{
-        getData()
+        if(!orderData){
+            getData()
+        }
     }, [])
-
-    useEffect(()=>{
-        console.log(orderData)
-    }, [orderData])
 
     // once the email is set we want to get entire data
   
@@ -344,7 +349,7 @@ function OrderItem({navigation, foodBasketImage, deliveryImage,checkedImage,deli
                             backgroundColor:'white',
                         
                             }}>
-                    <Text style={{fontWeight:'500'}}>{orderData.address}</Text>
+                    <Text style={{fontWeight:'500'}}>{orderData.address.address}</Text>
                 </View>}
                 <SimpleLineIcons name="location-pin" size={18} color="black" style = {[styles.icon, {backgroundColor:icon1 ? '#ffdg28':'white'}]} onPress={showAddress}/>
                 
@@ -424,11 +429,32 @@ function OrderItem({navigation, foodBasketImage, deliveryImage,checkedImage,deli
                             </View>}
             />
         </View>
-        <View style={styles.orderFooter}>
-            <TouchableOpacity style={styles.reOrderContainer} activeOpacity={0.5}>
+        <View style={[{flexDirection:'row', justifyContent:'space-between'}]}>
+            <TouchableOpacity style={styles.reOrderContainer} activeOpacity={0.5} onPress={()=>{
+                Alert.alert('ReOrdering', 'Are you sure you want to Re order this items?\nIf yes, Go to cart Screen to continue', [
+                    {
+                        text:'Yes', 
+                        onPress:()=>{
+                            setCartData(data)
+                        }
+                    }, 
+                    {
+                        text:'no'
+                    }].reverse()
+                    )
+            }}>
                     <Text style={styles.orderText}>Re-Order</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={[styles.reOrderContainer, {backgroundColor:'white', borderWidth:2}]} activeOpacity={0.5} onPress={()=>{
+                Alert.alert('CANCEL?', 'Are you sure you want to cancel Order?', [
+                    {text:'no'},
+                    {text:'yes,cancel', onPress:()=>{
 
+                    }}
+                    ])
+            }}>
+                    <Text style={styles.orderText}>cancel Order</Text>
+            </TouchableOpacity>
         </View>
     </View>
     }

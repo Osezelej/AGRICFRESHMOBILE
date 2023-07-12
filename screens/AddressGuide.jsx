@@ -143,7 +143,7 @@ function AddresseGuide({navigation, route}){
         </View>
 
         {visibleCont &&  <View style={styles.addAddr}>
-            <TouchableOpacity style={styles.addAddrButton} onPress={()=>{route.params.from == 'Profile'? navigation.goBack(): navigation.navigate('Order', {readyToBuydata:data, itemnumber:itemOrdered, addr:orderAddrData})}}>
+            <TouchableOpacity style={styles.addAddrButton} onPress={()=>{route.params.from == 'Profile'? navigation.goBack(): navigation.navigate('Order', {readyToBuydata:data, itemnumber:itemOrdered, addr:{title:orderAddrData.title, phone:orderAddrData.phone, addrId:orderAddrData.addrId, email:orderAddrData.email, address:orderAddrData}})}}>
                 <Text style={styles.addAddrButtonText}>CONTINUE</Text>
             </TouchableOpacity>
         </View>}
