@@ -34,7 +34,7 @@ function AddressComp({addrDetail, setVisibleCont, activeAddr, setActiveAddr, set
     let handlePress = useCallback(()=>{
 
         isSelected ? setSelected(false) : setSelected(true);
-
+        console.log(addrDetail)
         if (!isSelected){
             setVisibleCont(true);
             setActiveAddr(false);

@@ -48,7 +48,7 @@ function OrderHistoryComp({data, navigation}){
                     </View>}
                     trailing={props =><MaterialIcons name='chevron-right' {...props}/>}
                     secondaryText={`${day}, ${date}, ${trxMonth}, ${year}.`}
-                    onPress = {()=>{navigation.navigate('orderItem', {order_id:data.order_id})}}
+                    onPress = {()=>{navigation.navigate('orderItem', {order_id:data.order_id, status:data.status.toLowerCase()})}}
     />
     }else if(data.status.toLowerCase() == 'delivered'){
         
@@ -64,7 +64,7 @@ function OrderHistoryComp({data, navigation}){
                     </View>}
                     trailing={props =><MaterialIcons name='chevron-right' {...props}/>}
                     secondaryText={`${day}, ${date}, ${trxMonth}, ${year}.`}
-                    onPress = {()=>{navigation.navigate('orderItem', {order_id:data.order_id})}}
+                    onPress = {()=>{navigation.navigate('orderItem', {order_id:data.order_id, status:data.status.toLowerCase()})}}
     />
     }else{
         return <ListItem
@@ -79,7 +79,7 @@ function OrderHistoryComp({data, navigation}){
                     </View>}
                     trailing={props =><MaterialIcons name='chevron-right' {...props}/>}
                     secondaryText={`${day}, ${date}, ${trxMonth}, ${year}.`}
-                    onPress = {()=>{navigation.navigate('orderItem', {order_id:data.order_id})}}
+                    onPress = {()=>{navigation.navigate('orderItem', {order_id:data.order_id, status:data.status.toLowerCase()})}}
     />
     }
 }

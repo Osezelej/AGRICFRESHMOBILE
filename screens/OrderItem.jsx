@@ -110,7 +110,8 @@ const styles = StyleSheet.create({
         justifyContent:'center',
         alignItems:'center',
         borderRadius:10,
-        width:150
+        flexDirection:'row',
+        width:'45%'
     },
     orderText:{
         fontSize:18,
@@ -238,7 +239,18 @@ function OrderItem({navigation, foodBasketImage, deliveryImage,checkedImage,deli
     const [icon1, setIcon1] = useState(false);
     const [icon2, setIcon2] = useState(false)
 
-    let {order_id} = route.params;
+    let {order_id, status} = route.params;
+
+
+    function generateRandid(length, prefex) {
+        let ans = "";
+        let char = "123456789ABCDEFGHIJKLMOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        for (let i = 0; i < length; i++) {
+          ans += char[Math.floor(Math.random() * char.length)];
+        }
+        return prefex + "-" + ans;
+      }
+
     async function getEmail(){
         let e = '';
         await AsyncStorage.getItem('userEmail').then((val)=>{
@@ -281,6 +293,8 @@ function OrderItem({navigation, foodBasketImage, deliveryImage,checkedImage,deli
 
     // to get the entire data 
     const [data, setData] = useState([])
+    const [activeActivityOrder, setActiveActivityOrder] = useState(false)
+    const [activeActivityCancel, setActiveActivityCancel] = useState(false)
     async function getData(){
         let data = [];
         await axios.get(`https://4v6gzz-3001.csb.app/v1/orderDetail/${order_id}`)
@@ -324,6 +338,7 @@ function OrderItem({navigation, foodBasketImage, deliveryImage,checkedImage,deli
 
     // set the email when the app open
     useEffect(()=>{
+        getEmail()
         if(!orderData){
             getData()
         }
@@ -335,7 +350,7 @@ function OrderItem({navigation, foodBasketImage, deliveryImage,checkedImage,deli
         return <View style={[styles.body, {flexDirection:'row', 
         justifyContent:'center', 
         alignItems:'center'}]}>
-            <ActivityIndicator color='#ffdb28' size={45}/>
+            <ActivityIndicator color='#ffaf36' size={45}/>
         </View>
     }else{
         return<View style={styles.body}>
@@ -349,7 +364,7 @@ function OrderItem({navigation, foodBasketImage, deliveryImage,checkedImage,deli
                             backgroundColor:'white',
                         
                             }}>
-                    <Text style={{fontWeight:'500'}}>{orderData.address.address}</Text>
+                    <Text style={{fontWeight:'500'}}>{orderData.address}</Text>
                 </View>}
                 <SimpleLineIcons name="location-pin" size={18} color="black" style = {[styles.icon, {backgroundColor:icon1 ? '#ffdg28':'white'}]} onPress={showAddress}/>
                 
@@ -429,33 +444,108 @@ function OrderItem({navigation, foodBasketImage, deliveryImage,checkedImage,deli
                             </View>}
             />
         </View>
-        <View style={[{flexDirection:'row', justifyContent:'space-between'}]}>
-            <TouchableOpacity style={styles.reOrderContainer} activeOpacity={0.5} onPress={()=>{
-                Alert.alert('ReOrdering', 'Are you sure you want to Re order this items?\nIf yes, Go to cart Screen to continue', [
-                    {
-                        text:'Yes', 
-                        onPress:()=>{
-                            setCartData(data)
-                        }
-                    }, 
-                    {
-                        text:'no'
-                    }].reverse()
-                    )
-            }}>
-                    <Text style={styles.orderText}>Re-Order</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.reOrderContainer, {backgroundColor:'white', borderWidth:2}]} activeOpacity={0.5} onPress={()=>{
-                Alert.alert('CANCEL?', 'Are you sure you want to cancel Order?', [
-                    {text:'no'},
-                    {text:'yes,cancel', onPress:()=>{
 
-                    }}
-                    ])
-            }}>
-                    <Text style={styles.orderText}>cancel Order</Text>
-            </TouchableOpacity>
-        </View>
+        {status == 'pending'?<View style={[{flexDirection:'row', justifyContent:'space-between'}]}>
+        
+        <TouchableOpacity style={styles.reOrderContainer} activeOpacity={0.5} onPress={()=>{
+            setActiveActivityOrder(true)
+            Alert.alert('ReOrdering', 'Are you sure you want to Re order this items?\nIf yes, Go to cart Screen to continue', [
+                {
+                    text:'Yes', 
+                    onPress:()=>{
+                        setCartData(data)
+                        setTimeout(()=>{setActiveActivityOrder(false)}, 300)
+                    },
+                    
+
+                }, 
+                {
+                    text:'no',
+                    onPress:()=>{
+                        setTimeout(()=>{setActiveActivityOrder(false)}, 300)
+
+                    }
+                }].reverse()
+                )
+        }}>
+                <Text style={styles.orderText}>Re-Order</Text>
+               {activeActivityOrder && <ActivityIndicator color='black' size={'small'} style={{marginLeft:10}}/>} 
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.reOrderContainer, {backgroundColor:'white', borderWidth:2}]} activeOpacity={0.5} onPress={()=>{
+            setActiveActivityCancel(true)
+            Alert.alert('CANCEL?', 'Are you sure you want to cancel Order?', [
+                {text:'no'},
+                {text:'yes,cancel', onPress:async()=>{
+                    await axios.get(`https://4v6gzz-3001.csb.app/v1/updateOrderStatus/${order_id}/cancelled`)
+                    .then(async (res)=>{
+                        if(res.status == 200){
+                            console.log(res.data)
+                            await axios.post(`https://4v6gzz-3001.csb.app/v1/update/${email}`, {"newemail":"", "name":"", "walletBal":orderData.walletBal, trx_id:generateRandid(10, 'refundx')})
+                            .then((res)=>{
+                                if(res.status == 200){
+                                    console.log(res.data)
+                                    setTimeout(()=>{
+                                        setActiveActivityCancel(false)
+                                    },300)
+                                    Alert.alert('ORDER CANCELLED', 'Your order have been cancelled successfull!. \n\nPayment will be refunded back to wallet', [
+                                        {
+                                            text:'ok',
+                                            onPress:()=>{
+                                                navigation.goBack()
+                                            }
+                                        }
+                                    ])
+                                }
+                            })
+                            .catch((err)=>{
+                                console.log(err)
+                                setTimeout(()=>{
+                                        setActiveActivityCancel(false)
+                                    },300)
+                                Alert.alert('ERROR!', 'Network error! tryAgain ', )
+                            })
+                            
+                            
+                        }
+                    })
+                    .catch((err)=>{
+                        console.log('hi',err)
+                                setTimeout(()=>{
+                                        setActiveActivityCancel(false)
+                                    },300)
+                                Alert.alert('ERROR!', 'Network error! tryAgain ', )
+                    })
+
+                }}
+                ])
+        }}>
+                <Text style={styles.orderText}>cancel Order</Text>
+                {activeActivityCancel && <ActivityIndicator color='black' size={'small'} style={{marginLeft:10}}/>}
+        </TouchableOpacity>
+    </View>:<TouchableOpacity style={[styles.reOrderContainer, {width:'100%'}]} activeOpacity={0.5} onPress={()=>{
+            setActiveActivityOrder(true)
+            Alert.alert('ReOrdering', 'Are you sure you want to Re order this items?\nIf yes, Go to cart Screen to continue', [
+                {
+                    text:'Yes', 
+                    onPress:()=>{
+                        setCartData(data)
+                        setTimeout(()=>{setActiveActivityOrder(false)}, 300)
+                    },
+                }, 
+                {
+                    text:'no',
+                    onPress:()=>{
+                        setTimeout(()=>{setActiveActivityOrder(false)}, 300)
+
+                    }
+                }].reverse()
+                )
+        }}>
+                <Text style={styles.orderText}>Re-Order</Text>
+               {activeActivityOrder && <ActivityIndicator color='black' size={'small'} style={{marginLeft:10}}/>} 
+        </TouchableOpacity>
+}
+        
     </View>
     }
    
