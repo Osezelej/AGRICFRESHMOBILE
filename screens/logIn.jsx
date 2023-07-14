@@ -3,6 +3,7 @@ import {styles} from './signUp';
 import { useEffect, useState } from "react";
 import { ActivityIndicator } from "@react-native-material/core";
 import axios from "axios";
+import { StatusBar } from "expo-status-bar";
 
 export function Login({navigation, route, saveUserData}){
     let email = ''
@@ -82,7 +83,9 @@ export function Login({navigation, route, saveUserData}){
         // navigation.navigate('')
     }
     return<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+
             <View style={styles.body}>
+                <StatusBar style='dark'  />
                 <View style={styles.headingContainer}>
                     <Text style={styles.heading}>Sign in</Text>
                 </View>

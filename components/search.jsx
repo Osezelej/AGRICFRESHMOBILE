@@ -7,9 +7,8 @@ const styles = StyleSheet.create({
 
 logoImage:{
     width:55,
-    height:45,
+    height:55,
     borderRadius:15,
-    marginTop:10,
     
 
 },
@@ -30,8 +29,8 @@ headerSettingImageContainer:{
 },
 searchSetting:{
     backgroundColor:'#c9c9c9',
-    paddingHorizontal:6,
-    padding:3,
+    paddingHorizontal:5,
+    paddingVertical:5,
     borderRadius:30
 },
 iconStyle:{
@@ -53,7 +52,7 @@ function SearchHeader({image, setState, logoImage, navigation, searchItem}){
 
     return(
         <View style={styles.headerContainer}>
-            <View>
+            <View >
                 <Image source={logoImage} style={styles.logoImage}/>
             </View>
             <View style={styles.headerSettingImageContainer}>

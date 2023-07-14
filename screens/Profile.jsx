@@ -4,7 +4,7 @@ import {AntDesign} from '@expo/vector-icons';
 import UserOptions from "../components/userOptions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { imageUrl } from "../data/database";
-
+import { StatusBar } from "expo-status-bar";
 
 const styles = StyleSheet.create({
     container:{
@@ -72,6 +72,7 @@ function Profile({navigation, userIcon, userProfileDetails}) {
     useEffect(()=>{getUsername()}, [])
     return<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
+            <StatusBar style='dark'  />
             <View style={styles.body}>
                 <View style={styles.topContainer}>
                     <View style={styles.profileImageContainer}>

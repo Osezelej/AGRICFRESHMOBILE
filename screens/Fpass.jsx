@@ -3,6 +3,7 @@ import { styles } from './signUp';
 import axios from "axios";
 import { ActivityIndicator } from '@react-native-material/core';
 import { useState } from 'react';
+import { StatusBar } from "expo-status-bar";
 
 
 export function ForgotPassword ({navigation}){
@@ -48,6 +49,7 @@ export function ForgotPassword ({navigation}){
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 
                 <View style={styles.body}>
+                    <StatusBar style='dark'  />
                     <View style={stylea.textContainer} >
                         <Text style={stylea.text}>Please enter your email. you will recieve a link to create a new password via email.</Text>
                     </View>

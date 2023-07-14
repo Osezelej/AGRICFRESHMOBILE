@@ -112,7 +112,7 @@ export default function FootIconsNavigaiton({
    },[cartData])
 
     return<View style={{flex:1}}>
-                 <StatusBar/>
+                 <StatusBar style='dark'  />
                  <NavigationContainer independent={true} >
        
         <Tab.Navigator 

@@ -6,6 +6,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import axios from "axios";
 import TransactionComp from "../components/transactionComp";
 import { ActivityIndicator } from "@react-native-material/core";
+import { StatusBar } from "expo-status-bar";
 
 
 const styles = StyleSheet.create({
@@ -146,6 +147,7 @@ function Wallet({TImage, visibilityImages, balance, navigation}){
 
 
     return<View style={styles.body}>
+        <StatusBar style='dark'  />
         <View style={styles.container}>
            <WalletHead visibilityImages={visibilityImages}
             email={email}

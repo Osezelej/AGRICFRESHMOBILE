@@ -4,6 +4,7 @@ import { memo, useEffect, useState } from 'react';
 import { ActivityIndicator } from '@react-native-material/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { StatusBar } from "expo-status-bar";
 
 
 const styles = StyleSheet.create({
@@ -98,10 +99,12 @@ function AddresseGuide({navigation, route}){
             justifyContent:'center', 
             alignItems:'center',
             backgroundColor:'white'}}>
+            <StatusBar style='dark'  />
             <ActivityIndicator color='#ffaf36' size={45}/>
         </View>
     }else{
         return <View style={styles.body}>
+        <StatusBar style='dark'  />
         <View style={styles.title}>
             <Text style={styles.titleText}>SAVED ADDRESSES</Text>
         </View>

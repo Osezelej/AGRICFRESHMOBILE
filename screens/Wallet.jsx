@@ -3,6 +3,7 @@ import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Image } from "rea
 import WalletHead from "../components/walletHead";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
 
 const styles = StyleSheet.create({
     container:{
@@ -101,6 +102,7 @@ function Wallet({visibilityImages, cardOption, navigation, balance, setBalance})
     }, [isfocused])
     return<ScrollView style={styles.container}>
             <View style={styles.body}>
+                <StatusBar style='dark'  />
                     <WalletHead 
                     visibilityImages={visibilityImages}
                     email={email}

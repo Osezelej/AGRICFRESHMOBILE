@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {memo, useEffect, useState} from 'react'
 import axios from 'axios';
 import OrderHistoryComp from '../components/orderHistoryComp';
-
+import { StatusBar } from "expo-status-bar";
 const styles = StyleSheet.create({
     body:{
         flex:1,
@@ -50,6 +50,7 @@ function OrderHistory({navigation}){
         })
     }, [email])
     return<View style={styles.body}>
+        <StatusBar style='dark'  />
         <FlatList 
             data={orderHistory}
             refreshControl={<RefreshControl

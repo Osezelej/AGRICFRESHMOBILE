@@ -7,7 +7,7 @@ import { ActivityIndicator } from "@react-native-material/core";
 import { useFocusEffect } from "@react-navigation/native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { StatusBar } from "expo-status-bar";
 
 
 
@@ -563,6 +563,7 @@ useEffect(()=>{
 
      return<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
+                <StatusBar style='dark'  />
                 <View style={styles.headerContainer}>
                     <View style={styles.TextContainer}>
                         <Text style = {styles.header}>{names}</Text>

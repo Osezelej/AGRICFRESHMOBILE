@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import VerificationComp from '../components/verificfationComp';
 import { ActivityIndicator } from '@react-native-material/core';
 import axios from 'axios';
-
+import { StatusBar } from "expo-status-bar";
 
 export function ResetPassword ({navigation, visibleImage, notVisibleImage, route}){
     navigation.canGoBack(false)
@@ -325,8 +325,10 @@ if(!checkChar.current){
     }
 
     return(<ScrollView style={styles.body}>
+
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}> 
            <View >
+            <StatusBar style='dark'  />
                 <View style={styles.formbody}>
                 <View style={styles.nameContainer}>
                         <Text style={styles.Label}>Password</Text>

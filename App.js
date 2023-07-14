@@ -238,7 +238,7 @@ useEffect(()=>{
 
 
   return (<View style ={styles.container}>
-         <StatusBar/>
+         <StatusBar style='dark'  />
         {/* <Animated_page
           image={logoImages}
         /> */}

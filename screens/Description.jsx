@@ -1,6 +1,7 @@
 import { memo } from "react";
 import { View, ScrollView, Image, StyleSheet, Text, Pressable } from "react-native";
 import { Avatar } from "@react-native-material/core";
+import { StatusBar } from "expo-status-bar";
 const styles = StyleSheet.create({
     image:{
         width:'98%',
@@ -136,6 +137,7 @@ function Description ({route}){
     const {image, price, farmName, rating} = route.params;
    
     return<View style={styles.container}>
+        <StatusBar style='dark'  />
         <View style={styles.headerContainer}>
                     <View style={styles.TextContainer}>
                         <Text style = {styles.header}>Description</Text>

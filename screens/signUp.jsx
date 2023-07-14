@@ -3,9 +3,8 @@ import {useState, useRef, useEffect} from 'react';
 import VerificfationComp from '../components/verificfationComp';
 import axios from 'axios';
 import { ActivityIndicator } from '@react-native-material/core';
-
 import { Alert } from 'react-native';
-
+import { StatusBar } from "expo-status-bar";
 
 
 export function SignUp({navigation, visibleImage, notVisibleImage}){
@@ -369,6 +368,7 @@ if(!checkChar.current){
     return <ScrollView style={styles.body}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss }>
             <View  >
+                <StatusBar style='dark'  />
                 <View style={styles.headingContainer}>
                     <Text style={styles.heading}>Sign Up</Text>
                 </View>
@@ -540,11 +540,11 @@ export const styles = StyleSheet.create({
     },
     createContainer:{
         backgroundColor:'#e7e7e7',
-        paddingVertical:10,
+        paddingVertical:15,
         display:'flex',
         justifyContent:'center',
         alignItems:'center',
-        borderRadius:30,
+        borderRadius:10,
     },
     bottom:{
         textAlign:'right',

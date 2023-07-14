@@ -8,6 +8,8 @@ import { decode } from 'base64-arraybuffer';
 import { imageUrl } from "../data/database";
 import axios from "axios";
 import { ActivityIndicator } from "@react-native-material/core";
+import { StatusBar } from "expo-status-bar";
+
 
 const styles = StyleSheet.create({
     container:{
@@ -288,6 +290,7 @@ function UserProfile({navigation}) {
     return  <ScrollView style={styles.container}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={styles.body}>
+                <StatusBar style='dark'  />
                     <View style={styles.topContainer}>
 
                         <View style={styles.profileImageContainer}>

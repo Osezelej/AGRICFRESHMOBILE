@@ -4,7 +4,7 @@ import {memo, useState, useRef, useEffect} from 'react';
 import MarketItems from '../components/marketItems';
 import { SimpleLineIcons, Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { StatusBar } from "expo-status-bar";
 
 
 const styles = StyleSheet.create({
@@ -183,6 +183,7 @@ let buyClicked = async (item_name)=>{
         getEmail()
     }, [])
     return<View style={styles.body}>
+        <StatusBar style='dark'  />
         {activeIndicator && <ActivityIndicator color='#ffaf28' size={'large'}/>}
         <FlatList
             data = {searchData}

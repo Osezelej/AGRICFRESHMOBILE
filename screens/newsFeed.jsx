@@ -5,6 +5,7 @@ import { ActivityIndicator, Avatar, ListItem } from "@react-native-material/core
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {Ionicons } from '@expo/vector-icons';
 import ChatComp from "../components/chatComp";
+import { StatusBar } from "expo-status-bar";
 
 const styles = StyleSheet.create({
     body:{
@@ -141,6 +142,7 @@ let buyClicked = async (item_name)=>{
 
     if(activeActivity){
         return<View  style={[styles.body, {flex:1}]}>
+                <StatusBar style='dark'  />
                 <ActivityIndicator color="#ffaf36" size={45}/>
                 <Text>No notifications</Text>
         </View>

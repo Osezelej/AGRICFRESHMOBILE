@@ -2,6 +2,7 @@ import {View, ScrollView, StyleSheet, Pressable, Text, Image, Alert } from 'reac
 import { memo, useState, useCallback, useEffect } from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
 import { TextInput } from '@react-native-material/core';
+import { StatusBar } from "expo-status-bar";
 
 let styles = StyleSheet.create({
     input:{
@@ -190,6 +191,7 @@ function NewCard({masterCardImage, visaCardImage, setCards}){
 
     return<ScrollView style={styles.container}>
             <View style={styles.inputContainer}>
+                <StatusBar style='dark'  />
                 <View style={styles.cardnumderInput}>
                     <TextInput 
                     style={[styles.input, {borderColor:focusColor, flex:1}]}

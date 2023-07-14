@@ -8,7 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { ActivityIndicator } from '@react-native-material/core';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { StatusBar } from "expo-status-bar";
 const styles = StyleSheet.create({
     header:{
         color:'black',
@@ -146,6 +146,7 @@ function Favourites ({
 
     return <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={styles.container}>
         <View style={[styles.body, {backgroundColor:'white'}]}>
+            <StatusBar style='dark'  />
             <View style={styles.headerContainer}>
                     <View style={styles.TextContainer}>
                         <Text style = {styles.header}>{title}</Text>

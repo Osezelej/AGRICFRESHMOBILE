@@ -5,6 +5,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ActivityIndicator } from '@react-native-material/core';
 import KeyboardAvoidingView from 'react-native/Libraries/Components/Keyboard/KeyboardAvoidingView';
+import { StatusBar } from "expo-status-bar";
 
 const styles = StyleSheet.create({
     container:{
@@ -195,6 +196,7 @@ function Comment({route, socket}){
     if (productData){
         return<KeyboardAvoidingView style={styles.container}>
             <View style={styles.body}>
+                <StatusBar style='dark'  />
                 <View style={{alignItems:'center', flexDirection:'row', justifyContent:'center'}}>
                     <Text style={{color:'#818181'}}>You are Negotiating with</Text>
                     <Text style={{fontSize:16, fontWeight:'bold'}}> {productData.farmName} </Text> 

@@ -7,7 +7,7 @@ import { dataApi } from "../data/data";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from 'axios';
 import { imageUrl } from "../data/database";
-
+import { StatusBar } from "expo-status-bar";
 
 const styles = StyleSheet.create({
     header:{
@@ -197,6 +197,7 @@ function Cart({navigation, name, manageCartMinus, cartData, removeItem, image, g
     }, [])
     return<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
+            <StatusBar style='dark'  />
             <View style={styles.headerContainer}>
                     <View style={styles.TextContainer}>
                         <Text style = {styles.header}>{cartName}</Text>

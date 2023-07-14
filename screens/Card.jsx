@@ -3,12 +3,15 @@ import { memo, useCallback, useState } from "react";
 import { PayWithFlutterwave, FlutterwaveButton } from "flutterwave-react-native";
 import axios from "axios";
 import { useIsFocused } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
 
 const styles = StyleSheet.create({
     container:{
         flex:1,
         backgroundColor:'white',
-        padding:20
+        padding:20,
+        justifyContent:'center',
+        alignItems:'center'
     },
     addCardContainer:{
         flexDirection:'row',
@@ -106,6 +109,7 @@ function Card({navigation, route, balance, setBalance}){
 
     return<ScrollView style={styles.container}>
     <View style={styles.CreditCardContainer}>
+        <StatusBar style='dark'  />
             {isValid &&   <Text style={{
                 color:'red',
                 fontSize:16,

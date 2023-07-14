@@ -4,6 +4,7 @@ import OptionButton from '../components/optionButton';
 import { ActivityIndicator, TextInput } from '@react-native-material/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { StatusBar } from "expo-status-bar";
 const styles = StyleSheet.create({
     container:{
         flex:1,
@@ -279,6 +280,7 @@ function Filter ({starImage, navigation, setMarketData, setInitialChange, setFil
     }
 
     return <View style={styles.container}>
+            <StatusBar style='dark'  />
             <ScrollView style = {styles.body}>    
                 <View style = {styles.filterContainer}>
                   <Text style={styles.subtitleText}>Categories</Text>

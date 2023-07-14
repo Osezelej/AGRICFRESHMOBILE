@@ -4,6 +4,7 @@ import { MaterialIcons, SimpleLineIcons, Feather} from '@expo/vector-icons';
 import { ActivityIndicator } from '@react-native-material/core';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StatusBar } from "expo-status-bar";
 
 const styles = StyleSheet.create({
     body:{
@@ -350,10 +351,12 @@ function OrderItem({navigation, foodBasketImage, deliveryImage,checkedImage,deli
         return <View style={[styles.body, {flexDirection:'row', 
         justifyContent:'center', 
         alignItems:'center'}]}>
+            <StatusBar style='dark'  />
             <ActivityIndicator color='#ffaf36' size={45}/>
         </View>
     }else{
         return<View style={styles.body}>
+        <StatusBar style='dark'  />
         <View style={styles.iconContainer}>
             <View style={styles.phoneDetailContainer}>
             {icon1 &&<View style={{maxWidth:150, 

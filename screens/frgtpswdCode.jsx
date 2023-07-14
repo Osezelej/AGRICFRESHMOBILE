@@ -2,6 +2,7 @@ import {View, Text, TextInput,StyleSheet, Keyboard} from 'react-native';
 
 import { memo, useEffect, useRef, useState } from 'react';
 import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
+import { StatusBar } from "expo-status-bar";
 
 const styles = StyleSheet.create({
     body:{
@@ -154,6 +155,7 @@ function FrgtpswdCode({navigation, route}){
         }, [])
     
     return <View style = {styles.body}>
+            <StatusBar style='dark'  />
             <View style={styles.TextInputContainer}>
                 <TextInput 
                 style = {[styles.textInput , {borderColor:active?'#ffdb28':'lightGray'}]}

@@ -4,6 +4,7 @@ import NigeriaDetails from 'naija-state-local-government';
 import { SelectList } from 'react-native-dropdown-select-list';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { StatusBar } from "expo-status-bar";
 function Address({setAddrData, navigation, route}) {
   if(route.params != undefined){
     var Data = route.params.readyToBuydata;
@@ -97,6 +98,7 @@ let handlePress = useCallback (()=>{
   return (
     <ScrollView style={styles.container}>
       <View style={styles.TextContainer}>
+        <StatusBar style='dark'  />
         <Text style = {styles.header}>Enter New Location</Text>
       </View>
       <View style={styles.formBody}>

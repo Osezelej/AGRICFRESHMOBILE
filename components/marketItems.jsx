@@ -33,7 +33,7 @@ function MarketItems({
     async function addToFav(){
         await axios.get(`https://4v6gzz-3001.csb.app/v1/updateUserFav/${email}`, {
                     params:{
-                        productId:item.id,
+                        productId:item._id,
                         task:'add'
                     }
             })
@@ -49,7 +49,7 @@ function MarketItems({
     async function removeFromFav(){
         await axios.get(`https://4v6gzz-3001.csb.app/v1/updateUserFav/${email}`, {
                     params:{
-                        productId:item.id,
+                        productId:item._id,
                         task:'remove'
                     }
             })
