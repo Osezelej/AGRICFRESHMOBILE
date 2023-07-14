@@ -138,8 +138,8 @@ export function Login({navigation, route, saveUserData}){
                 </View>
 
                     <View style={styles.createAcctContainer}>
-                        <TouchableHighlight style={styles.createContainer} onPress={()=>(navigation.navigate('Sign up'))}>
-                            <Text >Create account</Text>
+                        <TouchableHighlight style={styles.createContainer} onPress={()=>(navigation.navigate('Sign up'))} underlayColor={'#ffaf06'}>
+                            <Text style={{fontSize:17, fontWeight:'600'}}>Create account</Text>
                         </TouchableHighlight>
 
                     </View>

@@ -138,6 +138,8 @@ export function SignUp({navigation, visibleImage, notVisibleImage}){
         checkNum.current = false;
         checkChar.current = false;
 
+        console.log(text)
+
         let capitalAlpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
         let smallAlpha = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'y', 'z'];
         let number = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0 ];
@@ -251,7 +253,6 @@ if(!checkChar.current){
     // useEffect for Big alphabets
     useEffect(()=>{
         if(checkCapAlpha.current){
-            console.log('positive')
             console.log(checkCapAlpha.current)
             setVerificationData((prev)=>{
                 for (let data of prev){
@@ -262,7 +263,6 @@ if(!checkChar.current){
                 return [...prev]
             })
         }else{
-            console.log('negative')
             setVerificationData((prev)=>{
                 for (let data of prev){
                     if (data.id == 2){
@@ -286,7 +286,6 @@ if(!checkChar.current){
                 return [...prev]
             })
         }else{
-            console.log('negative')
             setVerificationData((prev)=>{
                 for (let data of prev){
                     if (data.id == 3){
@@ -350,8 +349,7 @@ if(!checkChar.current){
  
    
     function changeConfirmPassword (text){
-        console.log(text)
-     
+ 
         if(text == password){
             setCorrectPassword('#3131313c');
             setActive(true)
@@ -365,7 +363,8 @@ if(!checkChar.current){
     // useEffect(()=>{setName('');setName('Sign Up')},[verficationData])
 
 
-
+    const data = useRef(false)
+    const passwordInput =useRef(null)
 
     return <ScrollView style={styles.body}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss }>
@@ -413,6 +412,7 @@ if(!checkChar.current){
                             secureTextEntry={showPassword}
                             onChangeText={handleChangeText}
                             value={password}
+                            ref={passwordInput}
                             />
                             {
                                displayVeriData && (showPassword ? <Pressable onPress={()=>{setShowPassword(false)}} style = {{padding:5}}>
@@ -438,6 +438,28 @@ if(!checkChar.current){
                         secureTextEntry={true}
                         onChangeText={changeConfirmPassword}
                         value={confirmPassword}
+                        onFocus={()=>{
+                            console.log(verficationData);
+                            data.current = false
+
+                            for (let item of verficationData){
+                                if (item.isActive == false){
+                                    data.current = true
+                                    break;
+                                }
+                            }
+                            console.log(data.current)
+                            if(data.current){
+                                Alert.alert('WARNING!!', 'Please enter a valid password!', [{
+                                    text:'ok',
+                                    onPress:()=>{
+                                        setShowPassword(false)
+                                        passwordInput.current.focus()
+
+                                    }
+                                }])
+                            }
+                        }}
                         />
                     </View>
 

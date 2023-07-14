@@ -1,4 +1,4 @@
-import {View, StyleSheet, TouchableWithoutFeedback, Text, Keyboard, FlatList,Animated, RefreshControl} from 'react-native';
+import {View, StyleSheet, TouchableWithoutFeedback, Text, Keyboard, FlatList,Animated, RefreshControl, Alert} from 'react-native';
 import { memo, useState, useCallback, useEffect, useRef } from 'react';
 // import { FavouritesData } from '../components/marketItems';
 import MarketItems from '../components/marketItems';
@@ -52,7 +52,7 @@ function Favourites ({
 }){
     let currentData = useRef(new Animated.Value(0)).current
     const [title , settitle] = useState('Favourites');
-    const [FavouritesData, setFavouriteData] = useState([])
+    const [FavouritesData, setFavouriteData] = useState(null)
     const [refreshing, setRefreshing] = useState(false)
     const [itemName, setItemName] = useState('');
     const [email, setEmail] = useState('');
@@ -109,6 +109,7 @@ function Favourites ({
     useEffect(()=>{
         getEmail()
     }, [])
+    const [data_, setData_ ] = useState(false)
     useEffect(()=>{
         if (email.length > 0){
             getFavData()
@@ -116,10 +117,32 @@ function Favourites ({
                setFavouriteData(value.filter((data)=>{
                 return data.isFav
             })) 
+            }).then(()=>{
+                
             })
         }
 
     }, [email])
+
+    useEffect(()=>{
+        if(FavouritesData){
+            if(FavouritesData.length == 0){
+                setData_(true)
+            }
+        }
+    }, [FavouritesData])
+    useEffect(()=>{
+        if(data_){
+            Alert.alert('NO FAVORITE ITEMS', 'You do not have any favourite item.\n\nGo to market place and like a product.', [
+                {
+                    text:'ok',
+                    onPress:()=>{
+                        navigation.goBack()
+                    }
+                }
+            ])
+        }
+    }, [data_])
 
     return <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={styles.container}>
         <View style={[styles.body, {backgroundColor:'white'}]}>
@@ -128,7 +151,7 @@ function Favourites ({
                         <Text style = {styles.header}>{title}</Text>
                     </View>
             </View>
-            {FavouritesData.length == 0?<View style={{alignItems:'center', marginTop:15}}>
+            {FavouritesData == null ?<View style={{alignItems:'center', marginTop:15}}>
             <ActivityIndicator color='#ffaf36' size={35}/>
             <Text style={{fontSize:16, fontWeight:'400'}}>Getting Favourites</Text>
             </View>:<FlatList

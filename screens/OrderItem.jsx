@@ -553,3 +553,4 @@ function OrderItem({navigation, foodBasketImage, deliveryImage,checkedImage,deli
 
 
 export default memo(OrderItem);
+ 

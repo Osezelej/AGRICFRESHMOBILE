@@ -58,6 +58,7 @@ function Wallet({visibilityImages, cardOption, navigation, balance, setBalance})
         return e
 
     }
+    
 
     const generateTransactionRef = (length) => {
         var result = '';
@@ -94,6 +95,9 @@ function Wallet({visibilityImages, cardOption, navigation, balance, setBalance})
     const isfocused = useIsFocused();
     useEffect(()=>{
         console.log(isfocused)
+        if(isfocused){
+            setBalance(balance)
+        }
     }, [isfocused])
     return<ScrollView style={styles.container}>
             <View style={styles.body}>

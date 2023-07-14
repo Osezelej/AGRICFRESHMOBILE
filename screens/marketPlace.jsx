@@ -1,4 +1,4 @@
-import { TouchableWithoutFeedback, Keyboard, View, StyleSheet,Text, ScrollView, FlatList, TouchableOpacity, Image, Animated, useColorScheme,  } from "react-native";
+import { TouchableWithoutFeedback, Keyboard, View, StyleSheet,Text, ScrollView, FlatList, TouchableOpacity, Image, Animated, useColorScheme, BackHandler,Alert } from "react-native";
 import { useState, useEffect,useCallback, useRef, memo,  } from 'react';
 import MarketItems, {  FavouritesData } from "../components/marketItems";
 import OptionHeader from "../components/optionHeader";
@@ -7,6 +7,7 @@ import { ActivityIndicator } from "@react-native-material/core";
 import { useFocusEffect } from "@react-navigation/native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 
 
@@ -276,8 +277,27 @@ export default function MarketPlace({
     setNewMessageId,
 
 }){
-    navigation.canGoBack(false)
+     const backAction = useCallback(()=>{
+            Alert.alert('HOLD ON!', 'Are you sure you want to exit app?',
+             [
+                {
+                    text:'no'
+                }, 
+                {
+                    text:'yes', 
+                    onPress:()=>{BackHandler.exitApp()}
+                }
+            ]
+            )
+          return true
+        })
    
+    useEffect(()=>{
+        
+          const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction) 
+          return ()=>backHandler.remove()
+      }, [])
+    
     
 let currentData = useRef(new Animated.Value(0)).current
 const [options, setoptions] = useState([{
@@ -404,12 +424,12 @@ useEffect(()=>{
 useEffect(()=>{
     if(marketData.length > 0){
       getUserName()
-
     }
   }, [marketData])
 
   const [unsentMessages, setUnsentMessagges] = useState(null)
   const [dropedMessage, setDropedMessage] = useState(null)
+  
   useEffect(()=>{
     if(name.length > 0){
         connectIO(email, name);
@@ -462,6 +482,7 @@ useEffect(()=>{
    
     }
   }, [dropedMessage]) 
+  
 
 
   async function getCommentData({from, message}){
